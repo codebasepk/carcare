@@ -20,8 +20,8 @@ public class AppGlobals extends Application {
 
     private static Context sContext;
 
-    public static final String SERVER_IP = "http://138.68.166.117";
-    public static final String SERVER_IP_FOR_IMAGE = "http://138.68.166.117/";
+    public static final String SERVER_IP = "http://178.62.126.92:8000";
+    public static final String SERVER_IP_FOR_IMAGE = "http://178.62.126.92:8000/";
     public static final String BASE_URL = String.format("%s/api/", SERVER_IP);
     public static final String KEY_USER_NAME = "username";
     public static final String KEY_FULL_NAME = "full_name";

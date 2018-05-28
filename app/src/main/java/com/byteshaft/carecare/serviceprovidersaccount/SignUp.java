@@ -9,14 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.byteshaft.carecare.R;
-import com.byteshaft.carecare.gettersetter.CarModelItems;
-import com.byteshaft.requests.HttpRequest;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.net.HttpURLConnection;
 
 public class SignUp extends Fragment {
 

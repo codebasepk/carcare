@@ -8,17 +8,17 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.byteshaft.carecare.R;
-import com.byteshaft.carecare.gettersetter.CarTypeItems;
+import com.byteshaft.carecare.gettersetter.VehicleMakeItems;
 
 import java.util.ArrayList;
 
-public class CarType extends BaseAdapter {
+public class VehicleMakes extends BaseAdapter {
 
     private ViewHolder viewHolder;
-    private ArrayList<CarTypeItems> arrayList;
+    private ArrayList<VehicleMakeItems> arrayList;
     private Activity activity;
 
-    public CarType(Activity activity, ArrayList<CarTypeItems> arrayList) {
+    public VehicleMakes(Activity activity, ArrayList<VehicleMakeItems> arrayList) {
         this.activity = activity;
         this.arrayList = arrayList;
     }
@@ -34,9 +34,8 @@ public class CarType extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        CarTypeItems carTypeItems = arrayList.get(position);
-        viewHolder.spinnerText.setText(carTypeItems.getCarTypeName());
-        Log.i("TAF", carTypeItems.getCarTypeName());
+        VehicleMakeItems vehicleMakeItems = arrayList.get(position);
+        viewHolder.spinnerText.setText(vehicleMakeItems.getVehicleMakeName());
         return convertView;
     }
 
