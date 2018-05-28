@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/background_image">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -20,22 +21,25 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center_horizontal"
-                android:src="@drawable/ic_menu_camera"
+                android:src="@drawable/camera"
                 android:layout_marginTop="30dp"
-                app:civ_border_color="#000"
+                app:civ_border_color="#FFF"
                 app:civ_border_width="2dp" />
 
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:textColorHint="#FFF"
+                android:textColor="#FFF"
+                >
 
                 <EditText
                     android:id="@+id/email_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:drawableRight="@mipmap/email"
-                    android:hint="Email"
+                    android:hint="Email/UserName"
                     android:inputType="textEmailAddress"
                     android:paddingLeft="10sp"
                     android:textColor="#000"
@@ -45,7 +49,10 @@
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:textColorHint="#FFF"
+                android:textColor="#FFF"
+                >
 
                 <EditText
                     android:id="@+id/password_edit_text"
@@ -67,7 +74,7 @@
                 android:layout_marginTop="15dp"
                 android:background="@drawable/button_background"
                 android:text="SIGN IN"
-                android:textColor="#000" />
+                android:textColor="#FFF" />
 
             <TextView
                 android:id="@+id/forgot_password_text_view"
@@ -77,6 +84,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp"
                 android:text="Forgot Password?"
+                android:textColor="#FFF"
                 android:textSize="15sp"
                 android:textStyle="italic" />
 
@@ -88,6 +96,7 @@
                 android:layout_gravity="center_horizontal"
                 android:text="Don't have an account SignUp"
                 android:layout_marginBottom="10dp"
+                android:textColor="#FFF"
                 android:textStyle="bold"
                 android:textSize="15sp" />
         </LinearLayout>
