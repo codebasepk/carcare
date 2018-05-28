@@ -4,13 +4,11 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.LocationManager;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SwitchCompat;
@@ -18,8 +16,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.byteshaft.carecare.R;
 import com.byteshaft.requests.HttpRequest;
-import com.byteshaft.wahwege.R;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
@@ -41,7 +39,6 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.byteshaft.carecare.utils.AppGlobals.sImageLoader;
-import static com.byteshaft.wahwege.utils.AppGlobals.sImageLoader;
 
 
 public class Helpers {
@@ -210,28 +207,28 @@ public class Helpers {
         return gps_enabled || network_enabled;
     }
 
-    public static void dialogForLocationEnableManually(final Activity activity) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(activity);
-        dialog.setMessage(R.string.location_not_enabled);
-        dialog.setPositiveButton(R.string.turn_on, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                // TODO Auto-generated method stub
-                Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                activity.startActivityForResult(myIntent, AppGlobals.LOCATION_ENABLE);
-                //get gps
-            }
-        });
-        dialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                // TODO Auto-generated method stub
-
-            }
-        });
-        dialog.show();
-    }
+//    public static void dialogForLocationEnableManually(final Activity activity) {
+//        AlertDialog.Builder dialog = new AlertDialog.Builder(activity);
+//        dialog.setMessage(R.string.location_not_enabled);
+//        dialog.setPositiveButton(R.string.turn_on, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+//                // TODO Auto-generated method stub
+//                Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+//                activity.startActivityForResult(myIntent, AppGlobals.LOCATION_ENABLE);
+//                //get gps
+//            }
+//        });
+//        dialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+//
+//            @Override
+//            public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+//                // TODO Auto-generated method stub
+//
+//            }
+//        });
+//        dialog.show();
+//    }
 
 
     public static String getAge(int year, int month, int day) {

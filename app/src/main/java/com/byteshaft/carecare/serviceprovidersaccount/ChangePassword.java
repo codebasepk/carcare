@@ -19,8 +19,6 @@ public class ChangePassword extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBaseView = inflater.inflate(R.layout.fragment_user_sign_up, container, false);
 
-
-
         return mBaseView;
     }
 }
