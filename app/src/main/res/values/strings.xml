@@ -6,4 +6,53 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+
+    <string name="acquiring_location">Acquiring location please wait..</string>
+    <string name="permission_dialog_title">Location Permission Required</string>
+    <string name="permission_dialog_message">In order to get address, Location permission is required. please grant it manually</string>
+    <string name="pick_for_current_location">Pick for current location</string>
+    <string name="button_continue">Continue</string>
+    <string name="camera_storage_permission">Camera and Storage Permission required for this app</string>
+    <string name="go_settings_permission">Go to settings and enable permissions</string>
+    <string name="ok_button">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="location_not_enabled">Location is not enabled</string>
+    <string name="connection_time_out">connection time out</string>
+    <string name="apply">Apply</string>
+    <string name="turn_on">Turn On</string>
+
+    <string name="ok">OK</string>
+    <string name="choose_library">Choose from Library</string>
+    <string name="cancel_photo">Cancel</string>
+    <string name="select_photo">Select Photo</string>
+    <string name="select_file">Select File</string>
+    <string name="photo_cancel">Cancel</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="permission_denied">Permission denied !</string>
+
+    <string name="activation_code_send_message">Activation code has been sent to you! Please check your Email</string>
+    <string name="check_internet">Please check your internet connection</string>
+    <string name="login_failed">Login Failed!</string>
+    <string name="register_failed">Registration Failed!</string>
+    <string name="update_failed">Update Failed!</string>
+    <string name="table_failed">Table details Failed!</string>
+    <string name="password_changed">Your password successfully changed</string>
+    <string name="check_password">Please enter correct password</string>
+    <string name="check_email">Email Already Exists</string>
+    <string name="email_not_exist">Email does not exist on server</string>
+    <string name="activate_your_account">Please activate your account !</string>
+    <string name="provide_email">please provide a valid email</string>
+    <string name="verification_code_length">Verification code must be 6 characters</string>
+    <string name="email_error">please provide a valid email</string>
+    <string name="recovery_email">Sending Recovery Mail</string>
+    <string name="recovery_message">Please check your Email for new password</string>
+    <string name="recovery_failed">Recovery Failed!</string>
+    <string name="valid_email">provide a valid EmailAddress</string>
+    <string name="password_four_length">enter at least 4 characters</string>
+    <string name="old_password">please enter correct old password</string>
+    <string name="password_not_match">password does not match</string>
+    <string name="updating_password">Updating your password</string>
+    <string name="your_password_changed">Your password successfully changed</string>
+    <string name="resting_password">Resting your password</string>
+    <string name="resetting_failed">Resetting Failed!</string>
 </resources>

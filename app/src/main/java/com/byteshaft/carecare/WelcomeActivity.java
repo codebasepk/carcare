@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.byteshaft.carecare.serviceprovidersaccount.ServiceProviderAccount;
+import com.byteshaft.carecare.useraccounts.UserAccount;
 import com.byteshaft.carecare.utils.AppGlobals;
 
 public class WelcomeActivity extends AppCompatActivity {
@@ -32,6 +33,8 @@ public class WelcomeActivity extends AppCompatActivity {
         customerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                startActivity(new Intent(WelcomeActivity.this, UserAccount.class));
+
             }
         });
 

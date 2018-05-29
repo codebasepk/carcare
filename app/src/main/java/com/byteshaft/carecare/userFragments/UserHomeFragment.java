@@ -1,4 +1,4 @@
-package com.byteshaft.carecare.useraccounts;
+package com.byteshaft.carecare.userFragments;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,17 +10,14 @@ import android.view.ViewGroup;
 
 import com.byteshaft.carecare.R;
 
-public class ChangePassword extends Fragment {
-
+public class UserHomeFragment extends Fragment {
     private View mBaseView;
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mBaseView = inflater.inflate(R.layout.fragment_user_change_password, container, false);
-
-
-
+        mBaseView = inflater.inflate(R.layout.user_home_fragment, container, false);
         return mBaseView;
     }
 }

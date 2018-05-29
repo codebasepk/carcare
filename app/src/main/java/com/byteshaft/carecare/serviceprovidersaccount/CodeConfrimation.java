@@ -169,7 +169,7 @@ public class CodeConfrimation extends Fragment implements View.OnClickListener {
                                     JSONObject jsonObject = new JSONObject(request.getResponseText());
                                     String address = jsonObject.getString(AppGlobals.KEY_ADDRESS);
                                     String contactNumber = jsonObject.getString(AppGlobals.KEY_CONTACT_NUMBER);
-                                    String contactPerson = jsonObject.getString(AppGlobals.KEY_CONTACT_PERSON);
+//                                    String contactPerson = jsonObject.getString(AppGlobals.KEY_CONTACT_PERSON);
 
                                     String email = jsonObject.getString(AppGlobals.KEY_EMAIL);
                                     String id = jsonObject.getString(AppGlobals.KEY_USER_ID);
@@ -180,7 +180,7 @@ public class CodeConfrimation extends Fragment implements View.OnClickListener {
                                     String userType = jsonObject.getString(AppGlobals.KEY_USER_TYPE);
 
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_CONTACT_NUMBER, contactNumber);
-                                    AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_CONTACT_PERSON, contactPerson);
+//                                    AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_CONTACT_PERSON, contactPerson);
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_ADDRESS, address);
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_EMAIL, email);
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_USER_ID, id);
