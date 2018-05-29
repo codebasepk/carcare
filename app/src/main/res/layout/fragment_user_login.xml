@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/background_image">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -30,8 +29,6 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColorHint="#FFF"
-                android:textColor="#FFF"
                 >
 
                 <EditText
@@ -42,16 +39,12 @@
                     android:hint="Email/UserName"
                     android:inputType="textEmailAddress"
                     android:paddingLeft="10sp"
-                    android:textColor="#000"
-                    android:textColorHint="#000"
                     android:textSize="15sp" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColorHint="#FFF"
-                android:textColor="#FFF"
                 >
 
                 <EditText
@@ -84,7 +77,6 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp"
                 android:text="Forgot Password?"
-                android:textColor="#FFF"
                 android:textSize="15sp"
                 android:textStyle="italic" />
 
@@ -96,7 +88,6 @@
                 android:layout_gravity="center_horizontal"
                 android:text="Don't have an account SignUp"
                 android:layout_marginBottom="10dp"
-                android:textColor="#FFF"
                 android:textStyle="bold"
                 android:textSize="15sp" />
         </LinearLayout>

@@ -1,5 +1,6 @@
 package com.byteshaft.carecare.serviceprovidersaccount;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,7 +14,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.byteshaft.carecare.MainActivity;
 import com.byteshaft.carecare.R;
+import com.byteshaft.carecare.WelcomeActivity;
 import com.byteshaft.carecare.utils.AppGlobals;
 import com.byteshaft.carecare.utils.Helpers;
 import com.byteshaft.requests.HttpRequest;
@@ -120,11 +123,45 @@ public class Login extends Fragment implements View.OnClickListener, HttpRequest
     public void onReadyStateChange(HttpRequest request, int readyState) {
         switch (readyState) {
             case HttpRequest.STATE_DONE:
-                Log.wtf("login", request.getResponseText());
                 Helpers.dismissProgressDialog();
                 switch (request.getStatus()) {
                     case HttpURLConnection.HTTP_OK:
-                        Log.wtf("login", request.getResponseText());
+                        Log.i("ON OK Code confirm", request.getResponseText());
+                        try {
+                            JSONObject jsonObject = new JSONObject(request.getResponseText());
+                            String address = jsonObject.getString(AppGlobals.KEY_ADDRESS);
+                            String contactNumber = jsonObject.getString(AppGlobals.KEY_CONTACT_NUMBER);
+                            String contactPerson = jsonObject.getString(AppGlobals.KEY_CONTACT_PERSON);
+                            String email = jsonObject.getString(AppGlobals.KEY_EMAIL);
+                            String id = jsonObject.getString(AppGlobals.KEY_USER_ID);
+                            String organizationName = jsonObject.getString(AppGlobals.KEY_ORGANIZATION_NAME);
+//                            if (jsonObject.getString(AppGlobals.KEY_SERVER_IMAGE) != null) {
+//                                String profilePhoto = jsonObject.getString(AppGlobals.KEY_SERVER_IMAGE);
+//                                AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_SERVER_IMAGE, profilePhoto);
+//                            }
+
+                            String token = jsonObject.getString(AppGlobals.KEY_TOKEN);
+                            String userName = jsonObject.getString(AppGlobals.KEY_USER_NAME);
+                            String userType = jsonObject.getString(AppGlobals.KEY_USER_TYPE);
+
+                            AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_CONTACT_NUMBER, contactNumber);
+                            AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_CONTACT_PERSON, contactPerson);
+                            AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_ADDRESS, address);
+                            AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_EMAIL, email);
+                            AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_USER_ID, id);
+                            AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_ORGANIZATION_NAME, organizationName);
+
+                            AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_TOKEN, token);
+                            AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_USER_NAME, userName);
+                            AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_USER_TYPE, userType);
+
+                            startActivity(new Intent(getContext(), MainActivity.class));
+                            ServiceProviderAccount.getInstance().finish();
+                            WelcomeActivity.getInstance().finish();
+                            AppGlobals.loginState(true);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                         break;
                     case HttpURLConnection.HTTP_FORBIDDEN:
                         // TODO: 29/05/2018 User Not active

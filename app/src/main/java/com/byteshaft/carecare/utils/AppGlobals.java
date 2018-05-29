@@ -25,6 +25,9 @@ public class AppGlobals extends Application {
     public static final String BASE_URL = String.format("%s/api/", SERVER_IP);
     public static final String KEY_USER_NAME = "username";
     public static final String KEY_FULL_NAME = "full_name";
+    public static final String KEY_CONTACT_NUMBER = "contact_number";
+    public static final String KEY_CONTACT_PERSON = "contact_person";
+
     public static final String KEY_ORGANIZATION_NAME = "name";
     public static final String KEY_USER_TYPE = "user_type";
     public static final String KEY_FIRST_NAME = "first_name";
