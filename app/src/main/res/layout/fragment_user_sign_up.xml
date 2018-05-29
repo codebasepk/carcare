@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/background_image">
+    android:layout_height="match_parent">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -18,18 +17,15 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/user_image"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_gravity="center_horizontal"
                 android:src="@drawable/camera"
-                app:civ_border_color="#FFF"
                 app:civ_border_width="2dp" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColorHint="#FFF"
-                android:textColor="#FFF">
+                android:layout_height="wrap_content">
 
                 <EditText
                     android:id="@+id/user_name_edit_text"
@@ -39,15 +35,12 @@
                     android:hint="User Name"
                     android:inputType="textEmailAddress"
                     android:paddingLeft="10sp"
-                    android:backgroundTint="#FFF"
                     android:textSize="15sp" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColorHint="#FFF"
-                android:textColor="#FFF"
                 >
 
                 <EditText
@@ -67,8 +60,6 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColorHint="#FFF"
-                android:textColor="#FFF"
                 >
 
                 <EditText
@@ -87,8 +78,6 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColorHint="#FFF"
-                android:textColor="#FFF"
                 >
 
                 <EditText
@@ -96,7 +85,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:drawableRight="@mipmap/contact"
-                    android:enabled="false"
                     android:hint="Contact Number"
                     android:inputType="number"
                     android:paddingLeft="10sp"
@@ -108,8 +96,6 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColorHint="#FFF"
-                android:textColor="#FFF"
                 >
 
                 <EditText
@@ -118,7 +104,7 @@
                     android:layout_height="50dp"
                     android:drawableRight="@mipmap/password"
                     android:hint="Password"
-                    android:inputType="numberPassword"
+                    android:inputType="textPassword"
                     android:paddingLeft="10sp"
                     android:textColor="#000"
                     android:textColorHint="#000"
@@ -128,8 +114,6 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColorHint="#FFF"
-                android:textColor="#FFF"
                 >
 
                 <EditText
@@ -138,7 +122,7 @@
                     android:layout_height="50dp"
                     android:drawableRight="@mipmap/password"
                     android:hint="Confirm Password"
-                    android:inputType="numberPassword"
+                    android:inputType="textPassword"
                     android:paddingLeft="10sp"
                     android:textColor="#000"
                     android:textColorHint="#000"
@@ -147,10 +131,7 @@
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColorHint="#FFF"
-                android:textColor="#FFF"
-                >
+                android:layout_height="wrap_content">
 
                 <EditText
                     android:id="@+id/address_edit_text"
@@ -173,8 +154,8 @@
                 android:drawablePadding="5dp"
                 android:gravity="center"
                 android:text="Pick For Current Location"
-                android:textColor="#FFF"
-                android:textColorHint="#FFF" />
+                android:textColor="#000"
+                android:textColorHint="#000"/>
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/main_rel"
@@ -190,23 +171,21 @@
                     android:layout_weight="1"
                     android:padding="5dp">
 
-                    <TextView
-                        android:textColor="#FFF"
-                        android:id="@+id/select_sector"
+                    <android.support.design.widget.TextInputLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Please Select Vehicle Make"
-                        android:textSize="14sp" />
+                        android:layout_height="wrap_content">
 
-                    <Spinner
-                        android:id="@+id/vehicle_make_spinner"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:textColor="#FFF"
-                        android:backgroundTint="#FFF"
-                        style="@style/Widget.AppCompat.Spinner.Underlined"
-                         />
+                        <EditText
+                            android:id="@+id/vehicle_year_edit_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:hint="Vehicle Year"
+                            android:inputType="number"
+                            android:paddingLeft="10sp"
+                            android:textColor="#000"
+                            android:textColorHint="#000"
+                            android:textSize="15sp" />
+                    </android.support.design.widget.TextInputLayout>
 
                 </RelativeLayout>
 
@@ -217,22 +196,21 @@
                     android:layout_weight="1.0"
                     android:padding="5dp">
 
-                    <TextView
-                        android:id="@+id/vehicle_type"
+                    <android.support.design.widget.TextInputLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="#FFF"
-                        android:text="Please Select Vehicle Type"
-                        android:textSize="14sp" />
+                        android:layout_height="wrap_content">
 
-                    <Spinner
-                        android:id="@+id/vehicle_type_spinner"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:textColor="#FFF"
-                        android:backgroundTint="#FFF"
-                        style="@style/Widget.AppCompat.Spinner.Underlined" />
+                        <EditText
+                            android:id="@+id/vehicle_model_edit_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:hint="Vehicle Model"
+                            android:inputType="text"
+                            android:paddingLeft="10sp"
+                            android:textColor="#000"
+                            android:textColorHint="#000"
+                            android:textSize="15sp" />
+                    </android.support.design.widget.TextInputLayout>
                 </RelativeLayout>
             </LinearLayout>
 
@@ -245,17 +223,24 @@
                 android:weightSum="2.0">
 
                 <RelativeLayout
-                    android:id="@+id/vehicle_year_layout"
+                    android:id="@+id/vehicle_make_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:padding="5dp">
 
+                    <TextView
+                        android:id="@+id/vehicle_year_sector"
+                        android:text="Select Vehicle Year"
+                        android:textColor="#000"
+                        android:textSize="14sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
                     <Spinner
-                        android:id="@+id/vehicle_year_spinner"
+                        android:id="@+id/vehicle_make_spinner"
                         style="@style/Widget.AppCompat.Spinner.Underlined"
-                        android:textColor="#FFF"
-                        android:backgroundTint="#FFF"
+                        android:layout_marginTop="15dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
@@ -268,10 +253,16 @@
                     android:layout_weight="1.0"
                     android:padding="5dp">
 
+                    <TextView
+                        android:id="@+id/select_sector"
+                        android:text="Select Vehicle Type"
+                        android:textSize="14sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
                     <Spinner
-                        android:id="@+id/vehicle_mode_spinner"
-                        android:textColor="#FFF"
-                        android:backgroundTint="#FFF"
+                        android:id="@+id/vehicle_type_spinner"
+                        android:layout_marginTop="15dp"
                         style="@style/Widget.AppCompat.Spinner.Underlined"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
@@ -284,18 +275,17 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="14dp"
                 android:background="@drawable/button_background"
-                android:text="CREATE NEW ACCOUNT"
-                android:textColor="#FFF" />
+                android:text="CREATE NEW ACCOUNT" />
 
             <TextView
-                android:id="@+id/sign_up_text_view"
+                android:id="@+id/sign_in_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="20dp"
                 android:layout_marginTop="10dp"
                 android:text="Already have an account Login"
-                android:textColor="#FFF"
+                android:textColor="#000"
                 android:textStyle="bold"
                 android:textSize="16sp" />
         </LinearLayout>

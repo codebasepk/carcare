@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/background_image">
+    android:layout_height="match_parent">
 
     <ScrollView
+        android:layout_centerInParent="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -15,24 +14,9 @@
             android:layout_margin="10dp"
             android:orientation="vertical">
 
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/user_image"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/camera"
-                android:layout_marginTop="30dp"
-                app:civ_border_color="#FFF"
-                app:civ_border_width="2dp" />
-
-
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColorHint="#FFF"
-                android:textColor="#FFF"
-                >
+                android:layout_height="wrap_content">
 
                 <EditText
                     android:id="@+id/email_edit_text"
@@ -50,8 +34,6 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColorHint="#FFF"
-                android:textColor="#FFF"
                 >
 
                 <EditText
@@ -60,7 +42,7 @@
                     android:layout_height="50dp"
                     android:hint="Password"
                     android:drawableRight="@mipmap/password"
-                    android:inputType="numberPassword"
+                    android:inputType="textPassword"
                     android:paddingLeft="10sp"
                     android:textColor="#000"
                     android:textColorHint="#000"
@@ -84,7 +66,6 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp"
                 android:text="Forgot Password?"
-                android:textColor="#FFF"
                 android:textSize="15sp"
                 android:textStyle="italic" />
 
@@ -96,7 +77,6 @@
                 android:layout_gravity="center_horizontal"
                 android:text="Don't have an account SignUp"
                 android:layout_marginBottom="10dp"
-                android:textColor="#FFF"
                 android:textStyle="bold"
                 android:textSize="15sp" />
         </LinearLayout>

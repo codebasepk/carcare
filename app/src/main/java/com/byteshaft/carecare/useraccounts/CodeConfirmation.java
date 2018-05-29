@@ -2,7 +2,7 @@ package com.byteshaft.carecare.useraccounts;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.HalfFloat;
+import android.provider.SyncStateContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,15 +10,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.byteshaft.carecare.MainActivity;
 import com.byteshaft.carecare.R;
-import com.byteshaft.carecare.WelcomeActivity;
-import com.byteshaft.carecare.userFragments.UserHomeFragment;
+import com.byteshaft.carecare.serviceprovidersaccount.Login;
 import com.byteshaft.carecare.utils.AppGlobals;
 import com.byteshaft.carecare.utils.Helpers;
 import com.byteshaft.requests.HttpRequest;
@@ -28,41 +28,36 @@ import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 
-public class UserLogin extends Fragment implements HttpRequest.OnReadyStateChangeListener,
+public class CodeConfirmation extends Fragment implements HttpRequest.OnReadyStateChangeListener,
         HttpRequest.OnErrorListener, View.OnClickListener {
 
     private View mBaseView;
+    private Button mActivateButton;
+    private EditText mConfirmationCodeEditText;
+    private EditText mEmailEditText;
+    private TextView mResendVerificationTextView;
 
-    private EditText mEmail;
-    private EditText mPassword;
-    private Button mLoginButton;
-    private TextView mForgotPasswordTextView;
-    private TextView mSignUpTextView;
-    private String mPasswordString;
     private String mEmailString;
-    private HttpRequest request;
+    private String mVerificationCodeString;
 
+    private HttpRequest request;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mBaseView = inflater.inflate(R.layout.fragment_user_login, container, false);
-        mEmail = mBaseView.findViewById(R.id.email_edit_text);
-        mPassword = mBaseView.findViewById(R.id.password_edit_text);
-        mLoginButton = mBaseView.findViewById(R.id.button_sign_in);
-        mForgotPasswordTextView = mBaseView.findViewById(R.id.forgot_password_text_view);
-        mSignUpTextView = mBaseView.findViewById(R.id.sign_up_text_view);
+        mBaseView = inflater.inflate(R.layout.fragment_user_code_confirmation, container, false);
+        getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        mEmailEditText = mBaseView.findViewById(R.id.email_edit_text);
+        mConfirmationCodeEditText = mBaseView.findViewById(R.id.otp_edit_text);
+        mActivateButton = mBaseView.findViewById(R.id.button_activate);
+        mResendVerificationTextView = mBaseView.findViewById(R.id.resend_verification_text_view);
 
-        mLoginButton.setOnClickListener(this);
-        ;
-        mForgotPasswordTextView.setOnClickListener(this);
+        mEmailEditText.setText(AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_EMAIL));
+        mEmailString = AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_EMAIL);
 
-        mEmail.setTypeface(AppGlobals.typefaceNormal);
-        mPassword.setTypeface(AppGlobals.typefaceNormal);
-        mLoginButton.setTypeface(AppGlobals.typefaceNormal);
-        mForgotPasswordTextView.setTypeface(AppGlobals.typefaceNormal);
-
-
+        mActivateButton.setOnClickListener(this);
+        mResendVerificationTextView.setOnClickListener(this);
         return mBaseView;
     }
 
@@ -77,20 +72,8 @@ public class UserLogin extends Fragment implements HttpRequest.OnReadyStateChang
             case HttpRequest.STATE_DONE:
                 Helpers.dismissProgressDialog();
                 switch (request.getStatus()) {
-                    case HttpRequest.ERROR_NETWORK_UNREACHABLE:
-                        AppGlobals.alertDialog(getActivity(), "Login Failed!", "please check your internet connection");
-                        break;
-                    case HttpURLConnection.HTTP_NOT_FOUND:
-                        AppGlobals.alertDialog(getActivity(), "Login Failed!", "provide a valid EmailAddress");
-                        break;
-                    case HttpURLConnection.HTTP_UNAUTHORIZED:
-                        AppGlobals.alertDialog(getActivity(), "Login Failed!", "Please enter correct password");
-                        break;
-                    case HttpURLConnection.HTTP_FORBIDDEN:
-//                        System.out.println("LOgin" +AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_USER_NAME));
-//                        Toast.makeText(getActivity(), "Please activate your account !", Toast.LENGTH_LONG).show();
-//                        Intent intent = new Intent(getApplicationContext(), CodeConfirmationActivity.class);
-//                        startActivity(intent);
+                    case HttpURLConnection.HTTP_BAD_REQUEST:
+                        Toast.makeText(getActivity(), "Please enter correct account activation key", Toast.LENGTH_LONG).show();
                         break;
                     case HttpURLConnection.HTTP_OK:
                         System.out.println(request.getResponseText() + "working ");
@@ -140,78 +123,104 @@ public class UserLogin extends Fragment implements HttpRequest.OnReadyStateChang
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_SERVER_IMAGE, profilePhoto);
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_ADDRESS, address);
                             AppGlobals.loginState(true);
-                            UserAccount.getInstance().loadFragment(new UserHomeFragment());
+                            UserAccount.getInstance().loadFragment(new UserLogin());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                 }
         }
-
     }
 
     @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.button_sign_in:
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.button_activate:
                 if (validate()) {
-                    loginUser(mEmailString, mPasswordString);
+                    activateUser(mEmailString, mVerificationCodeString);
                 }
                 break;
-            case R.id.sign_up_text_view:
-                UserAccount.getInstance().loadFragment(new UserSignUp());
+            case R.id.resend_verification_text_view:
+                resendOtp(mEmailString);
                 break;
-            case R.id.forgot_password_text_view:
-                UserAccount.getInstance().loadFragment(new ForgetPassword());
-                break;
-
         }
     }
 
     public boolean validate() {
         boolean valid = true;
-        mEmailString = mEmail.getText().toString();
-        mPasswordString = mPassword.getText().toString();
-        if (mEmailString.trim().isEmpty()) {
-            mEmail.setError("enter a valid email or username");
-            valid = false;
-        } else {
-            mEmail.setError(null);
-        }
+        mEmailString = mEmailEditText.getText().toString();
+        mVerificationCodeString = mConfirmationCodeEditText.getText().toString();
 
-        if (mPasswordString.isEmpty() || mPassword.length() < 4) {
-            mPassword.setError("Enter minimum 4 alphanumeric characters");
+        System.out.println(mEmailString);
+        System.out.println(mVerificationCodeString);
+
+        if (mEmailString.trim().isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(mEmailString).matches()) {
+            mEmailEditText.setError(getString(R.string.provide_email));
             valid = false;
         } else {
-            mPassword.setError(null);
+            mEmailEditText.setError(null);
+        }
+        if (mVerificationCodeString.trim().isEmpty() || mVerificationCodeString.length() < 6) {
+            mConfirmationCodeEditText.setError(getString(R.string.verification_code_length));
+            valid = false;
+        } else {
+            mConfirmationCodeEditText.setError(null);
         }
         return valid;
     }
 
-    private void loginUser(String email, String password) {
+    private void activateUser(String email, String emailOtp) {
         request = new HttpRequest(getActivity());
         request.setOnReadyStateChangeListener(this);
         request.setOnErrorListener(this);
-        request.open("POST", String.format("%slogin", AppGlobals.BASE_URL));
-        request.send(getUserLoginData(email, password));
-        Helpers.showProgressDialog(getActivity(), "Logging In");
+        request.open("POST", String.format("%sactivate", AppGlobals.BASE_URL));
+        request.send(getUserActivationData(email, emailOtp));
+        Helpers.showProgressDialog(getActivity(), "Activating User");
     }
 
 
-    private String getUserLoginData(String email, String password) {
+    private String getUserActivationData(String email, String emailOtp) {
         JSONObject jsonObject = new JSONObject();
         try {
-            if (android.util.Patterns.EMAIL_ADDRESS.matcher(
-                    mEmailString).matches()) {
-                jsonObject.put("email", email);
-            } else {
-                jsonObject.put("username", email);
-            }
-            jsonObject.put("password", password);
+            jsonObject.put("email", email);
+            jsonObject.put("email_otp", emailOtp);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return jsonObject.toString();
-
     }
 
+    private void resendOtp(String email) {
+        request = new HttpRequest(getActivity());
+        request.setOnReadyStateChangeListener((request, readyState) -> {
+            switch (readyState) {
+                case HttpRequest.STATE_DONE:
+                    Helpers.dismissProgressDialog();
+                    switch (request.getStatus()) {
+                        case HttpURLConnection.HTTP_BAD_REQUEST:
+                            break;
+                        case HttpURLConnection.HTTP_OK:
+                    }
+            }
+
+        });
+        request.setOnErrorListener(new HttpRequest.OnErrorListener() {
+            @Override
+            public void onError(HttpRequest request, int readyState, short error, Exception exception) {
+
+            }
+        });
+        request.open("POST", String.format("%srequest-activation-key", AppGlobals.BASE_URL));
+        request.send(getOtpData(email));
+        Helpers.showProgressDialog(getActivity(), "Resending OTP");
+    }
+
+    private String getOtpData(String email) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("email", email);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonObject.toString();
+    }
 }
