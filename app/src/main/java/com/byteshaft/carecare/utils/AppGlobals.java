@@ -36,6 +36,9 @@ public class AppGlobals extends Application {
     public static final String KEY_VEHICLE_MAKE_ID = "make_id";
     public static final String KEY_VEHICLE_MAKE_SERVER_ID = "id";
     public static final String KEY_VEHICLE_YEAR = "vehicle_year";
+
+    public static final String KEY_ORGANIZATION_NAME = "name";
+    public static final String KEY_USER_TYPE = "user_type";
     public static final String KEY_ADDRESS = "address";
     public static final String KEY_LOCATION = "address_coordinates";
     public static final String KEY_SERVER_IMAGE = "profile_photo";

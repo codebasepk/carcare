@@ -26,8 +26,6 @@
                     android:hint="Email/UserName"
                     android:inputType="textEmailAddress"
                     android:paddingLeft="10sp"
-                    android:textColor="#000"
-                    android:textColorHint="#000"
                     android:textSize="15sp" />
             </android.support.design.widget.TextInputLayout>
 
