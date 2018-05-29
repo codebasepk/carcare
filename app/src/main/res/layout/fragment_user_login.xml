@@ -60,7 +60,7 @@
                     android:layout_height="50dp"
                     android:hint="Password"
                     android:drawableRight="@mipmap/password"
-                    android:inputType="numberPassword"
+                    android:inputType="textPassword"
                     android:paddingLeft="10sp"
                     android:textColor="#000"
                     android:textColorHint="#000"
