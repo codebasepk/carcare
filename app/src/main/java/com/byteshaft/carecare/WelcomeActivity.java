@@ -7,14 +7,25 @@ import android.view.View;
 import android.widget.Button;
 
 import com.byteshaft.carecare.serviceprovidersaccount.ServiceProviderAccount;
+import com.byteshaft.carecare.utils.AppGlobals;
 
 public class WelcomeActivity extends AppCompatActivity {
+
+    private static WelcomeActivity sInstance;
+
+    public static WelcomeActivity getInstance() {
+        return sInstance;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (AppGlobals.isLogin()) {
+            startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
+            finish();
+        }
         setContentView(R.layout.activity_welcome);
-
+        sInstance = this;
         Button customerButton = findViewById(R.id.button_customer);
         Button providerButton = findViewById(R.id.button_service_provider);
 

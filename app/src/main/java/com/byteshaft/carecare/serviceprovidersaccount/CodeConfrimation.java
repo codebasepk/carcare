@@ -1,5 +1,6 @@
 package com.byteshaft.carecare.serviceprovidersaccount;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,6 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.byteshaft.carecare.MainActivity;
 import com.byteshaft.carecare.R;
 import com.byteshaft.carecare.utils.AppGlobals;
 import com.byteshaft.carecare.utils.Helpers;
@@ -166,17 +168,28 @@ public class CodeConfrimation extends Fragment implements View.OnClickListener {
                                 try {
                                     JSONObject jsonObject = new JSONObject(request.getResponseText());
                                     String address = jsonObject.getString(AppGlobals.KEY_ADDRESS);
-                                    String contactNumber = jsonObject.getString("contact_number");
-                                    String contactPerson = jsonObject.getString("contact_person");
+                                    String contactNumber = jsonObject.getString(AppGlobals.KEY_CONTACT_NUMBER);
+                                    String contactPerson = jsonObject.getString(AppGlobals.KEY_CONTACT_PERSON);
+
                                     String email = jsonObject.getString(AppGlobals.KEY_EMAIL);
-                                    int Id = jsonObject.getInt(AppGlobals.KEY_USER_ID);
+                                    String id = jsonObject.getString(AppGlobals.KEY_USER_ID);
                                     String organizationName = jsonObject.getString(AppGlobals.KEY_ORGANIZATION_NAME);
                                     String profilePhoto = jsonObject.getString(AppGlobals.KEY_SERVER_IMAGE);
                                     String token = jsonObject.getString(AppGlobals.KEY_TOKEN);
                                     String userName = jsonObject.getString(AppGlobals.KEY_USER_NAME);
-                                    int userType = jsonObject.getInt(AppGlobals.KEY_USER_TYPE);
+                                    String userType = jsonObject.getString(AppGlobals.KEY_USER_TYPE);
 
-
+                                    AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_CONTACT_NUMBER, contactNumber);
+                                    AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_CONTACT_PERSON, contactPerson);
+                                    AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_ADDRESS, address);
+                                    AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_EMAIL, email);
+                                    AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_USER_ID, id);
+                                    AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_ORGANIZATION_NAME, organizationName);
+                                    AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_SERVER_IMAGE, profilePhoto);
+                                    AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_TOKEN, token);
+                                    AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_USER_NAME, userName);
+                                    AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_USER_TYPE, userType);
+                                    startActivity(new Intent(getContext(), MainActivity.class));
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
