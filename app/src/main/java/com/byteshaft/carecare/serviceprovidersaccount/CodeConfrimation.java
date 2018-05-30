@@ -15,8 +15,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.byteshaft.carecare.MainActivity;
 import com.byteshaft.carecare.R;
+import com.byteshaft.carecare.ServiceProviderActivity;
 import com.byteshaft.carecare.WelcomeActivity;
 import com.byteshaft.carecare.utils.AppGlobals;
 import com.byteshaft.carecare.utils.Helpers;
@@ -188,7 +188,7 @@ public class CodeConfrimation extends Fragment implements View.OnClickListener {
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_TOKEN, token);
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_USER_NAME, userName);
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_USER_TYPE, userType);
-                                    startActivity(new Intent(getContext(), MainActivity.class));
+                                    startActivity(new Intent(getContext(), ServiceProviderActivity.class));
                                     ServiceProviderAccount.getInstance().finish();
                                     WelcomeActivity.getInstance().finish();
                                     AppGlobals.loginState(true);

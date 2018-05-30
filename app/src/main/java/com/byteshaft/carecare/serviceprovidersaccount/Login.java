@@ -14,8 +14,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.byteshaft.carecare.MainActivity;
 import com.byteshaft.carecare.R;
+import com.byteshaft.carecare.ServiceProviderActivity;
 import com.byteshaft.carecare.WelcomeActivity;
 import com.byteshaft.carecare.utils.AppGlobals;
 import com.byteshaft.carecare.utils.Helpers;
@@ -79,8 +79,8 @@ public class Login extends Fragment implements View.OnClickListener, HttpRequest
         boolean valid = true;
         mEmailString = mEmailEditText.getText().toString();
         mPasswordString = mPasswordEditText.getText().toString();
-        if (mEmailString.trim().isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(mEmailString).matches()) {
-            mEmailEditText.setError("Please provide a valid email");
+        if (mEmailString.trim().isEmpty()) {
+            mEmailEditText.setError("Please provide a valid email or username");
             valid = false;
         } else {
             mEmailEditText.setError(null);
@@ -109,7 +109,12 @@ public class Login extends Fragment implements View.OnClickListener, HttpRequest
     private String getUserLoginData(String email, String password) {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("email", email);
+            if (android.util.Patterns.EMAIL_ADDRESS.matcher(
+                    mEmailString).matches()) {
+                jsonObject.put("email", email);
+            } else {
+                jsonObject.put("username", email);
+            }
             jsonObject.put("password", password);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -153,8 +158,9 @@ public class Login extends Fragment implements View.OnClickListener, HttpRequest
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_TOKEN, token);
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_USER_NAME, userName);
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_USER_TYPE, userType);
+                            Log.wtf("my user type is", userType);
 
-                            startActivity(new Intent(getActivity(), MainActivity.class));
+                            startActivity(new Intent(getActivity(), ServiceProviderActivity.class));
                             ServiceProviderAccount.getInstance().finish();
                             WelcomeActivity.getInstance().finish();
                             AppGlobals.loginState(true);
