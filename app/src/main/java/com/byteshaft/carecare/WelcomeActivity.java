@@ -11,7 +11,6 @@ import com.byteshaft.carecare.useraccounts.UserAccount;
 import com.byteshaft.carecare.utils.AppGlobals;
 
 public class WelcomeActivity extends AppCompatActivity {
-
     private static WelcomeActivity sInstance;
 
     public static WelcomeActivity getInstance() {
