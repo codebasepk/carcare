@@ -1,23 +1,17 @@
 package com.byteshaft.carecare.useraccounts;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.HalfFloat;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.byteshaft.carecare.MainActivity;
 import com.byteshaft.carecare.R;
-import com.byteshaft.carecare.WelcomeActivity;
 import com.byteshaft.carecare.userFragments.UserHomeFragment;
 import com.byteshaft.carecare.utils.AppGlobals;
 import com.byteshaft.carecare.utils.Helpers;
@@ -101,6 +95,7 @@ public class UserLogin extends Fragment implements HttpRequest.OnReadyStateChang
                             String email = jsonObject.getString(AppGlobals.KEY_EMAIL);
                             String fullName = jsonObject.getString(AppGlobals.KEY_FULL_NAME);
                             String userName = jsonObject.getString(AppGlobals.KEY_USER_NAME);
+                            String userType = jsonObject.getString(AppGlobals.KEY_USER_TYPE);
 
                             String contactNumber = jsonObject.getString(AppGlobals.KEY_CONTACT_NUMBER);
                             String vehicleModel = jsonObject.getString(AppGlobals.KEY_VEHICLE_MODEL);
@@ -126,6 +121,7 @@ public class UserLogin extends Fragment implements HttpRequest.OnReadyStateChang
 
 
                             //saving values
+                            AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_USER_TYPE, userType);
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_EMAIL, email);
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_USER_ID, userId);
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_TOKEN, token);
