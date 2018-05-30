@@ -45,7 +45,6 @@ public class Login extends Fragment implements View.OnClickListener, HttpRequest
         mBaseView = inflater.inflate(R.layout.fragment_user_login, container, false);
         ((AppCompatActivity) getActivity()).getSupportActionBar()
                 .setTitle("Login");
-
         mEmailEditText = mBaseView.findViewById(R.id.email_edit_text);
         mPasswordEditText = mBaseView.findViewById(R.id.password_edit_text);
 
@@ -126,26 +125,26 @@ public class Login extends Fragment implements View.OnClickListener, HttpRequest
                 Helpers.dismissProgressDialog();
                 switch (request.getStatus()) {
                     case HttpURLConnection.HTTP_OK:
-                        Log.i("ON OK Code confirm", request.getResponseText());
+                        Log.wtf("ON OK Code confirm", request.getResponseText());
                         try {
                             JSONObject jsonObject = new JSONObject(request.getResponseText());
                             String address = jsonObject.getString(AppGlobals.KEY_ADDRESS);
                             String contactNumber = jsonObject.getString(AppGlobals.KEY_CONTACT_NUMBER);
-//                            String contactPerson = jsonObject.getString(AppGlobals.KEY_CONTACT_PERSON);
+                            String contactPerson = jsonObject.getString(AppGlobals.KEY_CONTACT_PERSON);
                             String email = jsonObject.getString(AppGlobals.KEY_EMAIL);
                             String id = jsonObject.getString(AppGlobals.KEY_USER_ID);
                             String organizationName = jsonObject.getString(AppGlobals.KEY_ORGANIZATION_NAME);
-//                            if (jsonObject.getString(AppGlobals.KEY_SERVER_IMAGE) != null) {
-//                                String profilePhoto = jsonObject.getString(AppGlobals.KEY_SERVER_IMAGE);
-//                                AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_SERVER_IMAGE, profilePhoto);
-//                            }
+                            if (jsonObject.getString(AppGlobals.KEY_SERVER_IMAGE) != null) {
+                                String profilePhoto = jsonObject.getString(AppGlobals.KEY_SERVER_IMAGE);
+                                AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_SERVER_IMAGE, profilePhoto);
+                            }
 
                             String token = jsonObject.getString(AppGlobals.KEY_TOKEN);
                             String userName = jsonObject.getString(AppGlobals.KEY_USER_NAME);
                             String userType = jsonObject.getString(AppGlobals.KEY_USER_TYPE);
 
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_CONTACT_NUMBER, contactNumber);
-//                            AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_CONTACT_PERSON, contactPerson);
+                            AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_CONTACT_PERSON, contactPerson);
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_ADDRESS, address);
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_EMAIL, email);
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_USER_ID, id);
@@ -155,7 +154,7 @@ public class Login extends Fragment implements View.OnClickListener, HttpRequest
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_USER_NAME, userName);
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_USER_TYPE, userType);
 
-                            startActivity(new Intent(getContext(), MainActivity.class));
+                            startActivity(new Intent(getActivity(), MainActivity.class));
                             ServiceProviderAccount.getInstance().finish();
                             WelcomeActivity.getInstance().finish();
                             AppGlobals.loginState(true);
