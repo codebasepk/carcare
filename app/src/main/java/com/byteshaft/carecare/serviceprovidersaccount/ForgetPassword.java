@@ -22,7 +22,8 @@ import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 
-public class ForgetPassword extends Fragment implements HttpRequest.OnReadyStateChangeListener, HttpRequest.OnErrorListener {
+public class ForgetPassword extends Fragment implements
+        HttpRequest.OnReadyStateChangeListener, HttpRequest.OnErrorListener {
 
     private View mBaseView;
     private EditText mEmail;
@@ -42,7 +43,7 @@ public class ForgetPassword extends Fragment implements HttpRequest.OnReadyState
             @Override
             public void onClick(View view) {
                 if (validate()) {
-
+                    recoverUserPassword(mEmailString);
                 }
             }
         });
@@ -100,8 +101,8 @@ public class ForgetPassword extends Fragment implements HttpRequest.OnReadyState
                         AppGlobals.alertDialog(getActivity(), "Recovery Failed!", "provide a valid EmailAddress");
                         break;
                     case HttpURLConnection.HTTP_OK:
-                        System.out.println(request.getResponseText() + "working ");
                         Toast.makeText(getActivity(), "Please check your Email for new password", Toast.LENGTH_LONG).show();
+                        AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_EMAIL, mEmailString);
                         ServiceProviderAccount.getInstance().loadFragment(new ChangePassword());
                 }
         }
