@@ -11,4 +11,14 @@
         android:layout_height="wrap_content">
     </ListView>
 
+    <Button
+        android:id="@+id/button_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/car_wash_list_view"
+        android:textAllCaps="true"
+        android:gravity="center_horizontal"
+        android:text="next"
+        android:textStyle="bold" />
+
 </LinearLayout>
