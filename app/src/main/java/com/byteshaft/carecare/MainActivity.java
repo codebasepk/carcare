@@ -16,6 +16,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.byteshaft.carecare.serviceprovidersaccount.SignUp;
+import com.byteshaft.carecare.userFragments.UserHomeFragment;
+import com.byteshaft.carecare.useraccounts.UserAccount;
 import com.byteshaft.carecare.useraccounts.UserSignUp;
 
 public class MainActivity extends AppCompatActivity
@@ -36,7 +38,6 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        loadFragment(new UserSignUp());
     }
 
     @Override
