@@ -15,8 +15,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.byteshaft.carecare.MainActivity;
 import com.byteshaft.carecare.R;
+import com.byteshaft.carecare.ServiceProviderActivity;
+import com.byteshaft.carecare.WelcomeActivity;
 import com.byteshaft.carecare.utils.AppGlobals;
 import com.byteshaft.carecare.utils.Helpers;
 import com.byteshaft.requests.HttpRequest;
@@ -43,8 +44,6 @@ public class CodeConfrimation extends Fragment implements View.OnClickListener {
         mBaseView = inflater.inflate(R.layout.fragment_user_code_confirmation, container, false);
         ((AppCompatActivity) getActivity()).getSupportActionBar()
                 .setTitle("Account Activation");
-
-
         mEmail = mBaseView.findViewById(R.id.email_edit_text);
         mVerificationCode = mBaseView.findViewById(R.id.otp_edit_text);
         mEmail.setText(AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_EMAIL));
@@ -169,7 +168,7 @@ public class CodeConfrimation extends Fragment implements View.OnClickListener {
                                     JSONObject jsonObject = new JSONObject(request.getResponseText());
                                     String address = jsonObject.getString(AppGlobals.KEY_ADDRESS);
                                     String contactNumber = jsonObject.getString(AppGlobals.KEY_CONTACT_NUMBER);
-//                                    String contactPerson = jsonObject.getString(AppGlobals.KEY_CONTACT_PERSON);
+                                    String contactPerson = jsonObject.getString(AppGlobals.KEY_CONTACT_PERSON);
 
                                     String email = jsonObject.getString(AppGlobals.KEY_EMAIL);
                                     String id = jsonObject.getString(AppGlobals.KEY_USER_ID);
@@ -180,7 +179,7 @@ public class CodeConfrimation extends Fragment implements View.OnClickListener {
                                     String userType = jsonObject.getString(AppGlobals.KEY_USER_TYPE);
 
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_CONTACT_NUMBER, contactNumber);
-//                                    AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_CONTACT_PERSON, contactPerson);
+                                    AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_CONTACT_PERSON, contactPerson);
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_ADDRESS, address);
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_EMAIL, email);
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_USER_ID, id);
@@ -189,7 +188,10 @@ public class CodeConfrimation extends Fragment implements View.OnClickListener {
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_TOKEN, token);
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_USER_NAME, userName);
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_USER_TYPE, userType);
-                                    startActivity(new Intent(getContext(), MainActivity.class));
+                                    startActivity(new Intent(getContext(), ServiceProviderActivity.class));
+                                    ServiceProviderAccount.getInstance().finish();
+                                    WelcomeActivity.getInstance().finish();
+                                    AppGlobals.loginState(true);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }

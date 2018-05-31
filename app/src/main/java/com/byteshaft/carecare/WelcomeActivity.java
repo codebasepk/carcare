@@ -11,7 +11,6 @@ import com.byteshaft.carecare.useraccounts.UserAccount;
 import com.byteshaft.carecare.utils.AppGlobals;
 
 public class WelcomeActivity extends AppCompatActivity {
-
     private static WelcomeActivity sInstance;
 
     public static WelcomeActivity getInstance() {
@@ -21,7 +20,10 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (AppGlobals.isLogin()) {
+        if (AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_USER_TYPE).equals("3") && AppGlobals.isLogin()) {
+            startActivity(new Intent(WelcomeActivity.this, ServiceProviderActivity.class));
+            finish();
+        } else if (AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_USER_TYPE).equals("2") && AppGlobals.isLogin()) {
             startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
             finish();
         }

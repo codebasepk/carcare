@@ -12,20 +12,27 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:layout_margin="16sp"
         android:orientation="vertical">
 
         <Button
             android:id="@+id/button_customer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="I am a Customer" />
-
+            android:background="@drawable/button_background"
+            android:padding="10dp"
+            android:text="I am a Customer"
+            android:textColor="@color/button_text_color" />
 
         <Button
             android:id="@+id/button_service_provider"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="I am a Service Provider" />
+            android:layout_marginTop="10dp"
+            android:background="@drawable/button_background"
+            android:padding="10dp"
+            android:text="I am a Service Provider"
+            android:textColor="@color/button_text_color" />
     </LinearLayout>
 
 </RelativeLayout>

@@ -21,7 +21,8 @@ import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 
-public class ResetPassword extends Fragment implements View.OnClickListener, HttpRequest.OnReadyStateChangeListener, HttpRequest.OnErrorListener {
+public class ResetPassword extends Fragment implements View.OnClickListener,
+        HttpRequest.OnReadyStateChangeListener, HttpRequest.OnErrorListener {
 
     private View mBaseView;
     private EditText mEmail;
@@ -115,25 +116,25 @@ public class ResetPassword extends Fragment implements View.OnClickListener, Htt
 
     @Override
     public void onReadyStateChange(HttpRequest request, int readyState) {
-            switch (readyState) {
-                case HttpRequest.STATE_DONE:
-                    Helpers.dismissProgressDialog();
-                    switch (request.getStatus()) {
-                        case HttpRequest.ERROR_NETWORK_UNREACHABLE:
-                            AppGlobals.alertDialog(getActivity(), getString(R.string.resetting_failed),  getString(R.string.check_internet));
-                            break;
-                        case HttpURLConnection.HTTP_BAD_REQUEST:
-                            AppGlobals.alertDialog(getActivity(), getString(R.string.resetting_failed), getString(R.string.old_password));
-                            break;
-                        case HttpURLConnection.HTTP_NOT_FOUND:
-                            AppGlobals.alertDialog(getActivity(), getString(R.string.resetting_failed), getString(R.string.email_not_exist));
-                            break;
-                        case HttpURLConnection.HTTP_OK:
-                            System.out.println(request.getResponseText() + "working ");
-                            UserAccount.getInstance().loadFragment(new UserLogin());
-                            Toast.makeText(getActivity(), R.string.your_password_changed, Toast.LENGTH_SHORT).show();
-                    }
-            }
+        switch (readyState) {
+            case HttpRequest.STATE_DONE:
+                Helpers.dismissProgressDialog();
+                switch (request.getStatus()) {
+                    case HttpRequest.ERROR_NETWORK_UNREACHABLE:
+                        AppGlobals.alertDialog(getActivity(), getString(R.string.resetting_failed), getString(R.string.check_internet));
+                        break;
+                    case HttpURLConnection.HTTP_BAD_REQUEST:
+                        AppGlobals.alertDialog(getActivity(), getString(R.string.resetting_failed), getString(R.string.old_password));
+                        break;
+                    case HttpURLConnection.HTTP_NOT_FOUND:
+                        AppGlobals.alertDialog(getActivity(), getString(R.string.resetting_failed), getString(R.string.email_not_exist));
+                        break;
+                    case HttpURLConnection.HTTP_OK:
+                        System.out.println(request.getResponseText() + "working ");
+                        UserAccount.getInstance().loadFragment(new UserLogin());
+                        Toast.makeText(getActivity(), R.string.your_password_changed, Toast.LENGTH_SHORT).show();
+                }
+        }
 
     }
 

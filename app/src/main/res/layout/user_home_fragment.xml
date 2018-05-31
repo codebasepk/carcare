@@ -170,7 +170,7 @@
                 android:layout_marginTop="15dp"
                 android:layout_centerInParent="true"
                 android:background="@drawable/round_button_background"
-                android:src="@mipmap/car_parts" />
+                android:src="@mipmap/car_towing" />
 
             <TextView
                 android:layout_width="wrap_content"
