@@ -1,7 +1,7 @@
 package com.byteshaft.carecare;
 
+import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -10,7 +10,7 @@ import com.byteshaft.carecare.serviceprovidersaccount.ServiceProviderAccount;
 import com.byteshaft.carecare.useraccounts.UserAccount;
 import com.byteshaft.carecare.utils.AppGlobals;
 
-public class WelcomeActivity extends AppCompatActivity {
+public class WelcomeActivity extends Activity {
     private static WelcomeActivity sInstance;
 
     public static WelcomeActivity getInstance() {

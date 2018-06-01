@@ -2,24 +2,21 @@ package com.byteshaft.carecare.useraccounts;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.SyncStateContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.byteshaft.carecare.MainActivity;
 import com.byteshaft.carecare.R;
 import com.byteshaft.carecare.WelcomeActivity;
-import com.byteshaft.carecare.serviceprovidersaccount.Login;
 import com.byteshaft.carecare.utils.AppGlobals;
 import com.byteshaft.carecare.utils.Helpers;
 import com.byteshaft.requests.HttpRequest;
@@ -123,7 +120,7 @@ public class CodeConfirmation extends Fragment implements HttpRequest.OnReadySta
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_LOCATION, location);
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_SERVER_IMAGE, profilePhoto);
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_ADDRESS, address);
-                            startActivity(new Intent(getActivity(), UserAccount.class));
+                            startActivity(new Intent(getActivity(), MainActivity.class));
                             UserAccount.getInstance().finish();
                             WelcomeActivity.getInstance().finish();
                             AppGlobals.loginState(true);
