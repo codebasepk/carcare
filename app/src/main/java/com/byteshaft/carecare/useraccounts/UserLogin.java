@@ -1,5 +1,6 @@
 package com.byteshaft.carecare.useraccounts;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,6 +14,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.byteshaft.carecare.R;
+import com.byteshaft.carecare.ServiceProviderActivity;
+import com.byteshaft.carecare.WelcomeActivity;
+import com.byteshaft.carecare.serviceprovidersaccount.ServiceProviderAccount;
 import com.byteshaft.carecare.userFragments.UserHomeFragment;
 import com.byteshaft.carecare.utils.AppGlobals;
 import com.byteshaft.carecare.utils.Helpers;
@@ -56,8 +60,6 @@ public class UserLogin extends Fragment implements HttpRequest.OnReadyStateChang
         mPassword.setTypeface(AppGlobals.typefaceNormal);
         mLoginButton.setTypeface(AppGlobals.typefaceNormal);
         mForgotPasswordTextView.setTypeface(AppGlobals.typefaceNormal);
-
-
         return mBaseView;
     }
 
@@ -136,8 +138,10 @@ public class UserLogin extends Fragment implements HttpRequest.OnReadyStateChang
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_LOCATION, location);
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_SERVER_IMAGE, profilePhoto);
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_ADDRESS, address);
+                            startActivity(new Intent(getActivity(), UserAccount.class));
+                            UserAccount.getInstance().finish();
+                            WelcomeActivity.getInstance().finish();
                             AppGlobals.loginState(true);
-                            UserAccount.getInstance().loadFragment(new UserHomeFragment());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

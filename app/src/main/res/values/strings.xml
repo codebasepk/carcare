@@ -38,7 +38,7 @@
     <string name="table_failed">Table details Failed!</string>
     <string name="password_changed">Your password successfully changed</string>
     <string name="check_password">Please enter correct password</string>
-    <string name="check_email">Email Already Exists</string>
+    <string name="check_email">Email or Username Already Exists</string>
     <string name="email_not_exist">Email does not exist on server</string>
     <string name="activate_your_account">Please activate your account !</string>
     <string name="provide_email">please provide a valid email</string>

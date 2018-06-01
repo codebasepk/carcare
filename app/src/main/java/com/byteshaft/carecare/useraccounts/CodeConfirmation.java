@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.byteshaft.carecare.R;
+import com.byteshaft.carecare.WelcomeActivity;
 import com.byteshaft.carecare.serviceprovidersaccount.Login;
 import com.byteshaft.carecare.utils.AppGlobals;
 import com.byteshaft.carecare.utils.Helpers;
@@ -122,8 +123,10 @@ public class CodeConfirmation extends Fragment implements HttpRequest.OnReadySta
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_LOCATION, location);
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_SERVER_IMAGE, profilePhoto);
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_ADDRESS, address);
+                            startActivity(new Intent(getActivity(), UserAccount.class));
+                            UserAccount.getInstance().finish();
+                            WelcomeActivity.getInstance().finish();
                             AppGlobals.loginState(true);
-                            UserAccount.getInstance().loadFragment(new UserLogin());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

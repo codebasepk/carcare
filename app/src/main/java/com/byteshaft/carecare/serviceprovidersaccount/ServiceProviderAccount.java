@@ -22,7 +22,6 @@ public class ServiceProviderAccount extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_service_provider_account);
         loadLogin(new Login());
-
         sInstance = this;
     }
 
