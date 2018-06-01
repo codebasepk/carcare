@@ -22,12 +22,7 @@ public class UserAccount extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_account);
-        if (AppGlobals.isLogin()) {
-            loadFragment(new UserHomeFragment());
-        } else {
-            loadFragment(new UserLogin());
-        }
-
+        loadLogin(new UserLogin());
         sInstance = this;
     }
 

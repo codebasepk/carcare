@@ -24,7 +24,7 @@ public class AutoMechanicCarWashAdapter extends ArrayAdapter<String> {
     public AutoMechanicCarWashAdapter(Activity activity, ArrayList<AutoMechanicCarWashItems> arrayList) {
         super(activity, R.layout.delegate_auto_mechanic);
         this.activity = activity;
-        this.activity = activity;
+        this.arrayList = arrayList;
     }
 
     @NonNull

@@ -10,7 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
+import com.byteshaft.carecare.MainActivity;
 import com.byteshaft.carecare.R;
+import com.byteshaft.carecare.useraccounts.UserAccount;
 
 import static android.content.Context.VIBRATOR_SERVICE;
 
@@ -48,10 +50,13 @@ public class UserHomeFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.auto_mechanic_image_button:
+                MainActivity.getInstance().loadFragment(new AutoMechanicFragment());
                 break;
             case R.id.car_wash_image_button:
+                MainActivity.getInstance().loadFragment(new CarWashFragment());
                 break;
             case R.id.car_parts_image_button:
+                MainActivity.getInstance().loadFragment(new BuyCarPartsFragment());
                 break;
             case R.id.buy_fuel_image_button:
                 break;
