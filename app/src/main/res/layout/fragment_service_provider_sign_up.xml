@@ -25,150 +25,117 @@
                 app:civ_border_color="#000"
                 app:civ_border_width="2dp" />
 
-
-            <android.support.design.widget.TextInputLayout
+            <EditText
+                android:id="@+id/organization_edit_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rounded_edittext"
+                android:drawableLeft="@mipmap/user"
+                android:drawablePadding="10dp"
+                android:hint="Organization"
+                android:inputType="textEmailAddress"
+                android:paddingLeft="10sp"
+                android:textColor="@color/button_text_color"
+                android:textSize="15sp" />
 
-                <EditText
-                    android:id="@+id/organization_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:drawableLeft="@mipmap/user"
-                    android:drawablePadding="10dp"
-                    android:hint="Organization"
-                    android:inputType="textEmailAddress"
-                    android:paddingLeft="10sp"
-                    android:textColor="@color/button_text_color"
-                    android:textSize="15sp" />
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
+            <EditText
+                android:id="@+id/username_edit_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rounded_edittext"
+                android:drawableLeft="@mipmap/user"
+                android:drawablePadding="10dp"
+                android:hint="Username"
+                android:inputType="textEmailAddress"
+                android:paddingLeft="10sp"
+                android:textColor="@color/button_text_color"
+                android:textSize="15sp" />
 
-                <EditText
-                    android:id="@+id/username_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:drawableLeft="@mipmap/user"
-                    android:drawablePadding="10dp"
-                    android:hint="Username"
-
-                    android:inputType="textEmailAddress"
-                    android:paddingLeft="10sp"
-                    android:textColor="@color/button_text_color"
-
-                    android:textSize="15sp" />
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
+            <EditText
+                android:id="@+id/email_edit_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_marginTop="10dp"
+                android:layout_height="50dp"
+                android:background="@drawable/rounded_edittext"
+                android:drawableLeft="@mipmap/email"
+                android:drawablePadding="10dp"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                android:paddingLeft="10sp"
+                android:textColor="@color/button_text_color"
+                android:textSize="15sp" />
 
-                <EditText
-                    android:id="@+id/email_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:drawableLeft="@mipmap/email"
-                    android:drawablePadding="10dp"
-                    android:hint="Email"
-
-                    android:inputType="textEmailAddress"
-                    android:paddingLeft="10sp"
-                    android:textColor="@color/button_text_color"
-
-                    android:textSize="15sp" />
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
+            <EditText
+                android:id="@+id/contact_number_edit_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rounded_edittext"
+                android:drawableLeft="@mipmap/contact"
+                android:drawablePadding="10dp"
+                android:hint="Contact Number"
+                android:inputType="phone"
+                android:paddingLeft="10sp"
+                android:textColor="@color/button_text_color"
+                android:textSize="15sp" />
 
-                <EditText
-                    android:id="@+id/contact_number_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:drawableLeft="@mipmap/contact"
-                    android:drawablePadding="10dp"
-                    android:hint="Contact Number"
-                    android:inputType="phone"
-                    android:paddingLeft="10sp"
-                    android:textColor="@color/button_text_color"
-                    android:textSize="15sp" />
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
+            <EditText
+                android:id="@+id/contact_person_edit_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rounded_edittext"
+                android:drawableLeft="@mipmap/user"
+                android:drawablePadding="10dp"
+                android:hint="Contact Person"
+                android:paddingLeft="10sp"
+                android:textColor="@color/button_text_color"
+                android:textSize="15sp" />
 
-                <EditText
-                    android:id="@+id/contact_person_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:drawableLeft="@mipmap/user"
-                    android:drawablePadding="10dp"
-                    android:hint="Contact Person"
-                    android:paddingLeft="10sp"
-                    android:textColor="@color/button_text_color"
-                    android:textSize="15sp" />
-            </android.support.design.widget.TextInputLayout>
-
-
-            <android.support.design.widget.TextInputLayout
+            <EditText
+                android:id="@+id/address_edit_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rounded_edittext"
+                android:drawableLeft="@mipmap/address"
+                android:drawablePadding="10dp"
+                android:hint="Address"
+                android:inputType="text"
+                android:paddingLeft="10sp"
+                android:textColor="@color/button_text_color"
+                android:textSize="15sp" />
 
-                <EditText
-                    android:id="@+id/address_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:drawableLeft="@mipmap/address"
-                    android:drawablePadding="10dp"
-                    android:hint="Address"
-                    android:inputType="text"
-                    android:paddingLeft="10sp"
-                    android:textColor="@color/button_text_color"
-
-                    android:textSize="15sp" />
-            </android.support.design.widget.TextInputLayout>
-
-
-            <android.support.design.widget.TextInputLayout
+            <EditText
+                android:id="@+id/password_edit_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:id="@+id/password_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:drawableLeft="@mipmap/password"
-                    android:drawablePadding="10dp"
-                    android:hint="Password"
-                    android:inputType="textPassword"
-                    android:paddingLeft="10sp"
-                    android:textColor="@color/button_text_color"
-                    android:textSize="15sp" />
-            </android.support.design.widget.TextInputLayout>
+                android:layout_height="50dp"
+                android:background="@drawable/rounded_edittext"
+                android:drawableLeft="@mipmap/password"
+                android:drawablePadding="10dp"
+                android:hint="Password"
+                android:layout_marginTop="10dp"
+                android:inputType="textPassword"
+                android:paddingLeft="10sp"
+                android:textColor="@color/button_text_color"
+                android:textSize="15sp" />
 
 
-            <android.support.design.widget.TextInputLayout
+            <EditText
+                android:id="@+id/verify_password_edit_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:id="@+id/verify_password_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:drawableLeft="@mipmap/password"
-                    android:drawablePadding="10dp"
-                    android:hint="Verify Password"
-                    android:inputType="textPassword"
-                    android:paddingLeft="10sp"
-                    android:textColor="@color/button_text_color"
-
-                    android:textSize="15sp" />
-            </android.support.design.widget.TextInputLayout>
+                android:layout_marginTop="10dp"
+                android:layout_height="50dp"
+                android:background="@drawable/rounded_edittext"
+                android:drawableLeft="@mipmap/password"
+                android:drawablePadding="10dp"
+                android:hint="Verify Password"
+                android:inputType="textPassword"
+                android:paddingLeft="10sp"
+                android:textColor="@color/button_text_color"
+                android:textSize="15sp" />
 
             <android.support.v7.widget.AppCompatButton
 
@@ -187,8 +154,8 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
+                android:textColor="@color/text_color"
                 android:text="Already have an account Login"
-
                 android:textSize="14sp" />
         </LinearLayout>
     </ScrollView>
