@@ -15,10 +15,7 @@ import android.widget.TextView;
 
 import com.byteshaft.carecare.MainActivity;
 import com.byteshaft.carecare.R;
-import com.byteshaft.carecare.ServiceProviderActivity;
 import com.byteshaft.carecare.WelcomeActivity;
-import com.byteshaft.carecare.serviceprovidersaccount.ServiceProviderAccount;
-import com.byteshaft.carecare.userFragments.UserHomeFragment;
 import com.byteshaft.carecare.utils.AppGlobals;
 import com.byteshaft.carecare.utils.Helpers;
 import com.byteshaft.requests.HttpRequest;

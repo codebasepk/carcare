@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background_color">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -23,13 +24,13 @@
                     android:id="@+id/email_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:drawableRight="@mipmap/email"
+                    android:drawableLeft="@mipmap/email"
+                    android:drawablePadding="10dp"
                     android:enabled="false"
                     android:hint="Email"
                     android:inputType="textEmailAddress"
                     android:paddingLeft="10sp"
-                    android:textColor="#000"
-                    android:textColorHint="#000"
+                    android:textColor="@color/button_text_color"
                     android:textSize="15sp" />
             </android.support.design.widget.TextInputLayout>
 
@@ -41,7 +42,8 @@
                     android:id="@+id/otp_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:drawableRight="@mipmap/password"
+                    android:drawableLeft="@mipmap/password"
+                    android:drawablePadding="10dp"
                     android:hint="Enter OTP"
                     android:inputType="number"
                     android:maxLength="6"
@@ -67,6 +69,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:text="Resend Verification Code ?"
+                android:textColor="@color/button_text_color"
                 android:textSize="16sp"
                 android:textStyle="italic" />
         </LinearLayout>
