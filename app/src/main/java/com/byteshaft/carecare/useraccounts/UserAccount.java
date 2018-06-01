@@ -8,9 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.byteshaft.carecare.R;
-import com.byteshaft.carecare.serviceprovidersaccount.Login;
-import com.byteshaft.carecare.serviceprovidersaccount.SignUp;
-import com.byteshaft.carecare.userFragments.UserHomeFragment;
 
 public class UserAccount extends AppCompatActivity {
 
@@ -24,7 +21,8 @@ public class UserAccount extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_account);
-        loadFragment(new UserHomeFragment());
+//        loadFragment(new UserHomeFragment());
+        loadFragment(new UserLogin());
 
         sInstance = this;
     }

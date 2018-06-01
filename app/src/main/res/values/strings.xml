@@ -56,4 +56,7 @@
     <string name="resting_password">Resting your password</string>
     <string name="resetting_failed">Resetting Failed!</string>
     <string name="title_activity_service_provider">ServiceProviderActivity</string>
+    <string name="yes">Yes</string>
+    <string name="confirmation">Confirmation</string>
+    <string name="logout_text">Do you really want to logout?</string>
 </resources>
