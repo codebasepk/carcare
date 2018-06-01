@@ -8,8 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.byteshaft.carecare.R;
-import com.byteshaft.carecare.serviceprovidersaccount.Login;
-import com.byteshaft.carecare.serviceprovidersaccount.SignUp;
 import com.byteshaft.carecare.userFragments.UserHomeFragment;
 import com.byteshaft.carecare.utils.AppGlobals;
 

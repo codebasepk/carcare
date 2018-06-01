@@ -1,5 +1,6 @@
 package com.byteshaft.carecare;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -7,6 +8,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -14,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.byteshaft.carecare.provider.Home;
 import com.byteshaft.carecare.utils.AppGlobals;
 import com.squareup.picasso.Picasso;
 
@@ -30,18 +33,20 @@ public class ServiceProviderActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_service_provider);
+        loadFragment(new Home());
         View headerView;
         setTitle(getResources().getString(R.string.app_name));
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer =  findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         NavigationView navigationView = findViewById(R.id.nav_view);
         headerView = navigationView.getHeaderView(0);
+        onNavigationItemSelected(navigationView.getMenu().getItem(0));
         navigationView.setNavigationItemSelectedListener(this);
         name = (headerView.findViewById(R.id.username_text_view));
         email = headerView.findViewById(R.id.user_email_text_view);
@@ -103,27 +108,35 @@ public class ServiceProviderActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    private void logOutDialog() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle(R.string.confirmation);
+        alertDialogBuilder.setMessage(R.string.logout_text)
+                .setCancelable(false).setPositiveButton(getString(R.string.yes),
+                (dialog, id) -> {
+                    AppGlobals.clearSettings();
+                    dialog.dismiss();
+                    startActivity(new Intent(ServiceProviderActivity.this, WelcomeActivity.class));
+                    finish();
+
+                });
+        alertDialogBuilder.setNegativeButton(getString(R.string.cancel), (dialogInterface, i) -> dialogInterface.dismiss());
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        if (id == R.id.nav_home_provider) {
+            loadFragment(new Home());
+        } else if (id == R.id.nav_logout) {
+            logOutDialog();
         }
-
-        DrawerLayout drawer =  findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
