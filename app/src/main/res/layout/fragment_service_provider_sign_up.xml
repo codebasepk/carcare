@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background_color">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -33,10 +34,12 @@
                     android:id="@+id/organization_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:drawableRight="@mipmap/user"
+                    android:drawableLeft="@mipmap/user"
+                    android:drawablePadding="10dp"
                     android:hint="Organization"
                     android:inputType="textEmailAddress"
                     android:paddingLeft="10sp"
+                    android:textColor="@color/button_text_color"
                     android:textSize="15sp" />
             </android.support.design.widget.TextInputLayout>
 
@@ -48,10 +51,13 @@
                     android:id="@+id/username_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:drawableRight="@mipmap/user"
+                    android:drawableLeft="@mipmap/user"
+                    android:drawablePadding="10dp"
                     android:hint="Username"
+
                     android:inputType="textEmailAddress"
                     android:paddingLeft="10sp"
+                    android:textColor="@color/button_text_color"
 
                     android:textSize="15sp" />
             </android.support.design.widget.TextInputLayout>
@@ -64,10 +70,13 @@
                     android:id="@+id/email_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:drawableRight="@mipmap/email"
+                    android:drawableLeft="@mipmap/email"
+                    android:drawablePadding="10dp"
                     android:hint="Email"
+
                     android:inputType="textEmailAddress"
                     android:paddingLeft="10sp"
+                    android:textColor="@color/button_text_color"
 
                     android:textSize="15sp" />
             </android.support.design.widget.TextInputLayout>
@@ -80,11 +89,12 @@
                     android:id="@+id/contact_number_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:drawableRight="@mipmap/contact"
+                    android:drawableLeft="@mipmap/contact"
+                    android:drawablePadding="10dp"
                     android:hint="Contact Number"
                     android:inputType="phone"
                     android:paddingLeft="10sp"
-
+                    android:textColor="@color/button_text_color"
                     android:textSize="15sp" />
             </android.support.design.widget.TextInputLayout>
 
@@ -96,10 +106,11 @@
                     android:id="@+id/contact_person_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:drawableRight="@mipmap/user"
+                    android:drawableLeft="@mipmap/user"
+                    android:drawablePadding="10dp"
                     android:hint="Contact Person"
                     android:paddingLeft="10sp"
-
+                    android:textColor="@color/button_text_color"
                     android:textSize="15sp" />
             </android.support.design.widget.TextInputLayout>
 
@@ -112,10 +123,12 @@
                     android:id="@+id/address_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:drawableRight="@mipmap/address"
+                    android:drawableLeft="@mipmap/address"
+                    android:drawablePadding="10dp"
                     android:hint="Address"
                     android:inputType="text"
                     android:paddingLeft="10sp"
+                    android:textColor="@color/button_text_color"
 
                     android:textSize="15sp" />
             </android.support.design.widget.TextInputLayout>
@@ -129,11 +142,12 @@
                     android:id="@+id/password_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:drawableRight="@mipmap/password"
+                    android:drawableLeft="@mipmap/password"
+                    android:drawablePadding="10dp"
                     android:hint="Password"
                     android:inputType="textPassword"
                     android:paddingLeft="10sp"
-
+                    android:textColor="@color/button_text_color"
                     android:textSize="15sp" />
             </android.support.design.widget.TextInputLayout>
 
@@ -146,23 +160,25 @@
                     android:id="@+id/verify_password_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:drawableRight="@mipmap/password"
+                    android:drawableLeft="@mipmap/password"
+                    android:drawablePadding="10dp"
                     android:hint="Verify Password"
                     android:inputType="textPassword"
                     android:paddingLeft="10sp"
+                    android:textColor="@color/button_text_color"
 
                     android:textSize="15sp" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.v7.widget.AppCompatButton
 
-                android:textColor="@color/button_text_color"
                 android:id="@+id/register_button"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="14dp"
                 android:background="@drawable/button_background"
-                android:text="CREATE NEW ACCOUNT" />
+                android:text="CREATE NEW ACCOUNT"
+                android:textColor="@color/button_text_color" />
 
             <TextView
                 android:id="@+id/sign_up_text_view"

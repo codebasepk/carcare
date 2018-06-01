@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background_color">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -31,101 +32,98 @@
                     android:id="@+id/user_name_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:drawableRight="@mipmap/user"
+                    android:drawableLeft="@mipmap/user"
+                    android:drawablePadding="10dp"
                     android:hint="User Name"
                     android:inputType="textEmailAddress"
                     android:paddingLeft="10sp"
+                    android:textColor="@color/button_text_color"
                     android:textSize="15sp" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                >
+                android:layout_height="wrap_content">
 
                 <EditText
                     android:id="@+id/full_name_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:drawableRight="@mipmap/user"
+                    android:drawableLeft="@mipmap/user"
+                    android:drawablePadding="10dp"
                     android:hint="Full Name"
                     android:inputType="textEmailAddress"
                     android:paddingLeft="10sp"
-                    android:textColor="#000"
-                    android:textColorHint="#000"
+                    android:textColor="@color/button_text_color"
                     android:textSize="15sp" />
             </android.support.design.widget.TextInputLayout>
 
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                >
+                android:layout_height="wrap_content">
 
                 <EditText
                     android:id="@+id/email_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:drawableRight="@mipmap/email"
+                    android:drawableLeft="@mipmap/email"
+                    android:drawablePadding="10dp"
                     android:hint="Email"
                     android:inputType="textEmailAddress"
                     android:paddingLeft="10sp"
-                    android:textColor="#000"
-                    android:textColorHint="#000"
+                    android:textColor="@color/button_text_color"
                     android:textSize="15sp" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                >
+                android:layout_height="wrap_content">
 
                 <EditText
                     android:id="@+id/contact_number_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:drawableRight="@mipmap/contact"
+                    android:drawableLeft="@mipmap/contact"
+                    android:drawablePadding="10dp"
                     android:hint="Contact Number"
                     android:inputType="number"
                     android:paddingLeft="10sp"
-                    android:textColor="#000"
-                    android:textColorHint="#000"
+                    android:textColor="@color/button_text_color"
                     android:textSize="15sp" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                >
+                android:layout_height="wrap_content">
 
                 <EditText
                     android:id="@+id/password_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:drawableRight="@mipmap/password"
+                    android:drawableLeft="@mipmap/password"
+                    android:drawablePadding="10dp"
                     android:hint="Password"
                     android:inputType="textPassword"
                     android:paddingLeft="10sp"
-                    android:textColor="#000"
-                    android:textColorHint="#000"
+                    android:textColor="@color/button_text_color"
                     android:textSize="15sp" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                >
+                android:layout_height="wrap_content">
 
                 <EditText
                     android:id="@+id/confirm_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:drawableRight="@mipmap/password"
+                    android:drawableLeft="@mipmap/password"
+                    android:drawablePadding="10dp"
                     android:hint="Confirm Password"
                     android:inputType="textPassword"
                     android:paddingLeft="10sp"
-                    android:textColor="#000"
-                    android:textColorHint="#000"
+                    android:textColor="@color/button_text_color"
                     android:textSize="15sp" />
             </android.support.design.widget.TextInputLayout>
 
@@ -137,12 +135,12 @@
                     android:id="@+id/address_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:drawableRight="@mipmap/address"
+                    android:drawableLeft="@mipmap/address"
+                    android:drawablePadding="10dp"
                     android:hint="Address"
                     android:inputType="text"
                     android:paddingLeft="10sp"
-                    android:textColor="#000"
-                    android:textColorHint="#000"
+                    android:textColor="@color/button_text_color"
                     android:textSize="15sp" />
             </android.support.design.widget.TextInputLayout>
 
@@ -154,8 +152,7 @@
                 android:drawablePadding="5dp"
                 android:gravity="center"
                 android:text="Pick For Current Location"
-                android:textColor="#000"
-                android:textColorHint="#000"/>
+                android:textColor="@color/button_text_color" />
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/main_rel"
@@ -180,10 +177,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
                             android:hint="Vehicle Year"
+                            android:drawablePadding="10dp"
+                            android:drawableLeft="@mipmap/ic_cal"
                             android:inputType="number"
                             android:paddingLeft="10sp"
-                            android:textColor="#000"
-                            android:textColorHint="#000"
+                            android:textColor="@color/button_text_color"
                             android:textSize="15sp" />
                     </android.support.design.widget.TextInputLayout>
 
@@ -204,11 +202,12 @@
                             android:id="@+id/vehicle_model_edit_text"
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
+                            android:drawablePadding="10dp"
+                            android:drawableLeft="@mipmap/ic_cal"
                             android:hint="Vehicle Model"
                             android:inputType="text"
                             android:paddingLeft="10sp"
-                            android:textColor="#000"
-                            android:textColorHint="#000"
+                            android:textColor="@color/button_text_color"
                             android:textSize="15sp" />
                     </android.support.design.widget.TextInputLayout>
                 </RelativeLayout>
@@ -231,18 +230,18 @@
 
                     <TextView
                         android:id="@+id/vehicle_year_sector"
-                        android:text="Select Vehicle Year"
-                        android:textColor="#000"
-                        android:textSize="14sp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:text="Select Vehicle Year"
+                        android:textColor="@color/button_text_color"
+                        android:textSize="14sp" />
 
                     <Spinner
                         android:id="@+id/vehicle_make_spinner"
                         style="@style/Widget.AppCompat.Spinner.Underlined"
-                        android:layout_marginTop="15dp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp" />
 
                 </RelativeLayout>
 
@@ -255,17 +254,19 @@
 
                     <TextView
                         android:id="@+id/select_sector"
-                        android:text="Select Vehicle Type"
-                        android:textSize="14sp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+
+                        android:text="Select Vehicle Type"
+                        android:textColor="@color/button_text_color"
+                        android:textSize="14sp" />
 
                     <Spinner
                         android:id="@+id/vehicle_type_spinner"
-                        android:layout_marginTop="15dp"
                         style="@style/Widget.AppCompat.Spinner.Underlined"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp" />
                 </RelativeLayout>
             </LinearLayout>
 
@@ -275,7 +276,8 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="14dp"
                 android:background="@drawable/button_background"
-                android:text="CREATE NEW ACCOUNT" />
+                android:text="CREATE NEW ACCOUNT"
+                android:textColor="@color/button_text_color" />
 
             <TextView
                 android:id="@+id/sign_in_text_view"
@@ -285,9 +287,9 @@
                 android:layout_marginBottom="20dp"
                 android:layout_marginTop="10dp"
                 android:text="Already have an account Login"
-                android:textColor="#000"
-                android:textStyle="bold"
-                android:textSize="16sp" />
+                android:textColor="@color/button_text_color"
+                android:textSize="16sp"
+                android:textStyle="bold" />
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>
