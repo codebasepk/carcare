@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.byteshaft.carecare.MainActivity;
 import com.byteshaft.carecare.R;
 import com.byteshaft.carecare.ServiceProviderActivity;
 import com.byteshaft.carecare.WelcomeActivity;
@@ -138,7 +139,7 @@ public class UserLogin extends Fragment implements HttpRequest.OnReadyStateChang
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_LOCATION, location);
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_SERVER_IMAGE, profilePhoto);
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_ADDRESS, address);
-                            startActivity(new Intent(getActivity(), UserAccount.class));
+                            startActivity(new Intent(getActivity(), MainActivity.class));
                             UserAccount.getInstance().finish();
                             WelcomeActivity.getInstance().finish();
                             AppGlobals.loginState(true);
