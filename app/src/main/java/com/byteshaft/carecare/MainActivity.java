@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.byteshaft.carecare.provider.Home;
 import com.byteshaft.carecare.userFragments.UserHomeFragment;
+import com.byteshaft.carecare.useraccounts.UserAccount;
 import com.byteshaft.carecare.useraccounts.UserLogin;
 import com.byteshaft.carecare.utils.AppGlobals;
 import com.squareup.picasso.Picasso;
@@ -31,11 +32,17 @@ public class MainActivity extends AppCompatActivity
     private TextView email;
     private CircleImageView profileImage;
 
+    private static MainActivity sInstance;
+    public static MainActivity getInstance() {
+        return sInstance;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         loadFragment(new UserHomeFragment());
+        sInstance = this;
         View headerView;
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
