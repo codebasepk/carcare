@@ -32,7 +32,7 @@
             android:background="@drawable/button_background"
             android:padding="10dp"
             android:text="I am a Customer"
-            android:textColor="@color/button_text_color" />
+            android:textColor="@color/text_color" />
 
         <Button
             android:id="@+id/button_service_provider"
@@ -42,7 +42,7 @@
             android:background="@drawable/button_background"
             android:padding="10dp"
             android:text="I am a Service Provider"
-            android:textColor="@color/button_text_color" />
+            android:textColor="@color/text_color" />
     </LinearLayout>
 
 </RelativeLayout>
