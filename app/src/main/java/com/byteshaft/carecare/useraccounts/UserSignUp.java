@@ -1,6 +1,7 @@
 package com.byteshaft.carecare.useraccounts;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
@@ -17,6 +18,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -37,6 +39,7 @@ import android.widget.Toast;
 
 import com.byteshaft.carecare.Adapters.VehicleMakes;
 import com.byteshaft.carecare.Adapters.VehicleType;
+import com.byteshaft.carecare.MainActivity;
 import com.byteshaft.carecare.R;
 import com.byteshaft.carecare.gettersetter.VehicleMakeItems;
 import com.byteshaft.carecare.gettersetter.VehicleTypeItems;
@@ -46,9 +49,21 @@ import com.byteshaft.carecare.utils.RotateUtil;
 import com.byteshaft.requests.FormData;
 import com.byteshaft.requests.HttpRequest;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationAvailability;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -68,9 +83,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import static android.app.Activity.RESULT_OK;
 
 public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChangeListener,
-        HttpRequest.OnErrorListener, View.OnClickListener, AdapterView.OnItemSelectedListener,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        com.google.android.gms.location.LocationListener {
+        HttpRequest.OnErrorListener, View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     private View mBaseView;
 
@@ -122,17 +135,38 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
     private Uri selectedImageUri;
     private static String imageUrl = "";
     private Bitmap profilePic;
-    private String url;
 
-    private GoogleApiClient mGoogleApiClient;
-    private LocationRequest mLocationRequest;
+    private FusedLocationProviderClient client;
+
+    private LocationCallback locationCallback = new LocationCallback() {
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            super.onLocationResult(locationResult);
+            Log.i("TAG", "onLocationResult");
+            locationCounter++;
+            if (locationCounter > 1) {
+                stopLocationUpdate();
+                mLocationString = locationResult.getLastLocation().getLatitude()
+                        + "," + locationResult.getLastLocation().getLongitude();
+                System.out.println("Lat: " + locationResult.getLastLocation().getLatitude() + "Long: " + locationResult.getLastLocation().getLongitude());
+                getAddress(locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude());
+            }
+
+        }
+
+        @Override
+        public void onLocationAvailability(LocationAvailability locationAvailability) {
+            super.onLocationAvailability(locationAvailability);
+            Log.i("TAGG", "onLocationAvailability");
+        }
+    };
 
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBaseView = inflater.inflate(R.layout.fragment_user_sign_up, container, false);
-
+        client = LocationServices.getFusedLocationProviderClient(getActivity().getApplicationContext());
         mFullNameEditText = mBaseView.findViewById(R.id.full_name_edit_text);
         mUserNameEditText = mBaseView.findViewById(R.id.user_name_edit_text);
         mEmailAddressEditText = mBaseView.findViewById(R.id.email_edit_text);
@@ -185,8 +219,12 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
                             .setCancelable(false).setPositiveButton(R.string.button_continue, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             dialog.dismiss();
-                            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                                    LOCATION_PERMISSION);
+                            if (ContextCompat.checkSelfPermission(getActivity(),
+                                    Manifest.permission.ACCESS_COARSE_LOCATION)
+                                    != PackageManager.PERMISSION_GRANTED) {
+                                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                                        LOCATION_PERMISSION);
+                            }
                         }
                     });
                     alertDialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -201,7 +239,7 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
 
                 } else {
                     if (locationEnabled()) {
-                        new LocationTask().execute();
+                        startLocationUpdates();
                     } else {
                         Helpers.dialogForLocationEnableManually(getActivity());
                     }
@@ -283,31 +321,28 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
 
     private void getVehicleMake() {
         HttpRequest getStateRequest = new HttpRequest(getActivity());
-        getStateRequest.setOnReadyStateChangeListener(new HttpRequest.OnReadyStateChangeListener() {
-            @Override
-            public void onReadyStateChange(HttpRequest request, int readyState) {
-                switch (readyState) {
-                    case HttpRequest.STATE_DONE:
-                        switch (request.getStatus()) {
-                            case HttpURLConnection.HTTP_OK:
-                                try {
-                                    JSONArray jsonArray = new JSONArray(request.getResponseText());
-                                    for (int i = 0; i < jsonArray.length(); i++) {
-                                        System.out.println("Test " + jsonArray.getJSONObject(i));
-                                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                        VehicleMakeItems vehicleMakeItems = new VehicleMakeItems();
-                                        vehicleMakeItems.setVehicleMakeName(jsonObject.getString("name"));
-                                        vehicleMakeItems.setVehicleMakeId(jsonObject.getInt("id"));
-                                        vehicleMakeArrayList.add(vehicleMakeItems);
-                                    }
-                                    vehicleMakesAdapter = new VehicleMakes(getActivity(), vehicleMakeArrayList);
-                                    mVehicleMakeSpinner.setAdapter(vehicleMakesAdapter);
-                                    mVehicleMakeSpinner.setSelection(0);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
+        getStateRequest.setOnReadyStateChangeListener((request, readyState) -> {
+            switch (readyState) {
+                case HttpRequest.STATE_DONE:
+                    switch (request.getStatus()) {
+                        case HttpURLConnection.HTTP_OK:
+                            try {
+                                JSONArray jsonArray = new JSONArray(request.getResponseText());
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    System.out.println("Test " + jsonArray.getJSONObject(i));
+                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                    VehicleMakeItems vehicleMakeItems = new VehicleMakeItems();
+                                    vehicleMakeItems.setVehicleMakeName(jsonObject.getString("name"));
+                                    vehicleMakeItems.setVehicleMakeId(jsonObject.getInt("id"));
+                                    vehicleMakeArrayList.add(vehicleMakeItems);
                                 }
-                        }
-                }
+                                vehicleMakesAdapter = new VehicleMakes(getActivity(), vehicleMakeArrayList);
+                                mVehicleMakeSpinner.setAdapter(vehicleMakesAdapter);
+                                mVehicleMakeSpinner.setSelection(0);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                    }
             }
         });
         getStateRequest.open("GET", String.format("%svehicles/make", AppGlobals.BASE_URL));
@@ -316,31 +351,28 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
 
     private void getVehicleType() {
         HttpRequest getStateRequest = new HttpRequest(getActivity());
-        getStateRequest.setOnReadyStateChangeListener(new HttpRequest.OnReadyStateChangeListener() {
-            @Override
-            public void onReadyStateChange(HttpRequest request, int readyState) {
-                switch (readyState) {
-                    case HttpRequest.STATE_DONE:
-                        switch (request.getStatus()) {
-                            case HttpURLConnection.HTTP_OK:
-                                try {
-                                    JSONArray jsonArray = new JSONArray(request.getResponseText());
-                                    for (int i = 0; i < jsonArray.length(); i++) {
-                                        System.out.println("Test " + jsonArray.getJSONObject(i));
-                                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                        VehicleTypeItems vehicleItems = new VehicleTypeItems();
-                                        vehicleItems.setVehicleTypeId(jsonObject.getInt("id"));
-                                        vehicleItems.setVehicleTypeName(jsonObject.getString("name"));
-                                        vehicleTypeArrayList.add(vehicleItems);
-                                    }
-                                    vehicleTypeAdapter = new VehicleType(getActivity(), vehicleTypeArrayList);
-                                    mVehicleTypeSpinner.setAdapter(vehicleTypeAdapter);
-                                    mVehicleTypeSpinner.setSelection(0);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
+        getStateRequest.setOnReadyStateChangeListener((request, readyState) -> {
+            switch (readyState) {
+                case HttpRequest.STATE_DONE:
+                    switch (request.getStatus()) {
+                        case HttpURLConnection.HTTP_OK:
+                            try {
+                                JSONArray jsonArray = new JSONArray(request.getResponseText());
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    System.out.println("Test " + jsonArray.getJSONObject(i));
+                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                    VehicleTypeItems vehicleItems = new VehicleTypeItems();
+                                    vehicleItems.setVehicleTypeId(jsonObject.getInt("id"));
+                                    vehicleItems.setVehicleTypeName(jsonObject.getString("name"));
+                                    vehicleTypeArrayList.add(vehicleItems);
                                 }
-                        }
-                }
+                                vehicleTypeAdapter = new VehicleType(getActivity(), vehicleTypeArrayList);
+                                mVehicleTypeSpinner.setAdapter(vehicleTypeAdapter);
+                                mVehicleTypeSpinner.setSelection(0);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                    }
             }
         });
         getStateRequest.open("GET", String.format("%svehicles/type", AppGlobals.BASE_URL));
@@ -361,8 +393,10 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
 
 
     private FormData getRegisterData(String username, String name, String email, String contactNumber,
-                                     String address, String addressCoordinates, String vehiclMake, String vehicleModel,
-                                     String vehicleType, String vehicleYear, String password, String profilePhoto) {
+                                     String address, String addressCoordinates, String vehiclMake,
+                                     String vehicleModel,
+                                     String vehicleType, String vehicleYear, String password,
+                                     String profilePhoto) {
         FormData formData = new FormData();
         formData.append(FormData.TYPE_CONTENT_TEXT, "username", username);
         formData.append(FormData.TYPE_CONTENT_TEXT, "name", name);
@@ -551,7 +585,7 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if (locationEnabled()) {
-                        new LocationTask().execute();
+                        startLocationUpdates();
                     } else {
                         Helpers.dialogForLocationEnableManually(getActivity());
                     }
@@ -562,17 +596,11 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
                 break;
             case STORAGE_CAMERA_PERMISSION:
                 if (grantResults.length > 0) {
-                    // Check for both permissions
                     if (grantResults[0]
                             == PackageManager.PERMISSION_GRANTED) {
                         Log.i("TAG", "permission granted !");
                         selectImage();
-                        // process the normal flow
-                        //else any one or both the permissions are not granted
                     } else {
-                        //permission is denied (this is the first time, when "never ask again" is not checked) so ask again explaining the usage of permission
-//                        // shouldShowRequestPermissionRationale will return true
-                        //show the dialog or snackbar saying its necessary and try again otherwise proceed with setup.
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                             if (shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)) {
                                 showDialogOK(getString(R.string.camera_storage_permission),
@@ -582,17 +610,12 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
                                                     checkPermissions();
                                                     break;
                                                 case DialogInterface.BUTTON_NEGATIVE:
-                                                    // proceed with logic by disabling the related features or quit the app.
                                                     break;
                                             }
                                         });
-                            }
-                            //permission is denied (and never ask again is  checked)
-                            //shouldShowRequestPermissionRationale will return false
-                            else {
+                            } else {
                                 Toast.makeText(getActivity(), R.string.go_settings_permission, Toast.LENGTH_LONG)
                                         .show();
-                                //                            //proceed with logic by disabling the related features or quit the
                                 Helpers.showSnackBar(getView(), R.string.permission_denied);
                             }
                         }
@@ -677,91 +700,26 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
         } catch (IOException e) {
             Log.e("tag", e.getMessage());
         }
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mAddressEditText.setText(result.toString());
-            }
-        });
+        getActivity().runOnUiThread(() -> mAddressEditText.setText(result.toString()));
     }
 
-    class LocationTask extends AsyncTask<String, String, String> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            Helpers.showSnackBar(getView(), R.string.acquiring_location);
-        }
-
-        @Override
-        protected String doInBackground(String... strings) {
-            buildGoogleApiClient();
-            return null;
-        }
-    }
-
-    public void buildGoogleApiClient() {
-        if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(AppGlobals.getContext())
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .addApi(LocationServices.API)
-                    .build();
-            mGoogleApiClient.connect();
-        }
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        locationCounter++;
-        if (locationCounter > 1) {
-            stopLocationUpdate();
-            mLocationString = location.getLatitude() + "," + location.getLongitude();
-            System.out.println("Lat: " + location.getLatitude() + "Long: " + location.getLongitude());
-            getAddress(location.getLatitude(), location.getLongitude());
-        }
-
-    }
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        startLocationUpdates();
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
 
     public void startLocationUpdates() {
+        Helpers.showSnackBar(getView(), R.string.acquiring_location);
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        createLocationRequest();
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        Log.i("TAG", " create location request");
+        LocationRequest request = new LocationRequest();
+        request.setInterval(2000); // two minute interval
+        request.setFastestInterval(1000);
+        request.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        client.requestLocationUpdates(request, locationCallback, null);
     }
 
     private void stopLocationUpdate() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-        mGoogleApiClient.disconnect();
+        client.removeLocationUpdates(locationCallback);
     }
-
-
-    protected void createLocationRequest() {
-        long INTERVAL = 1000;
-        long FASTEST_INTERVAL = 1000;
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(INTERVAL);
-        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-    }
-
 }
