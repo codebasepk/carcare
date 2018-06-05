@@ -94,19 +94,6 @@
                 android:textColor="@color/button_text_color"
                 android:textSize="15sp" />
 
-            <EditText
-                android:id="@+id/address_edit_text"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/rounded_edittext"
-                android:drawableLeft="@mipmap/address"
-                android:drawablePadding="10dp"
-                android:hint="Address"
-                android:inputType="text"
-                android:paddingLeft="10sp"
-                android:textColor="@color/button_text_color"
-                android:textSize="15sp" />
 
             <EditText
                 android:id="@+id/password_edit_text"
@@ -136,6 +123,20 @@
                 android:paddingLeft="10sp"
                 android:textColor="@color/button_text_color"
                 android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/address_edit_text"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:clickable="true"
+                android:text="Pick Location"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rounded_edittext"
+                android:drawablePadding="10dp"
+                android:textColor="@color/button_text_color"
+                android:textSize="15sp" />
+
 
             <android.support.v7.widget.AppCompatButton
 
