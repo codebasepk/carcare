@@ -33,6 +33,10 @@ import com.byteshaft.carecare.utils.Helpers;
 import com.byteshaft.carecare.utils.RotateUtil;
 import com.byteshaft.requests.FormData;
 import com.byteshaft.requests.HttpRequest;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -47,8 +51,10 @@ import static android.app.Activity.RESULT_OK;
 public class SignUp extends Fragment implements View.OnClickListener, HttpRequest.OnReadyStateChangeListener, HttpRequest.OnErrorListener {
 
     private View mBaseView;
-    private EditText etOrganizationName, etUsername, etEmail, etContactNumber, etContactPerson, etPassword,
-            etAddress, etVerifyPassword;
+    int PLACE_PICKER_REQUEST = 121;
+    private EditText etOrganizationName, etUsername, etEmail, etContactNumber, etContactPerson, etPassword, etVerifyPassword;
+
+    private TextView etAddress;
 
     private String organizationName, username, email, contactNumber, contactPerson, password, address, verifyPassword;
 
@@ -70,7 +76,8 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBaseView = inflater.inflate(R.layout.fragment_service_provider_sign_up, container, false);
         ((AppCompatActivity) getActivity()).getSupportActionBar()
                 .setTitle("Registration");
@@ -85,8 +92,11 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
         etVerifyPassword = mBaseView.findViewById(R.id.verify_password_edit_text);
         mButtonCreateAccoutn = mBaseView.findViewById(R.id.register_button);
         mButtonLogin = mBaseView.findViewById(R.id.sign_up_text_view);
+
+        etAddress = mBaseView.findViewById(R.id.address_edit_text);
         mButtonCreateAccoutn.setOnClickListener(this);
         mButtonLogin.setOnClickListener(this);
+        etAddress.setOnClickListener(this);
         organizationImage.setOnClickListener(this);
         return mBaseView;
     }
@@ -105,6 +115,14 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
             case R.id.organization_image:
                 checkPermissions();
                 break;
+            case R.id.address_edit_text:
+                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+                try {
+                    startActivityForResult(builder.build(ServiceProviderAccount.getInstance()), PLACE_PICKER_REQUEST);
+
+                } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
+                    e.printStackTrace();
+                }
         }
     }
 
@@ -344,6 +362,10 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
+            if (requestCode == PLACE_PICKER_REQUEST) {
+                Place place = PlacePicker.getPlace(data, getActivity().getApplicationContext());
+                etAddress.setText(place.getName());
+            }
             if (requestCode == REQUEST_CAMERA) {
                 Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
