@@ -1,29 +1,47 @@
 package com.byteshaft.carecare.provider;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.byteshaft.carecare.R;
+import com.byteshaft.carecare.gettersetter.CarParts;
 import com.byteshaft.carecare.utils.AppGlobals;
 import com.byteshaft.carecare.utils.Helpers;
 import com.byteshaft.requests.HttpRequest;
+import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CarPartsActivity extends AppCompatActivity {
 
-    private ListView carPartsList;
+    private ListView listView;
+    private List<CarParts> carPartsList;
+    private PartsAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_car_parts);
-        carPartsList = findViewById(R.id.car_parts_list);
+        setTitle("Car Parts");
+        listView = findViewById(R.id.car_parts_list);
+        carPartsList = new ArrayList<>();
     }
 
     @Override
@@ -42,7 +60,28 @@ public class CarPartsActivity extends AppCompatActivity {
                         Helpers.dismissProgressDialog();
                         switch (request.getStatus()) {
                             case HttpURLConnection.HTTP_OK:
-                                Log.wtf("Res", request.getResponseText());
+                                try {
+                                    JSONObject object = new JSONObject(request.getResponseText());
+                                    JSONArray jsonArray = object.getJSONArray("results");
+                                    for (int i = 0; i < jsonArray.length(); i++) {
+                                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                        CarParts carParts = new CarParts();
+                                        carParts.setDescription(jsonObject.getString("description"));
+                                        carParts.setMake(jsonObject.getString("make"));
+                                        carParts.setModel(jsonObject.getString("model"));
+                                        carParts.setPrice(jsonObject.getString("price"));
+                                        carParts.setImage(jsonObject.getString("image"));
+                                        carPartsList.add(carParts);
+                                    }
+
+                                    adapter = new PartsAdapter(getApplicationContext(), carPartsList);
+                                    listView.setAdapter(adapter);
+                                    adapter.notifyDataSetChanged();
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
                         }
                 }
             }
@@ -74,5 +113,72 @@ public class CarPartsActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private class PartsAdapter extends BaseAdapter {
+        private ViewHolder viewHolder;
+        private Context context;
+        private List<CarParts> carParts;
+
+        public PartsAdapter(Context context, List<CarParts> carParts) {
+            this.context = context;
+            this.carParts = carParts;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
+                convertView = getLayoutInflater()
+                        .inflate(R.layout.delegate_car_part, parent, false);
+                viewHolder = new ViewHolder();
+                viewHolder.make = convertView.findViewById(R.id.car_make);
+                viewHolder.model = convertView.findViewById(R.id.car_model);
+                viewHolder.price = convertView.findViewById(R.id.part_price);
+                viewHolder.description = convertView.findViewById(R.id.part_description);
+                viewHolder.partImage = convertView.findViewById(R.id.car_part_image);
+
+                convertView.setTag(viewHolder);
+            } else {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
+            CarParts items = carParts.get(position);
+            viewHolder.make.setText("Make: " + items.getMake());
+            viewHolder.model.setText("Model: " + items.getModel());
+            viewHolder.description.setText("Part Description: " + items.getDescription());
+            viewHolder.price.setText("Price: " + items.getPrice());
+            Log.wtf("ok image ", items.getImage());
+
+            if (!items.getImage().isEmpty()) {
+                Picasso.with(
+                        getApplicationContext()).load((items.getImage()))
+                        .resize(300, 300)
+                        .centerCrop()
+                        .into(viewHolder.partImage);
+            }
+            return convertView;
+        }
+
+        @Override
+        public int getCount() {
+            return carParts.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        private class ViewHolder {
+            private TextView make;
+            private TextView model;
+            private TextView price;
+            private TextView description;
+            private ImageView partImage;
+        }
     }
 }
