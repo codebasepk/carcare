@@ -60,6 +60,7 @@ public class AddCarPart extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_car_part);
+        setTitle("Add Car Part");
         partImage = findViewById(R.id.part_image);
 
         addButton = findViewById(R.id.button_add);
@@ -124,7 +125,7 @@ public class AddCarPart extends AppCompatActivity {
         formData.append(FormData.TYPE_CONTENT_TEXT, "model", model);
         formData.append(FormData.TYPE_CONTENT_TEXT, "price", price);
         if (imageUrl != null && !imageUrl.trim().isEmpty()) {
-            formData.append(FormData.TYPE_CONTENT_FILE, "images[0]image", image);
+            formData.append(FormData.TYPE_CONTENT_FILE, "image", image);
         }
         return formData;
     }
