@@ -40,6 +40,10 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_map_api_key" />
 
+        <activity android:name=".provider.CarPartsActivity" />
+
+        <activity
+            android:name=".provider.AddCarPart" />
     </application>
 
 </manifest>
