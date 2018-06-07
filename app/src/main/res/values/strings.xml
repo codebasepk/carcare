@@ -44,9 +44,11 @@
     <string name="provide_email">please provide a valid email</string>
     <string name="verification_code_length">Verification code must be 6 characters</string>
     <string name="email_error">please provide a valid email</string>
+    <string name="fuel_error">please enter no of liters</string>
     <string name="recovery_email">Sending Recovery Mail</string>
     <string name="recovery_message">Please check your Email for new password</string>
     <string name="recovery_failed">Recovery Failed!</string>
+    <string name="fuel_failed">Sending Failed!</string>
     <string name="valid_email">provide a valid EmailAddress</string>
     <string name="password_four_length">enter at least 4 characters</string>
     <string name="old_password">please enter correct old password</string>

@@ -4,67 +4,100 @@
     android:layout_height="match_parent"
     android:background="@color/background_color">
 
-    <ImageView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="30dp"
-        android:src="@drawable/ic_logo" />
+        android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:id="@+id/layout_fuel_price"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_margin="10dp"
-        android:background="#DB8733"
-        android:gravity="center_horizontal"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/product_price_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="Current Fuel Price"
-            android:textColor="@color/cardview_light_background"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/product_price"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
-            android:gravity="center_horizontal"
-            android:text="RS: 92/lit"
-            android:textColor="@color/text_color"
-            android:textSize="16sp" />
-    </LinearLayout>
+            android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/liters_edit_text"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_below="@+id/layout_fuel_price"
-        android:layout_margin="10dp"
-        android:background="@drawable/rounded_edittext"
-        android:hint="Enter No Of Liters"
-        android:inputType="number"
-        android:padding="10dp"
-        android:textColor="@color/text_color"
-        android:textSize="15sp" />
+            <ImageView
+                android:id="@+id/logo_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:src="@drawable/ic_logo" />
 
-    <android.support.v7.widget.AppCompatButton
-        android:id="@+id/button_next"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:layout_margin="10dp"
-        android:layout_below="@+id/liters_edit_text"
-        android:background="@drawable/button_background"
-        android:gravity="center"
-        android:text="next"
-        android:textAllCaps="true"
-        android:textColor="@color/text_color"
-        android:textStyle="bold" />
+            <LinearLayout
+                android:id="@+id/layout_fuel_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/logo_image"
+                android:layout_margin="10dp"
+                android:background="#DB8733"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/product_price_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Current Fuel Price"
+                    android:textColor="@color/cardview_light_background"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/product_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_horizontal"
+                    android:text="RS: 92/lit"
+                    android:textColor="@color/text_color"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/fuel_type_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/layout_fuel_price"
+                android:layout_margin="10dp"
+                android:padding="4dp"
+                android:text="Please Select Fuel Type"
+                android:textColor="@color/text_color"
+                android:textSize="15sp" />
+
+            <Spinner
+                android:id="@+id/fuel_type_spinner"
+                style="@style/Widget.AppCompat.Spinner.Underlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/fuel_type_text_view"
+                android:layout_margin="10dp"
+                android:background="@drawable/rounded_edittext"
+                android:padding="4dp" />
+
+            <EditText
+                android:id="@+id/liters_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@+id/fuel_type_spinner"
+                android:layout_margin="10dp"
+                android:background="@drawable/rounded_edittext"
+                android:hint="Enter No Of Liters"
+                android:inputType="number"
+                android:padding="10dp"
+                android:textColor="@color/text_color"
+                android:textSize="15sp" />
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/button_next"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@+id/liters_edit_text"
+                android:layout_margin="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/button_background"
+                android:gravity="center"
+                android:text="next"
+                android:textAllCaps="true"
+                android:textColor="@color/text_color"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </ScrollView>
 </RelativeLayout>

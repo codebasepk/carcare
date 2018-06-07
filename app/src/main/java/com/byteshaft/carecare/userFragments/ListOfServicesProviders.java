@@ -8,9 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+
 import com.byteshaft.carecare.R;
 
-public class ListOfServicesProviders extends Fragment{
+public class ListOfServicesProviders extends Fragment {
 
     private View mBaseView;
     private ListView mServiceProvidersListView;
