@@ -36,6 +36,8 @@
             android:label="@string/title_activity_service_provider"
             android:theme="@style/AppTheme.NoActionBar" />
 
+        <activity android:name=".ServiceRequestActivity" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_map_api_key" />
