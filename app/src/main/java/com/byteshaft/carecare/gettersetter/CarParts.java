@@ -2,12 +2,24 @@ package com.byteshaft.carecare.gettersetter;
 
 public class CarParts {
 
+    private int id;
     private String description;
     private String make;
     private String model;
     private String price;
     private String supplier;
     private String image;
+
+    private String makeName;
+    private String modelName;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getDescription() {
         return description;
@@ -55,5 +67,22 @@ public class CarParts {
 
     public void setImage(String images) {
         this.image = images;
+    }
+
+
+    public String getMakeName() {
+        return makeName;
+    }
+
+    public void setMakeName(String makeName) {
+        this.makeName = makeName;
+    }
+
+    public String getModelName() {
+        return modelName;
+    }
+
+    public void setModelName(String modelName) {
+        this.modelName = modelName;
     }
 }

@@ -8,14 +8,6 @@
     tools:context=".WelcomeActivity">
 
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/button_layout"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="20dp"
-        android:src="@drawable/ic_logo" />
-
     <LinearLayout
         android:id="@+id/button_layout"
         android:layout_width="match_parent"
@@ -23,7 +15,14 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_margin="16sp"
+        android:gravity="center"
         android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_logo" />
 
         <Button
             android:id="@+id/button_customer"

@@ -7,14 +7,15 @@
     app:cardElevation="4dp">
 
     <RelativeLayout
+        android:layout_margin="4dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="10dp">
 
-
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/car_part_image"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_centerVertical="true"
             android:layout_margin="10dp" />
 
@@ -31,7 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:padding="5dp"
+                android:padding="2dp"
                 android:text="Honda" />
 
             <TextView
@@ -39,17 +40,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:padding="5dp"
+                android:padding="2dp"
                 android:text="Fit" />
 
-
             <TextView
-
                 android:id="@+id/part_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:padding="5dp"
+                android:padding="2dp"
                 android:text="Text description" />
 
 
@@ -58,7 +57,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:padding="5dp"
+                android:padding="2dp"
                 android:text="Price"
                 android:textStyle="bold" />
 

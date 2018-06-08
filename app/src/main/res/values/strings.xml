@@ -66,4 +66,5 @@
     <string name="confirmation">Confirmation</string>
     <string name="logout_text">Do you really want to logout?</string>
     <string name="parts_list">Getting Parts List..</string>
+    <string name="delete">Do you want to delete this Item?</string>
 </resources>
