@@ -44,6 +44,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:maxLength="100"
                 android:background="@drawable/rounded_edittext"
                 android:hint="Price"
                 android:inputType="number"

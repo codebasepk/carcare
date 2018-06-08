@@ -9,6 +9,11 @@ public class CarParts {
     private String supplier;
     private String image;
 
+    private String makeName;
+    private String modelName;
+
+
+
     public String getDescription() {
         return description;
     }
@@ -55,5 +60,22 @@ public class CarParts {
 
     public void setImage(String images) {
         this.image = images;
+    }
+
+
+    public String getMakeName() {
+        return makeName;
+    }
+
+    public void setMakeName(String makeName) {
+        this.makeName = makeName;
+    }
+
+    public String getModelName() {
+        return modelName;
+    }
+
+    public void setModelName(String modelName) {
+        this.modelName = modelName;
     }
 }
