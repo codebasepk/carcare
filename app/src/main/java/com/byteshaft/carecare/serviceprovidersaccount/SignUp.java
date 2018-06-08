@@ -37,6 +37,7 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -56,7 +57,7 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
 
     private TextView etAddress;
 
-    private String organizationName, username, email, contactNumber, contactPerson, password, address, verifyPassword;
+    private String organizationName, username, email, contactNumber, contactPerson, password, address, verifyPassword, addressCoordinates;
 
     private CircleImageView organizationImage;
     private File destination;
@@ -120,7 +121,7 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
         switch (view.getId()) {
             case R.id.register_button:
                 if (validateEditText()) {
-                    registerUser(organizationName, email, username, contactPerson, contactNumber, address, password, imageUrl);
+                    registerUser(organizationName, email, username, contactPerson, addressCoordinates, contactNumber, address, password, imageUrl);
                 }
                 break;
             case R.id.sign_up_text_view:
@@ -245,18 +246,18 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
         return valid;
     }
 
-    private void registerUser(String name, String email, String userName, String contactPerson,
+    private void registerUser(String name, String email, String userName, String contactPerson, String coordinates,
                               String contactNumber, String address, String password,
                               String imageUrl) {
         HttpRequest request = new HttpRequest(getActivity());
         request.setOnReadyStateChangeListener(this);
         request.setOnErrorListener(this);
         request.open("POST", String.format("%sregister-provider", AppGlobals.BASE_URL));
-        request.send(getRegisterData(name, email, userName, contactPerson, contactNumber, address, password, imageUrl));
+        request.send(getRegisterData(name, email, userName, contactPerson, coordinates, contactNumber, address, password, imageUrl));
         Helpers.showProgressDialog(getActivity(), "Registering...");
     }
 
-    private FormData getRegisterData(String name, String email, String userName, String contactPerson,
+    private FormData getRegisterData(String name, String email, String userName, String contactPerson, String coordinates,
                                      String contactNumber, String address, String password,
                                      String imageUrl) {
 
@@ -267,6 +268,7 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
         formData.append(FormData.TYPE_CONTENT_TEXT, "contact_person", contactPerson);
         formData.append(FormData.TYPE_CONTENT_TEXT, "contact_number", contactNumber);
         formData.append(FormData.TYPE_CONTENT_TEXT, "address", address);
+        formData.append(FormData.TYPE_CONTENT_TEXT, "address_coordinates", coordinates);
         formData.append(FormData.TYPE_CONTENT_TEXT, "password", password);
         if (imageUrl != null && !imageUrl.trim().isEmpty()) {
             formData.append(FormData.TYPE_CONTENT_FILE, "profile_photo", imageUrl);
@@ -378,6 +380,12 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
         if (resultCode == RESULT_OK) {
             if (requestCode == PLACE_PICKER_REQUEST) {
                 Place place = PlacePicker.getPlace(data, getActivity().getApplicationContext());
+                LatLng latLng = place.getLatLng();
+                String latitude = String.valueOf(latLng.latitude);
+                String longitude = String.valueOf(latLng.longitude);
+
+                addressCoordinates = latitude + "," + longitude;
+                Log.wtf("Address:  ", addressCoordinates);
                 etAddress.setText(place.getName());
             }
             if (requestCode == REQUEST_CAMERA) {

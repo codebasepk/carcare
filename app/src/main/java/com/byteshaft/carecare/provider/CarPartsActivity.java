@@ -69,10 +69,12 @@ public class CarPartsActivity extends AppCompatActivity {
                                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                                         CarParts carParts = new CarParts();
                                         carParts.setDescription(jsonObject.getString("description"));
-                                        carParts.setMake(jsonObject.getString("make"));
-                                        carParts.setModel(jsonObject.getString("model"));
                                         carParts.setPrice(jsonObject.getString("price"));
                                         carParts.setImage(jsonObject.getString("image"));
+                                        JSONObject makeName = jsonObject.getJSONObject("make");
+                                        JSONObject model = jsonObject.getJSONObject("model");
+                                        carParts.setMakeName(makeName.getString("name"));
+                                        carParts.setModelName(model.getString("name"));
                                         carPartsList.add(carParts);
                                     }
 
@@ -144,8 +146,8 @@ public class CarPartsActivity extends AppCompatActivity {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
             CarParts items = carParts.get(position);
-            viewHolder.make.setText("Make: " + items.getMake());
-            viewHolder.model.setText("Model: " + items.getModel());
+            viewHolder.make.setText("Make: " + items.getMakeName());
+            viewHolder.model.setText("Model: " + items.getModelName());
             viewHolder.description.setText("Part Description: " + items.getDescription());
             viewHolder.price.setText("Price: " + items.getPrice());
             Log.wtf("ok image ", items.getImage());
