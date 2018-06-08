@@ -3,12 +3,14 @@ package com.byteshaft.carecare.provider;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -43,6 +45,14 @@ public class CarPartsActivity extends AppCompatActivity {
         setTitle("Car Parts");
         listView = findViewById(R.id.car_parts_list);
         carPartsList = new ArrayList<>();
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                CarParts carParts = carPartsList.get(i);
+                deleteDialog(carParts.getId());
+                return true;
+            }
+        });
     }
 
     @Override
@@ -50,6 +60,42 @@ public class CarPartsActivity extends AppCompatActivity {
         super.onResume();
         carPartsList.clear();
         getPartsList();
+    }
+
+    private void deleteDialog(int partId) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle(R.string.confirmation);
+        alertDialogBuilder.setMessage(R.string.delete)
+                .setCancelable(false).setPositiveButton(getString(R.string.yes),
+                (dialog, id) -> {
+                    deletePart(partId);
+                });
+        alertDialogBuilder.setNegativeButton(getString(R.string.cancel), (dialogInterface, i) -> dialogInterface.dismiss());
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
+    private void deletePart(int id) {
+        HttpRequest request = new HttpRequest(getApplicationContext());
+        request.setOnReadyStateChangeListener(new HttpRequest.OnReadyStateChangeListener() {
+            @Override
+            public void onReadyStateChange(HttpRequest request, int readyState) {
+                switch (readyState) {
+                    case HttpRequest.STATE_DONE:
+                        Log.wtf("Lokok", request.getResponseText());
+                        Helpers.dismissProgressDialog();
+                        switch (request.getStatus()) {
+                            case HttpURLConnection.HTTP_NO_CONTENT:
+                                Helpers.showSnackBar(listView, "Item Deleted");
+                        }
+                }
+            }
+        });
+        request.open("DELETE", String.format("%sprovider/parts/%s", AppGlobals.BASE_URL, id));
+        request.setRequestHeader("Authorization", "Token " +
+                AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_TOKEN));
+        request.send();
+
     }
 
     private void getPartsList() {
@@ -68,6 +114,7 @@ public class CarPartsActivity extends AppCompatActivity {
                                     for (int i = 0; i < jsonArray.length(); i++) {
                                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                                         CarParts carParts = new CarParts();
+                                        carParts.setId(jsonObject.getInt("id"));
                                         carParts.setDescription(jsonObject.getString("description"));
                                         carParts.setPrice(jsonObject.getString("price"));
                                         carParts.setImage(jsonObject.getString("image"));

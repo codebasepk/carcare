@@ -7,8 +7,10 @@
     app:cardElevation="4dp">
 
     <RelativeLayout
+        android:layout_margin="4dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="10dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/car_part_image"

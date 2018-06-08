@@ -2,6 +2,7 @@ package com.byteshaft.carecare.gettersetter;
 
 public class CarParts {
 
+    private int id;
     private String description;
     private String make;
     private String model;
@@ -12,7 +13,13 @@ public class CarParts {
     private String makeName;
     private String modelName;
 
+    public int getId() {
+        return id;
+    }
 
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getDescription() {
         return description;
