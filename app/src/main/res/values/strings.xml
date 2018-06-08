@@ -47,6 +47,7 @@
     <string name="provide_email">please provide a valid email</string>
     <string name="verification_code_length">Verification code must be 6 characters</string>
     <string name="email_error">please provide a valid email</string>
+    <string name="vehicle_year">please provide vehicle year</string>
     <string name="fuel_error">please enter no of liters</string>
     <string name="recovery_email">Sending Recovery Mail</string>
     <string name="recovery_message">Please check your Email for new password</string>
@@ -64,4 +65,5 @@
     <string name="yes">Yes</string>
     <string name="confirmation">Confirmation</string>
     <string name="logout_text">Do you really want to logout?</string>
+    <string name="parts_list">Getting Parts List..</string>
 </resources>

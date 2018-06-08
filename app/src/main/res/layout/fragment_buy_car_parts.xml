@@ -83,8 +83,20 @@
             </RelativeLayout>
         </LinearLayout>
 
+        <EditText
+            android:id="@+id/vehicle_year_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Enter year of vehicle"
+            android:inputType="number"
+            android:padding="10dp"
+            android:textColor="@color/button_text_color"
+            android:textSize="15sp" />
+
         <android.support.v7.widget.AppCompatButton
-            android:id="@+id/request_button"
+            android:id="@+id/search_button"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginBottom="15dp"

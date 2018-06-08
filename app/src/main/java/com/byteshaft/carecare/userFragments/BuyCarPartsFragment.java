@@ -1,14 +1,16 @@
 package com.byteshaft.carecare.userFragments;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.byteshaft.carecare.Adapters.VehicleMakeWithModel;
@@ -26,20 +28,24 @@ import org.json.JSONObject;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
-public class BuyCarPartsFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+public class BuyCarPartsFragment extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
     private View mBaseView;
     private Spinner mVehicleModelSpinner;
     private Spinner mVehicleMakeSpinner;
+    private EditText mVehicleYearEditText;
+    private Button mSearchButton;
 
-    private VehicleModelAdapter vehicleModelAdapterAdapter;
+
+    private VehicleModelAdapter vehicleModelAdapter;
     private ArrayList<VehicleMakeWithModelItems> arrayList;
 
     private VehicleMakeWithModel vehicleMakeAdapter;
     private ArrayList<CarCompanyItems> vehicleMakeArrayList;
 
     private int mVehicleMakeSpinnerId;
-    private String mVehicleModelSpinnerString;
+    private int mVehicleModelSpinnerId;
+    private String mVehicleYearString;
 
     @Nullable
     @Override
@@ -47,10 +53,14 @@ public class BuyCarPartsFragment extends Fragment implements AdapterView.OnItemS
         mBaseView = inflater.inflate(R.layout.fragment_buy_car_parts, container, false);
         mVehicleModelSpinner = mBaseView.findViewById(R.id.vehicle_model_Spinner);
         mVehicleMakeSpinner = mBaseView.findViewById(R.id.vehicle_make_spinner);
+        mVehicleYearEditText = mBaseView.findViewById(R.id.vehicle_year_edit_text);
+        mSearchButton = mBaseView.findViewById(R.id.search_button);
+
         arrayList = new ArrayList<>();
         vehicleMakeArrayList = new ArrayList<>();
         mVehicleModelSpinner.setOnItemSelectedListener(this);
         mVehicleMakeSpinner.setOnItemSelectedListener(this);
+        mSearchButton.setOnClickListener(this);
         getVehicleMake();
         getVehicleModel(mVehicleMakeSpinnerId);
         return mBaseView;
@@ -75,8 +85,8 @@ public class BuyCarPartsFragment extends Fragment implements AdapterView.OnItemS
                                     vehicleMakeWithModelItems.setVehicleModelName(VehicleTypeJsonObject.getString("name"));
                                     arrayList.add(vehicleMakeWithModelItems);
                                 }
-                                vehicleModelAdapterAdapter = new VehicleModelAdapter(getActivity(), arrayList);
-                                mVehicleModelSpinner.setAdapter(vehicleModelAdapterAdapter);
+                                vehicleModelAdapter = new VehicleModelAdapter(getActivity(), arrayList);
+                                mVehicleModelSpinner.setAdapter(vehicleModelAdapter);
                                 mVehicleModelSpinner.setSelection(0);
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -124,7 +134,7 @@ public class BuyCarPartsFragment extends Fragment implements AdapterView.OnItemS
         switch (parent.getId()) {
             case R.id.vehicle_model_Spinner:
                 VehicleMakeWithModelItems vehicleMakeWithModelItems = arrayList.get(position);
-                mVehicleModelSpinnerString = String.valueOf(vehicleMakeWithModelItems.getVehicleModelId());
+                mVehicleModelSpinnerId = vehicleMakeWithModelItems.getVehicleModelId();
                 break;
             case R.id.vehicle_make_spinner:
                 CarCompanyItems carCompanyItems = vehicleMakeArrayList.get(position);
@@ -138,4 +148,32 @@ public class BuyCarPartsFragment extends Fragment implements AdapterView.OnItemS
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
+    @Override
+    public void onClick(View v) {
+        if (validate()) {
+            Bundle bundle = new Bundle();
+            bundle.putString("vehicle_year", mVehicleYearString);
+            bundle.putInt("vehicle_make", mVehicleMakeSpinnerId);
+            bundle.putInt("vehicle_model", mVehicleModelSpinnerId);
+            PartsListFragment partsListFragment = new PartsListFragment();
+            partsListFragment.setArguments(bundle);
+            getFragmentManager().beginTransaction().replace(R.id.container, partsListFragment).commit();
+
+        }
+    }
+
+    private boolean validate() {
+        boolean valid = true;
+        mVehicleYearString = mVehicleYearEditText.getText().toString();
+        System.out.println(mVehicleYearString);
+        if (mVehicleYearString.trim().isEmpty()) {
+            mVehicleYearEditText.setError(getString(R.string.vehicle_year));
+            valid = false;
+        } else {
+            mVehicleYearEditText.setError(null);
+        }
+        return valid;
+    }
+
 }
