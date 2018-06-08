@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -28,6 +27,8 @@ import org.json.JSONObject;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CarPartsActivity extends AppCompatActivity {
 
@@ -47,6 +48,7 @@ public class CarPartsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        carPartsList.clear();
         getPartsList();
     }
 
@@ -178,7 +180,7 @@ public class CarPartsActivity extends AppCompatActivity {
             private TextView model;
             private TextView price;
             private TextView description;
-            private ImageView partImage;
+            private CircleImageView partImage;
         }
     }
 }
