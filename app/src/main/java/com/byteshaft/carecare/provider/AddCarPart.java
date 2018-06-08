@@ -23,7 +23,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,6 +52,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class AddCarPart extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
 
@@ -65,7 +66,7 @@ public class AddCarPart extends AppCompatActivity implements AdapterView.OnItemS
     private String url;
     private static String imageUrl = "";
 
-    private ImageView partImage;
+    private CircleImageView partImage;
     private EditText partDescription, partPrice;
     private Button addButton;
     private TextView pickYear;
@@ -139,8 +140,8 @@ public class AddCarPart extends AppCompatActivity implements AdapterView.OnItemS
             @Override
             public void onClick(View view) {
                 if (validate()) {
-                    addPart(description, mVehicleModelSpinnerString, String.valueOf(mVehicleMakeSpinnerId), price, imageUrl, selectedDate);
-                    Log.wtf(" ok ", imageUrl + "  " + selectedDate);
+                    addPart(description, String.valueOf(mVehicleMakeSpinnerId), mVehicleModelSpinnerString, price, imageUrl, selectedDate);
+                    Log.wtf(" ok ", mVehicleModelSpinnerString + "  " + mVehicleMakeSpinnerId);
                 }
             }
         });
