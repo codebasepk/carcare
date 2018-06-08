@@ -1,7 +1,6 @@
 package com.byteshaft.carecare.useraccounts;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
@@ -11,14 +10,11 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -39,7 +35,6 @@ import android.widget.Toast;
 
 import com.byteshaft.carecare.Adapters.VehicleMakes;
 import com.byteshaft.carecare.Adapters.VehicleType;
-import com.byteshaft.carecare.MainActivity;
 import com.byteshaft.carecare.R;
 import com.byteshaft.carecare.gettersetter.VehicleMakeItems;
 import com.byteshaft.carecare.gettersetter.VehicleTypeItems;
@@ -48,22 +43,12 @@ import com.byteshaft.carecare.utils.Helpers;
 import com.byteshaft.carecare.utils.RotateUtil;
 import com.byteshaft.requests.FormData;
 import com.byteshaft.requests.HttpRequest;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationAvailability;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResponse;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.google.android.gms.location.SettingsClient;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -189,7 +174,6 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
         vehicleTypeArrayList = new ArrayList<>();
         getVehicleMake();
         getVehicleType();
-
         mPickForCurrentLocation.setOnClickListener(this);
         mSignInTextView.setOnClickListener(this);
         mSignUpButtonButton.setOnClickListener(this);
