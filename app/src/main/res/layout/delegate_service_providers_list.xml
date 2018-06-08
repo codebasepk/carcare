@@ -8,6 +8,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
+        android:minHeight="100dp"
+        android:minWidth="450dp"
         app:cardCornerRadius="5dp">
 
         <RelativeLayout
@@ -29,59 +31,49 @@
                 android:id="@+id/product_view"
                 android:layout_width="1dp"
                 android:layout_height="80dp"
-                android:layout_margin="15dp"
+                android:layout_margin="10dp"
                 android:layout_toRightOf="@+id/product_image"
                 android:background="#000" />
 
-            <TextView
-                android:id="@+id/product_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:gravity="center_horizontal"
-                android:text="Name"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="16sp" />
-
             <RelativeLayout
-                android:id="@+id/layout_product_price"
+                android:id="@+id/layout_service_provider_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/product_name"
-                android:layout_marginTop="5dp"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="15dp"
                 android:layout_toRightOf="@+id/product_view">
 
                 <TextView
-                    android:id="@+id/product_price_title"
+                    android:id="@+id/service_provider_name_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Part Price:   "
+                    android:text="Name:   "
                     android:textColor="#000"
                     android:textSize="15sp" />
 
                 <TextView
-                    android:id="@+id/product_price"
+                    android:id="@+id/service_provider_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/product_price_title"
-                    android:text="price"
+                    android:layout_toRightOf="@+id/service_provider_name_title"
+                    android:text="Gama denter"
                     android:textColor="#000" />
             </RelativeLayout>
 
 
             <RelativeLayout
-                android:id="@+id/layout_part_details"
+                android:id="@+id/layout_service_provider_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/layout_product_price"
-                android:layout_marginTop="5dp"
+                android:layout_below="@+id/layout_service_provider_name"
+                android:layout_marginTop="2dp"
                 android:layout_toRightOf="@+id/product_view">
 
                 <TextView
-                    android:id="@+id/part_details_title"
+                    android:id="@+id/service_provider_number_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Part Details:   "
+                    android:text="Contact Number:   "
                     android:textColor="#000"
                     android:textSize="15sp" />
 
@@ -89,12 +81,13 @@
                     android:id="@+id/part_details"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/part_details_title"
-                    android:maxLength="100"
-                    android:text="details"
+                    android:layout_toRightOf="@+id/service_provider_number_title"
+                    android:text="0000000000"
                     android:textColor="#000" />
             </RelativeLayout>
         </RelativeLayout>
+
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -104,7 +97,7 @@
             <Button
                 android:id="@+id/call_button"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_height="35dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginBottom="5dp"
                 android:text="Call"

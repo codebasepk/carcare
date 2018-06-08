@@ -28,11 +28,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.byteshaft.carecare.Adapters.VehicleMakes;
-import com.byteshaft.carecare.Adapters.VehicleType;
+import com.byteshaft.carecare.Adapters.VehicleMakeWithModel;
+import com.byteshaft.carecare.Adapters.VehicleModelAdapter;
 import com.byteshaft.carecare.R;
-import com.byteshaft.carecare.gettersetter.VehicleMakeItems;
-import com.byteshaft.carecare.gettersetter.VehicleTypeItems;
+import com.byteshaft.carecare.gettersetter.CarCompanyItems;
+import com.byteshaft.carecare.gettersetter.VehicleMakeWithModelItems;
 import com.byteshaft.carecare.utils.AppGlobals;
 import com.byteshaft.carecare.utils.Helpers;
 import com.byteshaft.carecare.utils.RotateUtil;
@@ -66,27 +66,28 @@ public class AddCarPart extends AppCompatActivity implements AdapterView.OnItemS
     private static String imageUrl = "";
 
     private ImageView partImage;
-    private EditText partDescription, carMake, carModel, partPrice;
+    private EditText partDescription, partPrice;
     private Button addButton;
     private TextView pickYear;
     private String selectedDate;
 
 
-    private VehicleMakes vehicleMakesAdapter;
-    private ArrayList<VehicleMakeItems> vehicleMakeArrayList;
-    private VehicleType vehicleTypeAdapter;
-    private ArrayList<VehicleTypeItems> vehicleTypeArrayList;
+    private VehicleModelAdapter vehicleModelAdapterAdapter;
+    private ArrayList<VehicleMakeWithModelItems> arrayList;
 
-    private String mVehicleMakeSpinnerString;
-    private String mVehicleTypeSpinnerString;
+    private VehicleMakeWithModel vehicleMakeAdapter;
+    private ArrayList<CarCompanyItems> vehicleMakeArrayList;
 
+    private int mVehicleMakeSpinnerId;
+    private String mVehicleModelSpinnerString;
+
+    private Spinner mVehicleModelSpinner;
     private Spinner mVehicleMakeSpinner;
-    private Spinner mVehicleTypeSpinner;
 
     private DatePickerDialog.OnDateSetListener date;
     private Calendar mCalendar;
 
-    private String description, make, model, price;
+    private String description, price;
 
 
     @Override
@@ -99,17 +100,15 @@ public class AddCarPart extends AppCompatActivity implements AdapterView.OnItemS
         pickYear = findViewById(R.id.pick_year);
         addButton = findViewById(R.id.button_add);
         partDescription = findViewById(R.id.part_description);
-        carMake = findViewById(R.id.car_make);
-        carModel = findViewById(R.id.car_model);
         partPrice = findViewById(R.id.part_price);
+
+        mVehicleModelSpinner = findViewById(R.id.vehicle_model_Spinner);
         mVehicleMakeSpinner = findViewById(R.id.vehicle_make_spinner);
-        mVehicleTypeSpinner = findViewById(R.id.vehicle_type_spinner);
 
+        mVehicleModelSpinner.setOnItemSelectedListener(this);
         mVehicleMakeSpinner.setOnItemSelectedListener(this);
-        mVehicleTypeSpinner.setOnItemSelectedListener(this);
-
+        arrayList = new ArrayList<>();
         vehicleMakeArrayList = new ArrayList<>();
-        vehicleTypeArrayList = new ArrayList<>();
 
         date = (view, year, monthOfYear, dayOfMonth) -> {
             mCalendar.set(Calendar.YEAR, year);
@@ -140,14 +139,13 @@ public class AddCarPart extends AppCompatActivity implements AdapterView.OnItemS
             @Override
             public void onClick(View view) {
                 if (validate()) {
-                    addPart(description, make, model, price, imageUrl, selectedDate);
+                    addPart(description, mVehicleModelSpinnerString, String.valueOf(mVehicleMakeSpinnerId), price, imageUrl, selectedDate);
                     Log.wtf(" ok ", imageUrl + "  " + selectedDate);
                 }
             }
         });
-
         getVehicleMake();
-        getVehicleType();
+        getVehicleModel(mVehicleMakeSpinnerId);
 
     }
 
@@ -165,7 +163,7 @@ public class AddCarPart extends AppCompatActivity implements AdapterView.OnItemS
             public void onReadyStateChange(HttpRequest request, int readyState) {
                 switch (readyState) {
                     case HttpRequest.STATE_DONE:
-                        Log.wtf("Check ", request.getResponseText());
+                        Log.wtf("Check --------->>>", request.getResponseText());
                         Helpers.dismissProgressDialog();
                         switch (request.getStatus()) {
                             case HttpURLConnection.HTTP_CREATED:
@@ -206,8 +204,6 @@ public class AddCarPart extends AppCompatActivity implements AdapterView.OnItemS
     public boolean validate() {
         boolean valid = true;
         description = partDescription.getText().toString();
-        make = carMake.getText().toString();
-        model = carModel.getText().toString();
         price = partPrice.getText().toString();
 
         if (selectedDate.trim().isEmpty()) {
@@ -220,20 +216,6 @@ public class AddCarPart extends AppCompatActivity implements AdapterView.OnItemS
             valid = false;
         } else {
             partDescription.setError(null);
-        }
-
-        if (make.trim().isEmpty()) {
-            carMake.setError("Required");
-            valid = false;
-        } else {
-            carMake.setError(null);
-        }
-
-        if (model.trim().isEmpty()) {
-            carModel.setError("Required");
-            valid = false;
-        } else {
-            carModel.setError(null);
         }
 
         if (price.trim().isEmpty()) {
@@ -385,6 +367,38 @@ public class AddCarPart extends AppCompatActivity implements AdapterView.OnItemS
         }
     }
 
+    private void getVehicleModel(int id) {
+        HttpRequest getStateRequest = new HttpRequest(getApplicationContext());
+        getStateRequest.setOnReadyStateChangeListener((request, readyState) -> {
+            switch (readyState) {
+                case HttpRequest.STATE_DONE:
+                    switch (request.getStatus()) {
+                        case HttpURLConnection.HTTP_OK:
+                            arrayList = new ArrayList<>();
+                            try {
+                                JSONObject jsonObject = new JSONObject(request.getResponseText());
+                                JSONArray jsonArray = jsonObject.getJSONArray("results");
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    System.out.println("working " + jsonArray.getJSONObject(i));
+                                    JSONObject VehicleTypeJsonObject = jsonArray.getJSONObject(i);
+                                    VehicleMakeWithModelItems vehicleMakeWithModelItems = new VehicleMakeWithModelItems();
+                                    vehicleMakeWithModelItems.setVehicleModelId(VehicleTypeJsonObject.getInt("id"));
+                                    vehicleMakeWithModelItems.setVehicleModelName(VehicleTypeJsonObject.getString("name"));
+                                    arrayList.add(vehicleMakeWithModelItems);
+                                }
+                                vehicleModelAdapterAdapter = new VehicleModelAdapter(AddCarPart.this, arrayList);
+                                mVehicleModelSpinner.setAdapter(vehicleModelAdapterAdapter);
+                                mVehicleModelSpinner.setSelection(0);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                    }
+            }
+        });
+        getStateRequest.open("GET", String.format("%svehicles/make/%s/models", AppGlobals.BASE_URL, id));
+        getStateRequest.send();
+    }
+
     private void getVehicleMake() {
         HttpRequest getStateRequest = new HttpRequest(getApplicationContext());
         getStateRequest.setOnReadyStateChangeListener((request, readyState) -> {
@@ -393,18 +407,18 @@ public class AddCarPart extends AppCompatActivity implements AdapterView.OnItemS
                     switch (request.getStatus()) {
                         case HttpURLConnection.HTTP_OK:
                             try {
-                                JSONObject mainObject = new JSONObject(request.getResponseText());
-                                JSONArray jsonArray = mainObject.getJSONArray("results");
+                                JSONObject jsonObject = new JSONObject(request.getResponseText());
+                                JSONArray jsonArray = jsonObject.getJSONArray("results");
                                 for (int i = 0; i < jsonArray.length(); i++) {
                                     System.out.println("Test " + jsonArray.getJSONObject(i));
-                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                    VehicleMakeItems vehicleMakeItems = new VehicleMakeItems();
-                                    vehicleMakeItems.setVehicleMakeName(jsonObject.getString("name"));
-                                    vehicleMakeItems.setVehicleMakeId(jsonObject.getInt("id"));
-                                    vehicleMakeArrayList.add(vehicleMakeItems);
+                                    JSONObject vehicleMakeJsonObject = jsonArray.getJSONObject(i);
+                                    CarCompanyItems carCompanyItems = new CarCompanyItems();
+                                    carCompanyItems.setCompanyId(vehicleMakeJsonObject.getInt("id"));
+                                    carCompanyItems.setCompanyName(vehicleMakeJsonObject.getString("name"));
+                                    vehicleMakeArrayList.add(carCompanyItems);
                                 }
-                                vehicleMakesAdapter = new VehicleMakes(AddCarPart.this, vehicleMakeArrayList);
-                                mVehicleMakeSpinner.setAdapter(vehicleMakesAdapter);
+                                vehicleMakeAdapter = new VehicleMakeWithModel(AddCarPart.this, vehicleMakeArrayList);
+                                mVehicleMakeSpinner.setAdapter(vehicleMakeAdapter);
                                 mVehicleMakeSpinner.setSelection(0);
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -416,47 +430,17 @@ public class AddCarPart extends AppCompatActivity implements AdapterView.OnItemS
         getStateRequest.send();
     }
 
-    private void getVehicleType() {
-        HttpRequest getStateRequest = new HttpRequest(getApplicationContext());
-        getStateRequest.setOnReadyStateChangeListener((request, readyState) -> {
-            switch (readyState) {
-                case HttpRequest.STATE_DONE:
-                    switch (request.getStatus()) {
-                        case HttpURLConnection.HTTP_OK:
-                            try {
-                                JSONObject mainObject = new JSONObject(request.getResponseText());
-                                JSONArray jsonArray = mainObject.getJSONArray("results");
-                                for (int i = 0; i < jsonArray.length(); i++) {
-                                    System.out.println("Test " + jsonArray.getJSONObject(i));
-                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                    VehicleTypeItems vehicleItems = new VehicleTypeItems();
-                                    vehicleItems.setVehicleTypeId(jsonObject.getInt("id"));
-                                    vehicleItems.setVehicleTypeName(jsonObject.getString("name"));
-                                    vehicleTypeArrayList.add(vehicleItems);
-                                }
-                                vehicleTypeAdapter = new VehicleType(AddCarPart.this, vehicleTypeArrayList);
-                                mVehicleTypeSpinner.setAdapter(vehicleTypeAdapter);
-                                mVehicleTypeSpinner.setSelection(0);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                    }
-            }
-        });
-        getStateRequest.open("GET", String.format("%svehicles/type", AppGlobals.BASE_URL));
-        getStateRequest.send();
-    }
-
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         switch (parent.getId()) {
-            case R.id.vehicle_make_spinner:
-                VehicleMakeItems vehicleMakeItems = vehicleMakeArrayList.get(position);
-                mVehicleMakeSpinnerString = String.valueOf(vehicleMakeItems.getVehicleMakeId());
+            case R.id.vehicle_model_Spinner:
+                VehicleMakeWithModelItems vehicleMakeWithModelItems = arrayList.get(position);
+                mVehicleModelSpinnerString = String.valueOf(vehicleMakeWithModelItems.getVehicleModelId());
                 break;
-            case R.id.vehicle_type_spinner:
-                VehicleTypeItems vehicleTypeItems = vehicleTypeArrayList.get(position);
-                mVehicleTypeSpinnerString = String.valueOf(vehicleTypeItems.getVehicleTypeId());
+            case R.id.vehicle_make_spinner:
+                CarCompanyItems carCompanyItems = vehicleMakeArrayList.get(position);
+                mVehicleMakeSpinnerId = carCompanyItems.getCompanyId();
+                getVehicleModel(mVehicleMakeSpinnerId);
                 break;
         }
     }

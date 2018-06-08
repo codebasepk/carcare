@@ -38,29 +38,6 @@
                 android:singleLine="true" />
 
 
-            <EditText
-                android:id="@+id/car_make"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/rounded_edittext"
-                android:hint="Company i.e Honda.."
-                android:maxLines="3"
-                android:padding="10dp"
-                android:singleLine="true" />
-
-
-            <EditText
-                android:id="@+id/car_model"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/rounded_edittext"
-                android:hint="Model"
-                android:maxLines="3"
-                android:padding="10dp"
-                android:singleLine="true" />
-
 
             <EditText
                 android:id="@+id/part_price"
@@ -86,11 +63,11 @@
                 android:singleLine="true"
                 android:text="Select Year" />
 
+
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/main_layout"
+                android:id="@+id/main_rel"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:weightSum="2.0">
 
@@ -102,49 +79,53 @@
                     android:padding="5dp">
 
                     <TextView
-                        android:id="@+id/vehicle_year_sector"
+                        android:id="@+id/vehicle_make"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="4dp"
-                        android:text="Select Vehicle"
+                        android:text="Select Vehicle Make"
+                        android:layout_marginLeft="10dp"
                         android:textColor="@color/text_color"
-                        android:textSize="14sp" />
+                        android:textSize="15sp" />
 
                     <Spinner
                         android:id="@+id/vehicle_make_spinner"
-                        style="@style/Widget.AppCompat.Spinner.Underlined"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/vehicle_year_sector"
-                        android:background="@color/text_color"
-                        android:padding="4dp" />
+                        android:layout_height="50dp"
+                        android:layout_below="@+id/vehicle_make"
+                        android:background="@drawable/rounded_edittext"
+                        android:padding="5dp"
+                        android:layout_marginLeft="10dp"
+                        android:textColor="@color/button_text_color" />
 
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:id="@+id/vehicle_mode_layout"
+                    android:id="@+id/child_two"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1.0"
                     android:padding="5dp">
 
                     <TextView
-                        android:id="@+id/select_sector"
+                        android:id="@+id/vehicle_model"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="4dp"
-                        android:text="Select Vehicle Type"
+                        android:layout_marginLeft="10dp"
+                        android:text="Select Vehicle Model"
                         android:textColor="@color/text_color"
-                        android:textSize="14sp" />
+                        android:textSize="15sp" />
 
                     <Spinner
-                        android:id="@+id/vehicle_type_spinner"
-                        style="@style/Widget.AppCompat.Spinner.Underlined"
+                        android:id="@+id/vehicle_model_Spinner"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/select_sector"
-                        android:background="@color/text_color"
-                        android:padding="4dp" />
+                        android:layout_height="50dp"
+                        android:layout_below="@+id/vehicle_model"
+                        android:background="@drawable/rounded_edittext"
+                        android:layout_marginLeft="10dp"
+                        android:textColor="@color/button_text_color"
+                        android:textSize="15sp" />
                 </RelativeLayout>
             </LinearLayout>
 

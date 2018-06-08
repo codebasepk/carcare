@@ -33,10 +33,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.byteshaft.carecare.Adapters.VehicleMakes;
+import com.byteshaft.carecare.Adapters.VehicleMakeWithModel;
+import com.byteshaft.carecare.Adapters.VehicleModelAdapter;
 import com.byteshaft.carecare.Adapters.VehicleType;
 import com.byteshaft.carecare.R;
+import com.byteshaft.carecare.gettersetter.CarCompanyItems;
 import com.byteshaft.carecare.gettersetter.VehicleMakeItems;
+import com.byteshaft.carecare.gettersetter.VehicleMakeWithModelItems;
 import com.byteshaft.carecare.gettersetter.VehicleTypeItems;
 import com.byteshaft.carecare.utils.AppGlobals;
 import com.byteshaft.carecare.utils.Helpers;
@@ -82,7 +85,7 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
     private EditText mVerifyPasswordEditText;
     private EditText mAddressEditText;
     private EditText mVehicleYearEditText;
-    private EditText mVehicleModelEditText;
+    private Spinner mVehicleModelSpinner;
 
     private TextView mPickForCurrentLocation;
     private TextView mSignInTextView;
@@ -90,16 +93,18 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
     private Spinner mVehicleMakeSpinner;
     private Spinner mVehicleTypeSpinner;
 
-    private VehicleMakes vehicleMakesAdapter;
+    private VehicleModelAdapter vehicleModelAdapterAdapter;
     private ArrayList<VehicleMakeItems> vehicleMakeArrayList;
     private VehicleType vehicleTypeAdapter;
     private ArrayList<VehicleTypeItems> vehicleTypeArrayList;
+    private ArrayList<VehicleMakeWithModelItems> vehicleMakeWithModelItemsArrayList;
+    private VehicleMakeWithModel vehicleMakeWithModelAdapter;
 
     private String mVehicleMakeSpinnerString;
     private String mVehicleTypeSpinnerString;
+    private String mVehicleModelSpinnerString;
     private String mUserNameEditTextString;
     private String mVehicleYearString;
-    private String mVehicleModelString;
     private String mAddressEditTextString;
     private String mFullNameString;
     private String mEmailAddressString;
@@ -159,7 +164,7 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
 
         mUserImage = mBaseView.findViewById(R.id.user_image);
         mVehicleYearEditText = mBaseView.findViewById(R.id.vehicle_year_edit_text);
-        mVehicleModelEditText = mBaseView.findViewById(R.id.vehicle_model_edit_text);
+        mVehicleModelSpinner = mBaseView.findViewById(R.id.vehicle_model_Spinner);
 
         mPasswordEditText = mBaseView.findViewById(R.id.password_edit_text);
         mVerifyPasswordEditText = mBaseView.findViewById(R.id.confirm_edit_text);
@@ -172,12 +177,13 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
         mVehicleTypeSpinner = mBaseView.findViewById(R.id.vehicle_type_spinner);
         vehicleMakeArrayList = new ArrayList<>();
         vehicleTypeArrayList = new ArrayList<>();
-        getVehicleMake();
+        vehicleMakeWithModelItemsArrayList = new ArrayList<>();
         getVehicleType();
+        getVehicleModel();
         mPickForCurrentLocation.setOnClickListener(this);
         mSignInTextView.setOnClickListener(this);
         mSignUpButtonButton.setOnClickListener(this);
-        mVehicleMakeSpinner.setOnItemSelectedListener(this);
+        mVehicleModelSpinner.setOnItemSelectedListener(this);
         mVehicleTypeSpinner.setOnItemSelectedListener(this);
         mUserImage.setOnClickListener(this);
         return mBaseView;
@@ -200,23 +206,16 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
                     alertDialogBuilder.setTitle(getResources().getString(R.string.permission_dialog_title));
                     alertDialogBuilder.setMessage(getResources().getString(R.string.permission_dialog_message))
-                            .setCancelable(false).setPositiveButton(R.string.button_continue, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.dismiss();
-                            if (ContextCompat.checkSelfPermission(getActivity(),
-                                    Manifest.permission.ACCESS_COARSE_LOCATION)
-                                    != PackageManager.PERMISSION_GRANTED) {
-                                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                                        LOCATION_PERMISSION);
-                            }
+                            .setCancelable(false).setPositiveButton(R.string.button_continue, (dialog, id) -> {
+                        dialog.dismiss();
+                        if (ContextCompat.checkSelfPermission(getActivity(),
+                                Manifest.permission.ACCESS_COARSE_LOCATION)
+                                != PackageManager.PERMISSION_GRANTED) {
+                            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                                    LOCATION_PERMISSION);
                         }
                     });
-                    alertDialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                        }
-                    });
+                    alertDialogBuilder.setNegativeButton(R.string.cancel, (dialogInterface, i) -> dialogInterface.dismiss());
                     AlertDialog alertDialog = alertDialogBuilder.create();
                     alertDialog.show();
 
@@ -233,7 +232,7 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
             case R.id.sign_up_button:
                 if (validateEditText()) {
                     registerUser(mUserNameEditTextString, mFullNameString, mEmailAddressString, mContactNumberString,
-                            mAddressEditTextString, mLocationString, mVehicleMakeSpinnerString, mVehicleModelString,
+                            mAddressEditTextString, mLocationString, mVehicleMakeSpinnerString, mVehicleModelSpinnerString,
                             mVehicleTypeSpinnerString, mVehicleYearString, mPasswordString, imageUrl);
                 }
                 break;
@@ -303,36 +302,6 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
         builder.show();
     }
 
-    private void getVehicleMake() {
-        HttpRequest getStateRequest = new HttpRequest(getActivity());
-        getStateRequest.setOnReadyStateChangeListener((request, readyState) -> {
-            switch (readyState) {
-                case HttpRequest.STATE_DONE:
-                    switch (request.getStatus()) {
-                        case HttpURLConnection.HTTP_OK:
-                            try {
-                                JSONArray jsonArray = new JSONArray(request.getResponseText());
-                                for (int i = 0; i < jsonArray.length(); i++) {
-                                    System.out.println("Test " + jsonArray.getJSONObject(i));
-                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                    VehicleMakeItems vehicleMakeItems = new VehicleMakeItems();
-                                    vehicleMakeItems.setVehicleMakeName(jsonObject.getString("name"));
-                                    vehicleMakeItems.setVehicleMakeId(jsonObject.getInt("id"));
-                                    vehicleMakeArrayList.add(vehicleMakeItems);
-                                }
-                                vehicleMakesAdapter = new VehicleMakes(getActivity(), vehicleMakeArrayList);
-                                mVehicleMakeSpinner.setAdapter(vehicleMakesAdapter);
-                                mVehicleMakeSpinner.setSelection(0);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                    }
-            }
-        });
-        getStateRequest.open("GET", String.format("%svehicles/make", AppGlobals.BASE_URL));
-        getStateRequest.send();
-    }
-
     private void getVehicleType() {
         HttpRequest getStateRequest = new HttpRequest(getActivity());
         getStateRequest.setOnReadyStateChangeListener((request, readyState) -> {
@@ -341,13 +310,14 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
                     switch (request.getStatus()) {
                         case HttpURLConnection.HTTP_OK:
                             try {
-                                JSONArray jsonArray = new JSONArray(request.getResponseText());
+                                JSONObject jsonObject = new JSONObject(request.getResponseText());
+                                JSONArray jsonArray = jsonObject.getJSONArray("results");
                                 for (int i = 0; i < jsonArray.length(); i++) {
                                     System.out.println("Test " + jsonArray.getJSONObject(i));
-                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                    JSONObject VehicleTypejsonObject = jsonArray.getJSONObject(i);
                                     VehicleTypeItems vehicleItems = new VehicleTypeItems();
-                                    vehicleItems.setVehicleTypeId(jsonObject.getInt("id"));
-                                    vehicleItems.setVehicleTypeName(jsonObject.getString("name"));
+                                    vehicleItems.setVehicleTypeId(VehicleTypejsonObject.getInt("id"));
+                                    vehicleItems.setVehicleTypeName(VehicleTypejsonObject.getString("name"));
                                     vehicleTypeArrayList.add(vehicleItems);
                                 }
                                 vehicleTypeAdapter = new VehicleType(getActivity(), vehicleTypeArrayList);
@@ -360,6 +330,67 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
             }
         });
         getStateRequest.open("GET", String.format("%svehicles/type", AppGlobals.BASE_URL));
+        getStateRequest.send();
+    }
+
+
+    private void getVehicleModel() {
+        HttpRequest getStateRequest = new HttpRequest(getActivity());
+        getStateRequest.setOnReadyStateChangeListener((request, readyState) -> {
+            switch (readyState) {
+                case HttpRequest.STATE_DONE:
+                    switch (request.getStatus()) {
+                        case HttpURLConnection.HTTP_OK:
+                            try {
+                                JSONObject jsonObject = new JSONObject(request.getResponseText());
+                                JSONArray jsonArray = jsonObject.getJSONArray("results");
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    System.out.println("Test " + jsonArray.getJSONObject(i));
+                                    JSONObject vehicleTypejsonObject = jsonArray.getJSONObject(i);
+                                    JSONArray modelsJsonArray = vehicleTypejsonObject.getJSONArray("models");
+                                    VehicleMakeWithModelItems vehicleMakeWithModelItems = new VehicleMakeWithModelItems();
+                                    ArrayList<CarCompanyItems> carCompanyArrayList = new ArrayList<>();
+                                    for (int j = 0; j < modelsJsonArray.length(); j++) {
+                                        JSONObject modelJsonObject = modelsJsonArray.getJSONObject(j);
+                                        CarCompanyItems carCompanyItems = new CarCompanyItems();
+                                        carCompanyItems.setCompanyName(modelJsonObject.getString("name"));
+                                        carCompanyItems.setCompanyId(modelJsonObject.getInt("id"));
+                                        carCompanyArrayList.add(carCompanyItems);
+
+                                    }
+                                    vehicleMakeWithModelItems.setHashMap(vehicleTypejsonObject.getInt("id"),
+                                            carCompanyArrayList);
+                                    vehicleMakeWithModelItems.setVehicleModelId(vehicleTypejsonObject.getInt("id"));
+                                    vehicleMakeWithModelItems.setVehicleModelName(vehicleTypejsonObject.getString("name"));
+                                    vehicleMakeWithModelItemsArrayList.add(vehicleMakeWithModelItems);
+                                }
+                                vehicleModelAdapterAdapter = new VehicleModelAdapter(getActivity(), vehicleMakeWithModelItemsArrayList);
+                                mVehicleMakeSpinner.setAdapter(vehicleModelAdapterAdapter);
+                                mVehicleMakeSpinner.setSelection(0);
+                                mVehicleMakeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                    @Override
+                                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                        VehicleMakeWithModelItems model = vehicleMakeWithModelItemsArrayList.get(position);
+                                        vehicleMakeWithModelAdapter = new VehicleMakeWithModel(getActivity(),
+                                                model.getCompanyNames(model.getVehicleModelId()));
+                                        mVehicleModelSpinner.setAdapter(vehicleMakeWithModelAdapter);
+                                        mVehicleMakeSpinnerString = String.valueOf(model.getVehicleModelId());
+
+                                    }
+
+                                    @Override
+                                    public void onNothingSelected(AdapterView<?> parent) {
+
+                                    }
+                                });
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                    }
+            }
+        });
+        getStateRequest.open("GET", String.format("%svehicles/make-with-models", AppGlobals.BASE_URL));
         getStateRequest.send();
     }
 
@@ -498,9 +529,7 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
         mContactNumberString = mContactNumberEditText.getText().toString();
         mFullNameString = mFullNameEditText.getText().toString();
         mAddressEditTextString = mAddressEditText.getText().toString();
-
         mVehicleYearString = mVehicleYearEditText.getText().toString();
-        mVehicleModelString = mVehicleModelEditText.getText().toString();
 
         if (mPasswordString.trim().isEmpty() || mPasswordString.length() < 4) {
             mPasswordEditText.setError("enter at least 4 characters");
@@ -537,12 +566,6 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
             mVehicleYearEditText.setError(null);
         }
 
-        if (mVehicleModelString.trim().isEmpty()) {
-            mVehicleModelEditText.setError("required");
-            valid = false;
-        } else {
-            mVehicleModelEditText.setError(null);
-        }
 
         if (mFullNameString.trim().isEmpty()) {
             mFullNameEditText.setError("required");
@@ -656,13 +679,15 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         switch (parent.getId()) {
-            case R.id.vehicle_make_spinner:
-                VehicleMakeItems vehicleMakeItems = vehicleMakeArrayList.get(position);
-                mVehicleMakeSpinnerString = String.valueOf(vehicleMakeItems.getVehicleMakeId());
-                break;
             case R.id.vehicle_type_spinner:
                 VehicleTypeItems vehicleTypeItems = vehicleTypeArrayList.get(position);
                 mVehicleTypeSpinnerString = String.valueOf(vehicleTypeItems.getVehicleTypeId());
+                break;
+            case R.id.vehicle_model_Spinner:
+                VehicleMakeWithModelItems vehicleMakeWithModelItems = vehicleMakeWithModelItemsArrayList.get(position);
+                mVehicleModelSpinnerString = String.valueOf(vehicleMakeWithModelItems.getVehicleModelId());
+                System.out.println(mVehicleModelSpinnerString + "working");
+                System.out.println(mVehicleModelSpinnerString == null);
                 break;
         }
     }

@@ -1,14 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background_color">
 
-    <ListView
-        android:id="@+id/buy_car_parts_list_view"
-        android:layout_margin="5dp"
-        android:divider="@null"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-    </ListView>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:orientation="vertical">
 
-</LinearLayout>
+        <ImageView
+            android:id="@+id/logo_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/ic_logo" />
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/main_rel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="70dp"
+            android:weightSum="2.0">
+
+            <RelativeLayout
+                android:id="@+id/vehicle_make_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/vehicle_make"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:text="Select Vehicle Make"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@color/text_color"
+                    android:textSize="15sp" />
+
+                <Spinner
+                    android:id="@+id/vehicle_make_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_below="@+id/vehicle_make"
+                    android:background="@drawable/rounded_edittext"
+                    android:padding="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@color/button_text_color" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/child_two"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/vehicle_model"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:layout_marginLeft="10dp"
+                    android:text="Select Vehicle Model"
+                    android:textColor="@color/text_color"
+                    android:textSize="15sp" />
+
+                <Spinner
+                    android:id="@+id/vehicle_model_Spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_below="@+id/vehicle_model"
+                    android:background="@drawable/rounded_edittext"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@color/button_text_color"
+                    android:textSize="15sp" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/request_button"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/button_background"
+            android:text="Search"
+            android:textColor="@color/text_color" />
+    </LinearLayout>
+</RelativeLayout>
