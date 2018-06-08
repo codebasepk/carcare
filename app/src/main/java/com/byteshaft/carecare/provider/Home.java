@@ -52,7 +52,7 @@ public class Home extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.auto_mechanic_image_button:
-                Toast.makeText(getContext(), "this is ok", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getActivity(), MechanicActivity.class));
                 break;
             case R.id.car_wash_image_button:
                 Toast.makeText(getContext(), "this is ok", Toast.LENGTH_SHORT).show();

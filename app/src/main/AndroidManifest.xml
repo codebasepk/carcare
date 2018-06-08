@@ -35,7 +35,6 @@
             android:name=".ServiceProviderActivity"
             android:label="@string/title_activity_service_provider"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity android:name=".ServiceRequestActivity" />
 
         <meta-data
@@ -43,9 +42,9 @@
             android:value="@string/google_map_api_key" />
 
         <activity android:name=".provider.CarPartsActivity" />
-
-        <activity
-            android:name=".provider.AddCarPart" />
+        <activity android:name=".provider.AddCarPart" />
+        <activity android:name=".provider.MechanicActivity" />
+        <activity android:name=".provider.AddMechanicService" />
     </application>
 
 </manifest>
