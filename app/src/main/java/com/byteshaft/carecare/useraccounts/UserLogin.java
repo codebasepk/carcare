@@ -65,6 +65,15 @@ public class UserLogin extends Fragment implements HttpRequest.OnReadyStateChang
 
     @Override
     public void onError(HttpRequest request, int readyState, short error, Exception exception) {
+        Helpers.dismissProgressDialog();
+        switch (readyState) {
+            case HttpRequest.ERROR_CONNECTION_TIMED_OUT:
+                Helpers.showSnackBar(getView(), getString(R.string.connection_time_out));
+                break;
+            case HttpRequest.ERROR_NETWORK_UNREACHABLE:
+                Helpers.showSnackBar(getView(), exception.getLocalizedMessage());
+                break;
+        }
 
     }
 
