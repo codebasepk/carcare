@@ -6,11 +6,15 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home_provider"
-            android:title="HOME" />
+            android:title="Home" />
+
+        <item
+            android:id="@+id/nav_profile_provider"
+            android:title="Profile" />
 
         <item
             android:id="@+id/nav_logout"
-            android:title="LOGOUT" />
+            android:title="Logout" />
     </group>
 
     <!--<item android:title="Others">-->

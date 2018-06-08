@@ -98,6 +98,20 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
         mButtonLogin.setOnClickListener(this);
         etAddress.setOnClickListener(this);
         organizationImage.setOnClickListener(this);
+        if (AppGlobals.isLogin()) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar()
+                    .setTitle("Profile");
+            etOrganizationName.setText(AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_ORGANIZATION_NAME));
+            etUsername.setText(AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_USER_NAME));
+            etEmail.setText(AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_EMAIL));
+            etEmail.setEnabled(false);
+            etEmail.setCursorVisible(false);
+            etContactPerson.setText(AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_CONTACT_PERSON));
+            etContactNumber.setText(AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_CONTACT_NUMBER));
+            etPassword.setVisibility(View.GONE);
+            etVerifyPassword.setVisibility(View.GONE);
+            mButtonLogin.setVisibility(View.GONE);
+        }
         return mBaseView;
     }
 

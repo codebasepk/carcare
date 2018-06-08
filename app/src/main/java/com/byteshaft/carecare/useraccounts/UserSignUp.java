@@ -180,7 +180,6 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
         vehicleMakeWithModelItemsArrayList = new ArrayList<>();
         getVehicleType();
         getVehicleModel();
-
         mPickForCurrentLocation.setOnClickListener(this);
         mSignInTextView.setOnClickListener(this);
         mSignUpButtonButton.setOnClickListener(this);
@@ -208,14 +207,14 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
                     alertDialogBuilder.setTitle(getResources().getString(R.string.permission_dialog_title));
                     alertDialogBuilder.setMessage(getResources().getString(R.string.permission_dialog_message))
                             .setCancelable(false).setPositiveButton(R.string.button_continue, (dialog, id) -> {
-                                dialog.dismiss();
-                                if (ContextCompat.checkSelfPermission(getActivity(),
-                                        Manifest.permission.ACCESS_COARSE_LOCATION)
-                                        != PackageManager.PERMISSION_GRANTED) {
-                                    requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                                            LOCATION_PERMISSION);
-                                }
-                            });
+                        dialog.dismiss();
+                        if (ContextCompat.checkSelfPermission(getActivity(),
+                                Manifest.permission.ACCESS_COARSE_LOCATION)
+                                != PackageManager.PERMISSION_GRANTED) {
+                            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                                    LOCATION_PERMISSION);
+                        }
+                    });
                     alertDialogBuilder.setNegativeButton(R.string.cancel, (dialogInterface, i) -> dialogInterface.dismiss());
                     AlertDialog alertDialog = alertDialogBuilder.create();
                     alertDialog.show();
@@ -351,7 +350,7 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
                                     JSONArray modelsJsonArray = vehicleTypejsonObject.getJSONArray("models");
                                     VehicleMakeWithModelItems vehicleMakeWithModelItems = new VehicleMakeWithModelItems();
                                     ArrayList<CarCompanyItems> carCompanyArrayList = new ArrayList<>();
-                                    for (int j = 0; j <modelsJsonArray.length() ; j++) {
+                                    for (int j = 0; j < modelsJsonArray.length(); j++) {
                                         JSONObject modelJsonObject = modelsJsonArray.getJSONObject(j);
                                         CarCompanyItems carCompanyItems = new CarCompanyItems();
                                         carCompanyItems.setCompanyName(modelJsonObject.getString("name"));

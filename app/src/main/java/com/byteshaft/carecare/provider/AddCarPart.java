@@ -1,6 +1,7 @@
 package com.byteshaft.carecare.provider;
 
 import android.Manifest;
+import android.app.DatePickerDialog;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,25 +20,40 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.byteshaft.carecare.Adapters.VehicleMakeWithModel;
+import com.byteshaft.carecare.Adapters.VehicleModelAdapter;
 import com.byteshaft.carecare.R;
+import com.byteshaft.carecare.gettersetter.CarCompanyItems;
+import com.byteshaft.carecare.gettersetter.VehicleMakeWithModelItems;
 import com.byteshaft.carecare.utils.AppGlobals;
 import com.byteshaft.carecare.utils.Helpers;
 import com.byteshaft.carecare.utils.RotateUtil;
 import com.byteshaft.requests.FormData;
 import com.byteshaft.requests.HttpRequest;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
-public class AddCarPart extends AppCompatActivity {
+public class AddCarPart extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
 
     private static final int SELECT_FILE = 2;
@@ -50,10 +66,28 @@ public class AddCarPart extends AppCompatActivity {
     private static String imageUrl = "";
 
     private ImageView partImage;
-    private EditText partDescription, carMake, carModel, partPrice;
+    private EditText partDescription, partPrice;
     private Button addButton;
+    private TextView pickYear;
+    private String selectedDate;
 
-    private String description, make, model, price;
+
+    private VehicleModelAdapter vehicleModelAdapterAdapter;
+    private ArrayList<VehicleMakeWithModelItems> arrayList;
+
+    private VehicleMakeWithModel vehicleMakeAdapter;
+    private ArrayList<CarCompanyItems> vehicleMakeArrayList;
+
+    private int mVehicleMakeSpinnerId;
+    private String mVehicleModelSpinnerString;
+
+    private Spinner mVehicleModelSpinner;
+    private Spinner mVehicleMakeSpinner;
+
+    private DatePickerDialog.OnDateSetListener date;
+    private Calendar mCalendar;
+
+    private String description, price;
 
 
     @Override
@@ -61,14 +95,38 @@ public class AddCarPart extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_car_part);
         setTitle("Add Car Part");
+        mCalendar = Calendar.getInstance();
         partImage = findViewById(R.id.part_image);
-
+        pickYear = findViewById(R.id.pick_year);
         addButton = findViewById(R.id.button_add);
         partDescription = findViewById(R.id.part_description);
-        carMake = findViewById(R.id.car_make);
-        carModel = findViewById(R.id.car_model);
         partPrice = findViewById(R.id.part_price);
 
+        mVehicleModelSpinner = findViewById(R.id.vehicle_model_Spinner);
+        mVehicleMakeSpinner = findViewById(R.id.vehicle_make_spinner);
+
+        mVehicleModelSpinner.setOnItemSelectedListener(this);
+        mVehicleMakeSpinner.setOnItemSelectedListener(this);
+        arrayList = new ArrayList<>();
+        vehicleMakeArrayList = new ArrayList<>();
+
+        date = (view, year, monthOfYear, dayOfMonth) -> {
+            mCalendar.set(Calendar.YEAR, year);
+            mCalendar.set(Calendar.MONTH, monthOfYear);
+            mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            updateLabel();
+        };
+
+        pickYear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mCalendar.add(Calendar.DAY_OF_YEAR, 0);
+                DatePickerDialog datePickerDialog = new DatePickerDialog(AddCarPart.this, date, mCalendar
+                        .get(Calendar.YEAR), mCalendar.get(Calendar.MONTH),
+                        mCalendar.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.show();
+            }
+        });
         partImage.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
@@ -81,20 +139,31 @@ public class AddCarPart extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (validate()) {
-                    addPart(description, make, model, price, imageUrl);
-                    Log.wtf(" ok ", imageUrl);
+                    addPart(description, mVehicleModelSpinnerString, String.valueOf(mVehicleMakeSpinnerId), price, imageUrl, selectedDate);
+                    Log.wtf(" ok ", imageUrl + "  " + selectedDate);
                 }
             }
         });
+        getVehicleMake();
+        getVehicleModel(mVehicleMakeSpinnerId);
+
     }
 
-    private void addPart(String description, String make, String model, String price, String image) {
+    private void updateLabel() {
+        String myFormat = "yyyy";
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+        pickYear.setText(sdf.format(mCalendar.getTime()));
+        selectedDate = sdf.format(mCalendar.getTime());
+    }
+
+    private void addPart(String description, String make, String model, String price, String image, String year) {
         HttpRequest request = new HttpRequest(getApplicationContext());
         request.setOnReadyStateChangeListener(new HttpRequest.OnReadyStateChangeListener() {
             @Override
             public void onReadyStateChange(HttpRequest request, int readyState) {
                 switch (readyState) {
                     case HttpRequest.STATE_DONE:
+                        Log.wtf("Check --------->>>", request.getResponseText());
                         Helpers.dismissProgressDialog();
                         switch (request.getStatus()) {
                             case HttpURLConnection.HTTP_CREATED:
@@ -113,17 +182,19 @@ public class AddCarPart extends AppCompatActivity {
         request.open("POST", String.format("%sprovider/parts", AppGlobals.BASE_URL));
         request.setRequestHeader("Authorization", "Token " +
                 AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_TOKEN));
-        request.send(partData(description, make, model, price, image));
+        request.send(partData(description, make, model, price, image, year));
         Helpers.showProgressDialog(AddCarPart.this, "Adding...");
     }
 
-    private FormData partData(String description, String make, String model, String price, String image) {
+    private FormData partData(String description, String make, String model, String price, String image, String year) {
 
         FormData formData = new FormData();
         formData.append(FormData.TYPE_CONTENT_TEXT, "description", description);
         formData.append(FormData.TYPE_CONTENT_TEXT, "make", make);
         formData.append(FormData.TYPE_CONTENT_TEXT, "model", model);
         formData.append(FormData.TYPE_CONTENT_TEXT, "price", price);
+        formData.append(FormData.TYPE_CONTENT_TEXT, "end_year", year);
+        formData.append(FormData.TYPE_CONTENT_TEXT, "start_year", year);
         if (imageUrl != null && !imageUrl.trim().isEmpty()) {
             formData.append(FormData.TYPE_CONTENT_FILE, "image", image);
         }
@@ -133,29 +204,18 @@ public class AddCarPart extends AppCompatActivity {
     public boolean validate() {
         boolean valid = true;
         description = partDescription.getText().toString();
-        make = carMake.getText().toString();
-        model = carModel.getText().toString();
         price = partPrice.getText().toString();
+
+        if (selectedDate.trim().isEmpty()) {
+            Toast.makeText(this, "Select Year", Toast.LENGTH_SHORT).show();
+            valid = false;
+        }
 
         if (description.trim().isEmpty()) {
             partDescription.setError("Required");
             valid = false;
         } else {
             partDescription.setError(null);
-        }
-
-        if (make.trim().isEmpty()) {
-            carMake.setError("Required");
-            valid = false;
-        } else {
-            carMake.setError(null);
-        }
-
-        if (model.trim().isEmpty()) {
-            carModel.setError("Required");
-            valid = false;
-        } else {
-            carModel.setError(null);
         }
 
         if (price.trim().isEmpty()) {
@@ -166,7 +226,7 @@ public class AddCarPart extends AppCompatActivity {
         }
 
         if (imageUrl.trim().isEmpty()) {
-            Toast.makeText(this, "Please add an Image", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Add an Image", Toast.LENGTH_SHORT).show();
             valid = false;
         }
 
@@ -305,5 +365,88 @@ public class AddCarPart extends AppCompatActivity {
                 imageUrl = String.valueOf(selectedImagePath);
             }
         }
+    }
+
+    private void getVehicleModel(int id) {
+        HttpRequest getStateRequest = new HttpRequest(getApplicationContext());
+        getStateRequest.setOnReadyStateChangeListener((request, readyState) -> {
+            switch (readyState) {
+                case HttpRequest.STATE_DONE:
+                    switch (request.getStatus()) {
+                        case HttpURLConnection.HTTP_OK:
+                            arrayList = new ArrayList<>();
+                            try {
+                                JSONObject jsonObject = new JSONObject(request.getResponseText());
+                                JSONArray jsonArray = jsonObject.getJSONArray("results");
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    System.out.println("working " + jsonArray.getJSONObject(i));
+                                    JSONObject VehicleTypeJsonObject = jsonArray.getJSONObject(i);
+                                    VehicleMakeWithModelItems vehicleMakeWithModelItems = new VehicleMakeWithModelItems();
+                                    vehicleMakeWithModelItems.setVehicleModelId(VehicleTypeJsonObject.getInt("id"));
+                                    vehicleMakeWithModelItems.setVehicleModelName(VehicleTypeJsonObject.getString("name"));
+                                    arrayList.add(vehicleMakeWithModelItems);
+                                }
+                                vehicleModelAdapterAdapter = new VehicleModelAdapter(AddCarPart.this, arrayList);
+                                mVehicleModelSpinner.setAdapter(vehicleModelAdapterAdapter);
+                                mVehicleModelSpinner.setSelection(0);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                    }
+            }
+        });
+        getStateRequest.open("GET", String.format("%svehicles/make/%s/models", AppGlobals.BASE_URL, id));
+        getStateRequest.send();
+    }
+
+    private void getVehicleMake() {
+        HttpRequest getStateRequest = new HttpRequest(getApplicationContext());
+        getStateRequest.setOnReadyStateChangeListener((request, readyState) -> {
+            switch (readyState) {
+                case HttpRequest.STATE_DONE:
+                    switch (request.getStatus()) {
+                        case HttpURLConnection.HTTP_OK:
+                            try {
+                                JSONObject jsonObject = new JSONObject(request.getResponseText());
+                                JSONArray jsonArray = jsonObject.getJSONArray("results");
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    System.out.println("Test " + jsonArray.getJSONObject(i));
+                                    JSONObject vehicleMakeJsonObject = jsonArray.getJSONObject(i);
+                                    CarCompanyItems carCompanyItems = new CarCompanyItems();
+                                    carCompanyItems.setCompanyId(vehicleMakeJsonObject.getInt("id"));
+                                    carCompanyItems.setCompanyName(vehicleMakeJsonObject.getString("name"));
+                                    vehicleMakeArrayList.add(carCompanyItems);
+                                }
+                                vehicleMakeAdapter = new VehicleMakeWithModel(AddCarPart.this, vehicleMakeArrayList);
+                                mVehicleMakeSpinner.setAdapter(vehicleMakeAdapter);
+                                mVehicleMakeSpinner.setSelection(0);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                    }
+            }
+        });
+        getStateRequest.open("GET", String.format("%svehicles/make", AppGlobals.BASE_URL));
+        getStateRequest.send();
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        switch (parent.getId()) {
+            case R.id.vehicle_model_Spinner:
+                VehicleMakeWithModelItems vehicleMakeWithModelItems = arrayList.get(position);
+                mVehicleModelSpinnerString = String.valueOf(vehicleMakeWithModelItems.getVehicleModelId());
+                break;
+            case R.id.vehicle_make_spinner:
+                CarCompanyItems carCompanyItems = vehicleMakeArrayList.get(position);
+                mVehicleMakeSpinnerId = carCompanyItems.getCompanyId();
+                getVehicleModel(mVehicleMakeSpinnerId);
+                break;
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
     }
 }

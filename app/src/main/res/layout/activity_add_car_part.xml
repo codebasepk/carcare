@@ -1,85 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="16dp"
-    tools:context=".provider.AddCarPart">
+    android:background="@color/background_color"
+    android:layout_centerVertical="true">
 
-    <ImageView
-        android:id="@+id/part_image"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_centerHorizontal="true"
-        android:clickable="true"
-        android:src="@android:drawable/ic_menu_gallery" />
-
-    <LinearLayout
+    <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/part_image"
-        android:layout_margin="4dp"
-        android:layout_marginTop="10dp"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:layout_margin="16dp"
+        tools:context=".provider.AddCarPart">
 
-        <EditText
-            android:id="@+id/part_description"
+        <ImageView
+            android:id="@+id/part_image"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_centerHorizontal="true"
+            android:clickable="true"
+            android:src="@android:drawable/ic_menu_gallery" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_edittext"
-            android:hint="Description"
-            android:maxLines="3"
-            android:padding="10dp"
-            android:singleLine="true" />
-
-
-        <EditText
-            android:id="@+id/car_make"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_below="@+id/part_image"
+            android:layout_margin="4dp"
             android:layout_marginTop="10dp"
-            android:background="@drawable/rounded_edittext"
-            android:hint="Company i.e Honda.."
-            android:maxLines="3"
-            android:padding="10dp"
-            android:singleLine="true" />
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/part_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_edittext"
+                android:hint="Description"
+                android:maxLines="3"
+                android:padding="10dp"
+                android:singleLine="true" />
 
 
-        <EditText
-            android:id="@+id/car_model"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/rounded_edittext"
-            android:hint="Model"
-            android:maxLines="3"
-            android:padding="10dp"
-            android:singleLine="true" />
+
+            <EditText
+                android:id="@+id/part_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rounded_edittext"
+                android:hint="Price"
+                android:inputType="number"
+                android:maxLines="3"
+                android:padding="10dp"
+                android:singleLine="true" />
+
+            <TextView
+                android:id="@+id/pick_year"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rounded_edittext"
+                android:clickable="true"
+                android:maxLines="3"
+                android:padding="10dp"
+                android:singleLine="true"
+                android:text="Select Year" />
 
 
-        <EditText
-            android:id="@+id/part_price"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/rounded_edittext"
-            android:hint="Price"
-            android:inputType="number"
-            android:maxLines="3"
-            android:padding="10dp"
-            android:singleLine="true" />
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/main_rel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2.0">
+
+                <RelativeLayout
+                    android:id="@+id/vehicle_make_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:id="@+id/vehicle_make"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="4dp"
+                        android:text="Select Vehicle Make"
+                        android:layout_marginLeft="10dp"
+                        android:textColor="@color/text_color"
+                        android:textSize="15sp" />
+
+                    <Spinner
+                        android:id="@+id/vehicle_make_spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_below="@+id/vehicle_make"
+                        android:background="@drawable/rounded_edittext"
+                        android:padding="5dp"
+                        android:layout_marginLeft="10dp"
+                        android:textColor="@color/button_text_color" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/child_two"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.0"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:id="@+id/vehicle_model"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="4dp"
+                        android:layout_marginLeft="10dp"
+                        android:text="Select Vehicle Model"
+                        android:textColor="@color/text_color"
+                        android:textSize="15sp" />
+
+                    <Spinner
+                        android:id="@+id/vehicle_model_Spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_below="@+id/vehicle_model"
+                        android:background="@drawable/rounded_edittext"
+                        android:layout_marginLeft="10dp"
+                        android:textColor="@color/button_text_color"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+            </LinearLayout>
 
 
-        <Button
-            android:id="@+id/button_add"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/button_background"
-            android:text="Add"
-            android:textColor="@color/text_color" />
+            <Button
+                android:id="@+id/button_add"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/button_background"
+                android:text="Add"
+                android:textColor="@color/text_color" />
+        </LinearLayout>
 
-    </LinearLayout>
-
-</RelativeLayout>
+    </RelativeLayout>
+</ScrollView>
