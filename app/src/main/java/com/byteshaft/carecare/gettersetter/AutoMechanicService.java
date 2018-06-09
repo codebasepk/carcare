@@ -1,18 +1,9 @@
 package com.byteshaft.carecare.gettersetter;
 
-public class MechanicServices {
-
-    String name;
-    int id;
-    String price;
-
-    public String getPrice() {
-        return price;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
-    }
+public class AutoMechanicService {
+    private String name;
+    private String price;
+    private int id;
 
     public String getName() {
         return name;
@@ -22,6 +13,14 @@ public class MechanicServices {
         this.name = name;
     }
 
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
     public int getId() {
         return id;
     }
@@ -29,5 +28,4 @@ public class MechanicServices {
     public void setId(int id) {
         this.id = id;
     }
-
 }
