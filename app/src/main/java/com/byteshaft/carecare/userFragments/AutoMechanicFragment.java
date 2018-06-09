@@ -71,14 +71,14 @@ public class AutoMechanicFragment extends Fragment implements HttpRequest.OnRead
                 switch (request.getStatus()) {
                     case HttpURLConnection.HTTP_OK:
                         try {
-                            JSONArray jsonArray = new JSONArray(request.getResponseText());
+                            JSONObject mainJsonObject = new JSONObject(request.getResponseText());
+                            JSONArray jsonArray = mainJsonObject.getJSONArray("results");
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 System.out.println("Test " + jsonArray.getJSONObject(i));
                                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                                 AutoMechanicCarWashItems items = new AutoMechanicCarWashItems();
                                 items.setServiceId(jsonObject.getInt("id"));
                                 items.setServiceName(jsonObject.getString("name"));
-                                items.setServicePrice(jsonObject.getInt("price"));
                                 arrayList.add(items);
                                 adapter.notifyDataSetChanged();
                             }
@@ -94,7 +94,7 @@ public class AutoMechanicFragment extends Fragment implements HttpRequest.OnRead
         request = new HttpRequest(getActivity());
         request.setOnReadyStateChangeListener(this);
         request.setOnErrorListener(this);
-        request.open("GET", String.format("%svegetables/", AppGlobals.BASE_URL));
+        request.open("GET", String.format("%smechanic-services", AppGlobals.BASE_URL));
         request.send();
         Helpers.showProgressDialog(getActivity(), "Fetching Services...");
     }

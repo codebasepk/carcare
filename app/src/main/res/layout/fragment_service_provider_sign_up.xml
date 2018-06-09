@@ -18,8 +18,8 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/organization_image"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_gravity="center_horizontal"
                 android:src="@drawable/camera"
                 app:civ_border_color="#fff"
