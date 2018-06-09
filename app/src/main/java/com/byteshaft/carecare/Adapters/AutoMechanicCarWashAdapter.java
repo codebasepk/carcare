@@ -34,7 +34,6 @@ public class AutoMechanicCarWashAdapter extends ArrayAdapter<String> {
             convertView = activity.getLayoutInflater().inflate(R.layout.delegate_auto_mechanic, parent, false);
             viewHolder = new ViewHolder();
             viewHolder.itemsCheckBox = convertView.findViewById(R.id.items_checkbox);
-            viewHolder.priceTextView = convertView.findViewById(R.id.price_text_view);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -42,7 +41,6 @@ public class AutoMechanicCarWashAdapter extends ArrayAdapter<String> {
 
         AutoMechanicCarWashItems autoMechanicCarWashItems = arrayList.get(position);
         viewHolder.itemsCheckBox.setText(autoMechanicCarWashItems.getServiceName());
-        viewHolder.priceTextView.setText(autoMechanicCarWashItems.getServicePrice());
         return convertView;
     }
 
@@ -53,7 +51,6 @@ public class AutoMechanicCarWashAdapter extends ArrayAdapter<String> {
 
     class ViewHolder {
 
-        TextView priceTextView;
         CheckBox itemsCheckBox;
 
     }
