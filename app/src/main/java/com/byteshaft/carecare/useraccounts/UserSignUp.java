@@ -177,6 +177,7 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
         mVehicleTypeSpinner = mBaseView.findViewById(R.id.vehicle_type_spinner);
         vehicleTypeArrayList = new ArrayList<>();
         arrayList = new ArrayList<>();
+        vehicleMakeArrayList = new ArrayList<>();
         mPickForCurrentLocation.setOnClickListener(this);
         mSignInTextView.setOnClickListener(this);
         mSignUpButtonButton.setOnClickListener(this);
