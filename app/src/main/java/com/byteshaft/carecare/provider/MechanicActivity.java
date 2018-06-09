@@ -1,31 +1,52 @@
 package com.byteshaft.carecare.provider;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.byteshaft.carecare.R;
+import com.byteshaft.carecare.gettersetter.AutoMechanicService;
 import com.byteshaft.carecare.utils.AppGlobals;
 import com.byteshaft.carecare.utils.Helpers;
 import com.byteshaft.requests.HttpRequest;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MechanicActivity extends AppCompatActivity {
 
     private ListView listView;
-
+    private List<AutoMechanicService> arrayList;
+    private ServiceAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mechanic);
         listView = findViewById(R.id.mechanic_list);
+        arrayList = new ArrayList<>();
         getAllMechanicServices();
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.wtf("whhhaa", String.valueOf(i));
+            }
+        });
     }
 
 
@@ -40,7 +61,26 @@ public class MechanicActivity extends AppCompatActivity {
                         Helpers.dismissProgressDialog();
                         switch (request.getStatus()) {
                             case HttpURLConnection.HTTP_OK:
-                                Log.wtf("OK", request.getResponseText());
+                                try {
+
+                                    JSONObject object = new JSONObject(request.getResponseText());
+                                    JSONArray jsonArray = object.getJSONArray("results");
+                                    for (int i = 0; i < jsonArray.length(); i++) {
+                                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                        AutoMechanicService mechanicServices = new AutoMechanicService();
+                                        JSONObject serviceObject = jsonObject.getJSONObject("service");
+                                        mechanicServices.setName(serviceObject.getString("name"));
+                                        mechanicServices.setPrice(jsonObject.getString("price"));
+                                        arrayList.add(mechanicServices);
+                                    }
+
+                                    adapter = new ServiceAdapter(getApplicationContext(), arrayList);
+                                    listView.setAdapter(adapter);
+                                    adapter.notifyDataSetChanged();
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                         }
                 }
             }
@@ -72,5 +112,55 @@ public class MechanicActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private class ServiceAdapter extends BaseAdapter {
+        private ViewHolder viewHolder;
+        private Context context;
+        private List<AutoMechanicService> listItems;
+
+        public ServiceAdapter(Context context, List<AutoMechanicService> wishlistItems) {
+            this.context = context;
+            this.listItems = wishlistItems;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
+                convertView = getLayoutInflater()
+                        .inflate(R.layout.delegate_mechanic_service, parent, false);
+                viewHolder = new ViewHolder();
+                viewHolder.price = convertView.findViewById(R.id.service_price);
+                viewHolder.name = convertView.findViewById(R.id.service_name);
+                convertView.setTag(viewHolder);
+            } else {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
+            AutoMechanicService items = listItems.get(position);
+            viewHolder.price.setText(items.getPrice());
+            viewHolder.name.setText(items.getName());
+
+            return convertView;
+        }
+
+        @Override
+        public int getCount() {
+            return listItems.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        private class ViewHolder {
+            private TextView price;
+            private TextView name;
+        }
     }
 }
