@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
@@ -11,6 +12,7 @@ import com.byteshaft.carecare.Adapters.MechanicServiceAdapter;
 import com.byteshaft.carecare.R;
 import com.byteshaft.carecare.gettersetter.MechanicServices;
 import com.byteshaft.carecare.utils.AppGlobals;
+import com.byteshaft.carecare.utils.Helpers;
 import com.byteshaft.requests.HttpRequest;
 
 import org.json.JSONArray;
@@ -24,10 +26,13 @@ public class AddMechanicService extends AppCompatActivity implements AdapterView
 
     private EditText etServicePrice;
     private Spinner serviceSpinner;
+    private Button addButton;
 
+    private String price;
+    private int serviceId;
     private ArrayList<MechanicServices> mechanicServicesArrayList;
     private MechanicServiceAdapter adapter;
-    int serviceId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,10 +41,65 @@ public class AddMechanicService extends AppCompatActivity implements AdapterView
         setTitle("Auto Mechanic");
         etServicePrice = findViewById(R.id.et_service_price);
         serviceSpinner = findViewById(R.id.mechanic_service_spinner);
+        addButton = findViewById(R.id.add_service);
+
         serviceSpinner.setOnItemSelectedListener(this);
         mechanicServicesArrayList = new ArrayList<>();
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (validate()) {
+                    addService(etServicePrice.getText().toString(), serviceId);
+                }
+            }
+        });
         getServices();
+    }
 
+    public boolean validate() {
+        boolean valid = true;
+        price = etServicePrice.getText().toString();
+
+
+        if (price.trim().isEmpty()) {
+            etServicePrice.setError("Required");
+            valid = false;
+        } else {
+            etServicePrice.setError(null);
+        }
+
+        return valid;
+    }
+
+
+    private void addService(String price, int service) {
+        Helpers.showProgressDialog(AddMechanicService.this, "Pleas wait...");
+        HttpRequest request = new HttpRequest(getApplicationContext());
+        request.setOnReadyStateChangeListener(new HttpRequest.OnReadyStateChangeListener() {
+            @Override
+            public void onReadyStateChange(HttpRequest request, int readyState) {
+                switch (readyState) {
+                    case HttpRequest.STATE_DONE:
+                        Helpers.dismissProgressDialog();
+                        switch (request.getStatus()) {
+                            case HttpURLConnection.HTTP_CREATED:
+                                Helpers.showSnackBar(addButton, "Item Added");
+                                finish();
+                        }
+                }
+            }
+        });
+        request.open("POST", String.format("%smechanic/services", AppGlobals.BASE_URL));
+        request.setRequestHeader("Authorization", "Token " +
+                AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_TOKEN));
+        JSONObject object = new JSONObject();
+        try {
+            object.put("price", price);
+            object.put("service", service);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        request.send(object.toString());
     }
 
     private void getServices() {
