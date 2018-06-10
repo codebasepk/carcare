@@ -87,6 +87,8 @@ public class CarPartsActivity extends AppCompatActivity {
                         switch (request.getStatus()) {
                             case HttpURLConnection.HTTP_NO_CONTENT:
                                 Helpers.showSnackBar(listView, "Item Deleted");
+                                carPartsList.clear();
+                                getPartsList();
                         }
                 }
             }
