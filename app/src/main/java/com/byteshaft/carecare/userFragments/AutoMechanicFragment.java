@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -34,6 +35,7 @@ public class AutoMechanicFragment extends Fragment implements HttpRequest.OnRead
 
     private AutoMechanicCarWashAdapter adapter;
     private ArrayList<AutoMechanicCarWashItems> arrayList;
+    private AutoMechanicCarWashItems autoMechanicCarWashItems;
 
     @Nullable
     @Override
@@ -46,6 +48,15 @@ public class AutoMechanicFragment extends Fragment implements HttpRequest.OnRead
         adapter = new AutoMechanicCarWashAdapter(getActivity(), arrayList);
         mAutoMechanicListView.setAdapter(adapter);
         getAutoMechanicsServicesList();
+        mAutoMechanicListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                autoMechanicCarWashItems = arrayList.get(position);
+
+
+
+            }
+        });
         return mBaseView;
     }
 
@@ -101,6 +112,11 @@ public class AutoMechanicFragment extends Fragment implements HttpRequest.OnRead
 
     @Override
     public void onClick(View v) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("service_id", autoMechanicCarWashItems.getServiceId());
+        ListOfServicesProviders listOfServicesProviders = new ListOfServicesProviders();
+        listOfServicesProviders.setArguments(bundle);
+        getFragmentManager().beginTransaction().replace(R.id.container, listOfServicesProviders).commit();
 
     }
 }
