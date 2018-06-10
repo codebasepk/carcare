@@ -3,6 +3,7 @@ package com.byteshaft.carecare.provider;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -38,13 +39,24 @@ public class MechanicActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mechanic);
+        setTitle("Auto Mechanic");
         listView = findViewById(R.id.mechanic_list);
         arrayList = new ArrayList<>();
         getAllMechanicServices();
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.wtf("whhhaa", String.valueOf(i));
+                AutoMechanicService service = arrayList.get(i);
+
+            }
+        });
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                AutoMechanicService service = arrayList.get(i);
+                deleteDialog(service.getId());
+                return true;
             }
         });
     }
@@ -69,6 +81,7 @@ public class MechanicActivity extends AppCompatActivity {
                                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                                         AutoMechanicService mechanicServices = new AutoMechanicService();
                                         JSONObject serviceObject = jsonObject.getJSONObject("service");
+                                        mechanicServices.setId(jsonObject.getInt("id"));
                                         mechanicServices.setName(serviceObject.getString("name"));
                                         mechanicServices.setPrice(jsonObject.getString("price"));
                                         arrayList.add(mechanicServices);
@@ -90,6 +103,44 @@ public class MechanicActivity extends AppCompatActivity {
                 AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_TOKEN));
         request.send();
     }
+
+    private void deleteDialog(int partId) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle(R.string.confirmation);
+        alertDialogBuilder.setMessage(R.string.delete)
+                .setCancelable(false).setPositiveButton(getString(R.string.yes),
+                (dialog, id) -> {
+                    deletePart(partId);
+                });
+        alertDialogBuilder.setNegativeButton(getString(R.string.cancel), (dialogInterface, i) -> dialogInterface.dismiss());
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
+    private void deletePart(int id) {
+        HttpRequest request = new HttpRequest(getApplicationContext());
+        request.setOnReadyStateChangeListener(new HttpRequest.OnReadyStateChangeListener() {
+            @Override
+            public void onReadyStateChange(HttpRequest request, int readyState) {
+                switch (readyState) {
+                    case HttpRequest.STATE_DONE:
+                        Helpers.dismissProgressDialog();
+                        switch (request.getStatus()) {
+                            case HttpURLConnection.HTTP_NO_CONTENT:
+                                Helpers.showSnackBar(listView, "Item Deleted");
+                                arrayList.clear();
+                                getAllMechanicServices();
+                        }
+                }
+            }
+        });
+        request.open("DELETE", String.format("%smechanic/services/%s", AppGlobals.BASE_URL, id));
+        request.setRequestHeader("Authorization", "Token " +
+                AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_TOKEN));
+        request.send();
+
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -137,8 +188,8 @@ public class MechanicActivity extends AppCompatActivity {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
             AutoMechanicService items = listItems.get(position);
-            viewHolder.price.setText(items.getPrice());
-            viewHolder.name.setText(items.getName());
+            viewHolder.price.setText("Price: " + items.getPrice());
+            viewHolder.name.setText("Service: " + items.getName());
 
             return convertView;
         }

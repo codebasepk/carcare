@@ -4,10 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@null"
+    android:background="@color/background_color"
     tools:context=".provider.MechanicActivity">
 
     <ListView
+        android:layout_margin="10dp"
         android:id="@+id/mechanic_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
