@@ -133,7 +133,7 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
             case R.id.address_edit_text:
                 PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
                 try {
-                    startActivityForResult(builder.build(ServiceProviderAccount.getInstance()), PLACE_PICKER_REQUEST);
+                    startActivityForResult(builder.build(getActivity()), PLACE_PICKER_REQUEST);
 
                 } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
                     e.printStackTrace();
