@@ -5,13 +5,16 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.byteshaft.carecare.R;
 import com.byteshaft.carecare.gettersetter.PartsListItems;
@@ -27,6 +30,9 @@ public class PartsListAdapter extends ArrayAdapter<String> {
     private ViewHolder viewHolder;
     private ArrayList<PartsListItems> arrayList;
     private Activity activity;
+    private PartsListItems partsListItems;
+
+    public String mContactNumber;
 
 
     public PartsListAdapter(Activity activity, ArrayList<PartsListItems> arrayList) {
@@ -52,7 +58,7 @@ public class PartsListAdapter extends ArrayAdapter<String> {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        PartsListItems partsListItems = arrayList.get(position);
+        partsListItems = arrayList.get(position);
         viewHolder.partNameTextView.setText(partsListItems.getPartName());
         viewHolder.partPriceTextView.setText(partsListItems.getPartPrice());
         viewHolder.partVehicleMakeModelTextView.setText(partsListItems.getPartMake());
@@ -60,13 +66,9 @@ public class PartsListAdapter extends ArrayAdapter<String> {
         Picasso.with(AppGlobals.getContext()).load(partsListItems.getPartImage()).into(viewHolder.partImage);
         viewHolder.providerContactTextView.setOnClickListener(v -> {
             System.out.println("CLICK");
-            Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse(
-                    "tel:" + partsListItems.getProvidersContactNumber()));
-            if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.CALL_PHONE)
-                    != PackageManager.PERMISSION_GRANTED) {
-                return;
+            if(isPermissionGranted()){
+                callAction();
             }
-            activity.startActivity(intent);
         });
 
         return convertView;
@@ -76,6 +78,38 @@ public class PartsListAdapter extends ArrayAdapter<String> {
     public int getCount() {
         return arrayList.size();
     }
+
+    public void callAction() {
+        mContactNumber = partsListItems.getProvidersContactNumber();
+        Intent callIntent = new Intent(Intent.ACTION_CALL);
+        callIntent.setData(Uri.parse("tel:" + mContactNumber));
+        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.CALL_PHONE) !=
+                PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        activity.startActivity(callIntent);
+    }
+
+    public  boolean isPermissionGranted() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (activity.checkSelfPermission(android.Manifest.permission.CALL_PHONE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Log.v("TAG","Permission is granted");
+                return true;
+            } else {
+
+                Log.v("TAG","Permission is revoked");
+                ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.CALL_PHONE}, 1);
+                return false;
+            }
+        }
+        else { //permission is automatically granted on sdk<23 upon installation
+            Log.v("TAG","Permission is granted");
+            return true;
+        }
+    }
+
+
 
     class ViewHolder {
         CircleImageView partImage;

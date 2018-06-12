@@ -3,22 +3,29 @@ package com.byteshaft.carecare.Adapters;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.byteshaft.carecare.R;
 import com.byteshaft.carecare.gettersetter.AutoMechanicCarWashItems;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class AutoMechanicCarWashAdapter extends ArrayAdapter<String> {
 
     private ViewHolder viewHolder;
     private ArrayList<AutoMechanicCarWashItems> arrayList;
     private Activity activity;
+    private AutoMechanicCarWashItems autoMechanicCarWashItems;
 
 
     public AutoMechanicCarWashAdapter(Activity activity, ArrayList<AutoMechanicCarWashItems> arrayList) {
@@ -33,14 +40,22 @@ public class AutoMechanicCarWashAdapter extends ArrayAdapter<String> {
         if (convertView == null) {
             convertView = activity.getLayoutInflater().inflate(R.layout.delegate_auto_mechanic, parent, false);
             viewHolder = new ViewHolder();
-            viewHolder.itemsCheckBox = convertView.findViewById(R.id.items_checkbox);
+            viewHolder.radioGroup = convertView.findViewById(R.id.radio_group);
+            RadioGroup.LayoutParams layoutParams;
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
+        autoMechanicCarWashItems = arrayList.get(position);
+        viewHolder.radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                autoMechanicCarWashItems = arrayList.get(position);
+                int serviceId = autoMechanicCarWashItems.getServiceId();
+                Log.e("onCheckedChanged", "" + serviceId);
 
-        AutoMechanicCarWashItems autoMechanicCarWashItems = arrayList.get(position);
-        viewHolder.itemsCheckBox.setText(autoMechanicCarWashItems.getServiceName());
+            }
+        });
         return convertView;
     }
 
@@ -50,8 +65,7 @@ public class AutoMechanicCarWashAdapter extends ArrayAdapter<String> {
     }
 
     class ViewHolder {
-
-        CheckBox itemsCheckBox;
+        RadioGroup radioGroup;
 
     }
 }

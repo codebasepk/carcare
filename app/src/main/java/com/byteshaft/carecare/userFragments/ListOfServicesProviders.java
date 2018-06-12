@@ -1,5 +1,6 @@
 package com.byteshaft.carecare.userFragments;
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,10 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.byteshaft.carecare.Adapters.ServiceProvidersListAdapter;
 import com.byteshaft.carecare.R;
-import com.byteshaft.carecare.gettersetter.PartsListItems;
 import com.byteshaft.carecare.gettersetter.ServicesProvidersListItems;
 import com.byteshaft.carecare.utils.AppGlobals;
 import com.byteshaft.carecare.utils.Helpers;
@@ -47,7 +48,7 @@ public class ListOfServicesProviders extends Fragment implements HttpRequest.OnR
         if(bundle != null) {
             mServiceId = bundle.getInt("service_id");
         }
-        getServiceProvidersList("30.0723233,71.1988781", mServiceId);
+        getServiceProvidersList("30.16199250000002,71.52062890625002", mServiceId);
         return mBaseView;
     }
 
@@ -57,9 +58,12 @@ public class ListOfServicesProviders extends Fragment implements HttpRequest.OnR
             case HttpRequest.STATE_DONE:
                 Helpers.dismissProgressDialog();
                 switch (request.getStatus()) {
+                    case HttpURLConnection.HTTP_BAD_REQUEST:
+                        Log.e("working " ,  " " + httpRequest.getResponseText());
+                        break;
                     case HttpURLConnection.HTTP_OK:
                         try {
-                            JSONObject mainJsonObject = new JSONObject(request.getResponseText());
+                            JSONObject mainJsonObject = new JSONObject(httpRequest.getResponseText());
                             JSONArray jsonArray = mainJsonObject.getJSONArray("results");
                             for (int i = 0; i < jsonArray.length() ; i++) {
                                 Log.e("working " ,  " " + jsonArray.getJSONObject(i));
@@ -67,8 +71,8 @@ public class ListOfServicesProviders extends Fragment implements HttpRequest.OnR
                                 ServicesProvidersListItems servicesProvidersListItems = new ServicesProvidersListItems();
                                 servicesProvidersListItems.setServiceProviderId(jsonObject.getInt("id"));
                                 servicesProvidersListItems.setServiceProviderName(jsonObject.getString("name"));
-                                servicesProvidersListItems.setProvidersContactNumber(jsonObject.getString("contact"));
-                                servicesProvidersListItems.setServiceProviderImage(jsonObject.getString("image"));
+                                servicesProvidersListItems.setProvidersContactNumber(jsonObject.getString("contact_number"));
+                                servicesProvidersListItems.setServiceProviderImage(jsonObject.getString("profile_photo"));
                                 arrayList.add(servicesProvidersListItems);
                                 adapter.notifyDataSetChanged();
                             }
@@ -102,5 +106,21 @@ public class ListOfServicesProviders extends Fragment implements HttpRequest.OnR
                 baseLocation, service));
         request.send();
         Helpers.showProgressDialog(getActivity(), getString(R.string.parts_list));
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(getActivity(), "Permission granted", Toast.LENGTH_SHORT).show();
+                    adapter.callAction();
+                } else {
+                    Toast.makeText(getActivity(), "Permission denied", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+        }
     }
 }

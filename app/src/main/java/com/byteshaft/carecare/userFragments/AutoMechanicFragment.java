@@ -1,17 +1,19 @@
 package com.byteshaft.carecare.userFragments;
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ListView;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
-import com.byteshaft.carecare.Adapters.AutoMechanicCarWashAdapter;
 import com.byteshaft.carecare.R;
 import com.byteshaft.carecare.gettersetter.AutoMechanicCarWashItems;
 import com.byteshaft.carecare.utils.AppGlobals;
@@ -29,34 +31,36 @@ public class AutoMechanicFragment extends Fragment implements HttpRequest.OnRead
         HttpRequest.OnErrorListener, View.OnClickListener {
 
     private View mBaseView;
-    private ListView mAutoMechanicListView;
+    private RadioGroup radioGroup;
+    private EditText mDetailsEditText;
     private Button mNextButton;
     private HttpRequest request;
 
-    private AutoMechanicCarWashAdapter adapter;
     private ArrayList<AutoMechanicCarWashItems> arrayList;
-    private AutoMechanicCarWashItems autoMechanicCarWashItems;
+    private int serviceId;
+    private RadioGroup.LayoutParams layoutParams;
+    private AutoMechanicCarWashItems items;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBaseView = inflater.inflate(R.layout.fragment_auto_mechanic, container, false);
-        mAutoMechanicListView = mBaseView.findViewById(R.id.auto_mechanic_list_view);
+        radioGroup = mBaseView.findViewById(R.id.radio_group);
+        mDetailsEditText = mBaseView.findViewById(R.id.details_edit_text);
         mNextButton = mBaseView.findViewById(R.id.button_next);
         mNextButton.setOnClickListener(this);
-        arrayList = new ArrayList<>();
-        adapter = new AutoMechanicCarWashAdapter(getActivity(), arrayList);
-        mAutoMechanicListView.setAdapter(adapter);
-        getAutoMechanicsServicesList();
-        mAutoMechanicListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                autoMechanicCarWashItems = arrayList.get(position);
-
-
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                items = arrayList.get(checkedId);
+                serviceId = items.getServiceId();
+                Log.e("onCheckedChanged", "" + serviceId);
 
             }
         });
+        arrayList = new ArrayList<>();
+        getAutoMechanicsServicesList();
+
         return mBaseView;
     }
 
@@ -87,11 +91,16 @@ public class AutoMechanicFragment extends Fragment implements HttpRequest.OnRead
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 System.out.println("Test " + jsonArray.getJSONObject(i));
                                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                AutoMechanicCarWashItems items = new AutoMechanicCarWashItems();
+                                items = new AutoMechanicCarWashItems();
                                 items.setServiceId(jsonObject.getInt("id"));
                                 items.setServiceName(jsonObject.getString("name"));
+                                RadioButton radioButton = new RadioButton(getActivity());
+                                radioButton.setText(items.getServiceName());
+                                radioButton.setId(i);
+                                layoutParams = new RadioGroup.LayoutParams(RadioGroup.LayoutParams.
+                                        WRAP_CONTENT, RadioGroup.LayoutParams.WRAP_CONTENT);
+                                radioGroup.addView(radioButton, layoutParams);
                                 arrayList.add(items);
-                                adapter.notifyDataSetChanged();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -113,10 +122,11 @@ public class AutoMechanicFragment extends Fragment implements HttpRequest.OnRead
     @Override
     public void onClick(View v) {
         Bundle bundle = new Bundle();
-        bundle.putInt("service_id", autoMechanicCarWashItems.getServiceId());
+        bundle.putInt("service_id", serviceId);
         ListOfServicesProviders listOfServicesProviders = new ListOfServicesProviders();
         listOfServicesProviders.setArguments(bundle);
         getFragmentManager().beginTransaction().replace(R.id.container, listOfServicesProviders).commit();
 
     }
+
 }

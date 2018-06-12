@@ -28,7 +28,8 @@ import org.json.JSONObject;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
-public class BuyCarPartsFragment extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
+public class BuyCarPartsFragment extends Fragment implements AdapterView.OnItemSelectedListener,
+        View.OnClickListener {
 
     private View mBaseView;
     private Spinner mVehicleModelSpinner;
