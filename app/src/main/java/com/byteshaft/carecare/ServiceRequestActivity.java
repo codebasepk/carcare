@@ -3,7 +3,9 @@ package com.byteshaft.carecare;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -22,6 +24,11 @@ import com.byteshaft.carecare.gettersetter.CarItems;
 import com.byteshaft.carecare.gettersetter.VehicleMakeWithModelItems;
 import com.byteshaft.carecare.utils.AppGlobals;
 import com.byteshaft.requests.HttpRequest;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,7 +40,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class ServiceRequestActivity extends Activity implements View.OnClickListener, RadioGroup.OnCheckedChangeListener, AdapterView.OnItemSelectedListener {
+public class ServiceRequestActivity extends Activity implements View.OnClickListener,
+        RadioGroup.OnCheckedChangeListener, AdapterView.OnItemSelectedListener {
 
     private Button mRequestButton;
     private Spinner mVehicleModelSpinner;
@@ -41,6 +49,7 @@ public class ServiceRequestActivity extends Activity implements View.OnClickList
     private EditText mDateEditText;
     private EditText mCarNumberEditText;
     private EditText mTimeEditText;
+    private EditText mCurrentLocationEditText;
     private EditText mContactNumber;
     private RadioGroup radioGroup;
     private String mRadioButtonString;
@@ -55,6 +64,7 @@ public class ServiceRequestActivity extends Activity implements View.OnClickList
 
     private int mVehicleMakeSpinnerId;
     private int mVehicleModelSpinnerId;
+    private String addressCoordinates;
 
     int PLACE_PICKER_REQUEST = 121;
 
@@ -64,6 +74,7 @@ public class ServiceRequestActivity extends Activity implements View.OnClickList
         setContentView(R.layout.service_request_activity);
         mContactNumber = findViewById(R.id.contact_number_edit_text);
         mCarNumberEditText = findViewById(R.id.car_number_edit_text);
+        mCurrentLocationEditText = findViewById(R.id.pick_location_edit_text);
         mDateEditText = findViewById(R.id.date_edit_text);
         mTimeEditText = findViewById(R.id.time_edit_text);
         mRequestButton = findViewById(R.id.request_button);
@@ -77,10 +88,13 @@ public class ServiceRequestActivity extends Activity implements View.OnClickList
         mVehicleMakeSpinner.setOnItemSelectedListener(this);
         mDateEditText.setOnClickListener(this);
         mTimeEditText.setOnClickListener(this);
+        mCurrentLocationEditText.setOnClickListener(this);
         arrayList = new ArrayList<>();
         vehicleMakeArrayList = new ArrayList<>();
         getVehicleMake();
         getVehicleModel(mVehicleMakeSpinnerId);
+
+        mContactNumber.setText(AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_CONTACT_NUMBER));
 
         mCalendar = Calendar.getInstance();
         date = new DatePickerDialog.OnDateSetListener() {
@@ -120,6 +134,15 @@ public class ServiceRequestActivity extends Activity implements View.OnClickList
                 break;
             case R.id.time_edit_text:
                 timePickerDialog();
+                break;
+            case R.id.pick_location_edit_text:
+                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+                try {
+                    startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
+
+                } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
+                    e.printStackTrace();
+                }
                 break;
         }
 
@@ -237,5 +260,21 @@ public class ServiceRequestActivity extends Activity implements View.OnClickList
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == PLACE_PICKER_REQUEST) {
+                Place place = PlacePicker.getPlace(data, getApplicationContext());
+                LatLng latLng = place.getLatLng();
+                String latitude = String.valueOf(latLng.latitude);
+                String longitude = String.valueOf(latLng.longitude);
+                addressCoordinates = latitude + "," + longitude;
+                Log.wtf("Address:  ", addressCoordinates);
+                mCurrentLocationEditText.setText(place.getName());
+            }
+        }
     }
 }
