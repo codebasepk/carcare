@@ -38,6 +38,7 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -102,16 +103,28 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
         if (AppGlobals.isLogin()) {
             ((AppCompatActivity) getActivity()).getSupportActionBar()
                     .setTitle("Profile");
+            mButtonCreateAccoutn.setText("Update");
             etOrganizationName.setText(AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_ORGANIZATION_NAME));
+            etOrganizationName.setSelection(etOrganizationName.getText().toString().length());
             etUsername.setText(AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_USER_NAME));
             etEmail.setText(AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_EMAIL));
             etEmail.setEnabled(false);
             etEmail.setCursorVisible(false);
             etContactPerson.setText(AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_CONTACT_PERSON));
             etContactNumber.setText(AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_CONTACT_NUMBER));
+            etAddress.setText(AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_ADDRESS));
             etPassword.setVisibility(View.GONE);
             etVerifyPassword.setVisibility(View.GONE);
             mButtonLogin.setVisibility(View.GONE);
+            if (AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_SERVER_IMAGE) != null) {
+                String url = AppGlobals.SERVER_IP + AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_SERVER_IMAGE);
+                Picasso.with(AppGlobals.getContext())
+                        .load(url)
+                        .placeholder(R.drawable.background_image)// optional
+                        .error(R.mipmap.ic_launcher)      // optional
+                        .resize(250, 250)
+                        .into(organizationImage);
+            }
         }
         return mBaseView;
     }
