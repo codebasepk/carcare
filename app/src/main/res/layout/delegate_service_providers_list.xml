@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:minHeight="120dp"
-        android:minWidth="450dp"
+        android:minWidth="500dp"
         app:cardCornerRadius="5dp">
 
         <RelativeLayout

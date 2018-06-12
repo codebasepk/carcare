@@ -1,5 +1,6 @@
 package com.byteshaft.carecare.userFragments;
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.byteshaft.carecare.Adapters.PartsListAdapter;
 import com.byteshaft.carecare.R;
@@ -47,7 +49,7 @@ public class PartsListFragment extends Fragment implements HttpRequest.OnErrorLi
         adapter = new PartsListAdapter(getActivity(), arrayList);
         mPartsListView.setAdapter(adapter);
         Bundle bundle = getArguments();
-        if(bundle != null){
+        if (bundle != null) {
             vehicleYearString = bundle.getString("vehicle_year");
             vehicleMakeId = bundle.getInt("vehicle_make");
             vehicleModelId = bundle.getInt("vehicle_model");
@@ -88,8 +90,8 @@ public class PartsListFragment extends Fragment implements HttpRequest.OnErrorLi
                         try {
                             JSONObject mainJsonObject = new JSONObject(request.getResponseText());
                             JSONArray jsonArray = mainJsonObject.getJSONArray("results");
-                            for (int i = 0; i < jsonArray.length() ; i++) {
-                                Log.e("working " ,  " " + jsonArray.getJSONObject(i));
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                Log.e("working ", " " + jsonArray.getJSONObject(i));
                                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                                 PartsListItems partsListItems = new PartsListItems();
                                 partsListItems.setPartId(jsonObject.getInt("id"));
@@ -120,8 +122,26 @@ public class PartsListFragment extends Fragment implements HttpRequest.OnErrorLi
         request.setOnReadyStateChangeListener(this);
         request.setOnErrorListener(this);
         request.open("GET", String.format("%sparts?year=%s&make=%s&model=%s", AppGlobals.BASE_URL,
-                vehicleYear, vehicleMake,vehicleModel));
+                vehicleYear, vehicleMake, vehicleModel));
         request.send();
         Helpers.showProgressDialog(getActivity(), getString(R.string.parts_list));
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(getActivity(), "Permission granted", Toast.LENGTH_SHORT).show();
+                    adapter.callAction();
+                } else {
+                    Toast.makeText(getActivity(), "Permission denied", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+        }
+    }
+
+
 }

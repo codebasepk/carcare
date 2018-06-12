@@ -25,6 +25,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
+import java.util.Objects;
 
 public class UserLogin extends Fragment implements HttpRequest.OnReadyStateChangeListener,
         HttpRequest.OnErrorListener, View.OnClickListener {
@@ -45,7 +46,7 @@ public class UserLogin extends Fragment implements HttpRequest.OnReadyStateChang
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBaseView = inflater.inflate(R.layout.fragment_user_login, container, false);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+        Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).hide();
         mEmail = mBaseView.findViewById(R.id.email_edit_text);
         mPassword = mBaseView.findViewById(R.id.password_edit_text);
         mLoginButton = mBaseView.findViewById(R.id.button_sign_in);
@@ -55,11 +56,6 @@ public class UserLogin extends Fragment implements HttpRequest.OnReadyStateChang
         mLoginButton.setOnClickListener(this);
         mSignUpTextView.setOnClickListener(this);
         mForgotPasswordTextView.setOnClickListener(this);
-
-        mEmail.setTypeface(AppGlobals.typefaceNormal);
-        mPassword.setTypeface(AppGlobals.typefaceNormal);
-        mLoginButton.setTypeface(AppGlobals.typefaceNormal);
-        mForgotPasswordTextView.setTypeface(AppGlobals.typefaceNormal);
         return mBaseView;
     }
 

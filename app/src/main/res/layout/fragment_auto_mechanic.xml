@@ -8,30 +8,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        app:cardCornerRadius="5dp"
         android:background="#d3d3d3"
-        >
+        app:cardCornerRadius="5dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ListView
-                android:id="@+id/auto_mechanic_list_view"
+            <RadioGroup
+                android:id="@+id/radio_group"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:backgroundTint="@color/text_color"
-                android:divider="@null"
-                android:scrollbars="none" />
+                android:layout_height="wrap_content" />
+
 
             <EditText
                 android:id="@+id/details_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/auto_mechanic_list_view"
+                android:layout_below="@+id/radio_group"
                 android:layout_margin="10dp"
-                android:layout_marginTop="10dp"
                 android:background="@drawable/rounded_edittext"
                 android:gravity="top|left"
                 android:hint="Enter Services/Troubleshooting Details"

@@ -21,54 +21,71 @@
                 android:layout_marginTop="10dp"
                 android:src="@drawable/ic_logo" />
 
-            <EditText
-                android:id="@+id/contact_number_edit_text"
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/main_rel_1"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="50dp"
-                android:background="@drawable/rounded_edittext"
-                android:drawableLeft="@mipmap/contact"
-                android:drawablePadding="10dp"
-                android:hint="Contact Number"
-                android:inputType="number"
-                android:paddingLeft="10sp"
-                android:textColor="@color/button_text_color"
-                android:textSize="15sp" />
-
-            <Spinner
-                android:id="@+id/choose_car_spinner"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/rounded_edittext"
-                android:textColor="@color/button_text_color"
-                android:textSize="15sp" />
+                android:weightSum="2.0">
 
-            <EditText
-                android:id="@+id/car_number_edit_text"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/rounded_edittext"
-                android:drawableLeft="@mipmap/ic_cal"
-                android:drawablePadding="10dp"
-                android:hint="Car Number"
-                android:inputType="number"
-                android:textColor="@color/button_text_color"
-                android:textSize="15sp" />
+                <RelativeLayout
+                    android:id="@+id/vehicle_make_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:padding="5dp">
 
-            <EditText
-                android:id="@+id/pick_location_edit_text"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/rounded_edittext"
-                android:drawableLeft="@mipmap/location"
-                android:drawablePadding="10dp"
-                android:hint="Pick Your Location"
-                android:inputType="number"
-                android:textColor="@color/button_text_color"
-                android:textSize="15sp" />
+                    <TextView
+                        android:id="@+id/vehicle_make"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="4dp"
+                        android:text="Select Vehicle Make"
+                        android:layout_marginLeft="5dp"
+                        android:textColor="@color/text_color"
+                        android:textSize="14sp" />
+
+                    <Spinner
+                        android:id="@+id/vehicle_make_spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_below="@+id/vehicle_make"
+                        android:background="@drawable/rounded_edittext"
+                        android:padding="5dp"
+                        android:textSize="15sp"
+                        android:textColor="@color/button_text_color" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/child_two"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.0"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:id="@+id/vehicle_model"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="4dp"
+                        android:layout_marginLeft="5dp"
+                        android:text="Select Vehicle Model"
+                        android:textColor="@color/text_color"
+                        android:textSize="14sp" />
+
+                    <Spinner
+                        android:id="@+id/vehicle_model_Spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_below="@+id/vehicle_model"
+                        android:background="@drawable/rounded_edittext"
+                        android:layout_marginLeft="10dp"
+                        android:textColor="@color/button_text_color"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+            </LinearLayout>
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/main_rel"
@@ -120,6 +137,46 @@
                         android:textSize="15sp" />
                 </RelativeLayout>
             </LinearLayout>
+
+            <EditText
+                android:id="@+id/contact_number_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rounded_edittext"
+                android:drawableLeft="@mipmap/contact"
+                android:drawablePadding="10dp"
+                android:hint="Contact Number"
+                android:inputType="number"
+                android:textColor="@color/button_text_color"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/car_number_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rounded_edittext"
+                android:drawableLeft="@mipmap/ic_cal"
+                android:drawablePadding="10dp"
+                android:hint="Car Number"
+                android:inputType="number"
+                android:textColor="@color/button_text_color"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/pick_location_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rounded_edittext"
+                android:drawableLeft="@mipmap/location"
+                android:drawablePadding="10dp"
+                android:hint="Pick Your Location"
+                android:inputType="number"
+                android:textColor="@color/button_text_color"
+                android:textSize="15sp" />
+
 
             <RadioGroup
                 android:id="@+id/radio_group"
