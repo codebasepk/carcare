@@ -169,7 +169,6 @@ public class CodeConfrimation extends Fragment implements View.OnClickListener {
                                     String address = jsonObject.getString(AppGlobals.KEY_ADDRESS);
                                     String contactNumber = jsonObject.getString(AppGlobals.KEY_CONTACT_NUMBER);
                                     String contactPerson = jsonObject.getString(AppGlobals.KEY_CONTACT_PERSON);
-
                                     String email = jsonObject.getString(AppGlobals.KEY_EMAIL);
                                     String id = jsonObject.getString(AppGlobals.KEY_USER_ID);
                                     String organizationName = jsonObject.getString(AppGlobals.KEY_ORGANIZATION_NAME);
@@ -177,10 +176,12 @@ public class CodeConfrimation extends Fragment implements View.OnClickListener {
                                     String token = jsonObject.getString(AppGlobals.KEY_TOKEN);
                                     String userName = jsonObject.getString(AppGlobals.KEY_USER_NAME);
                                     String userType = jsonObject.getString(AppGlobals.KEY_USER_TYPE);
+                                    String addressCoordinates = jsonObject.getString(AppGlobals.KEY_LOCATION);
 
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_CONTACT_NUMBER, contactNumber);
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_CONTACT_PERSON, contactPerson);
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_ADDRESS, address);
+                                    AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_LOCATION, addressCoordinates);
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_EMAIL, email);
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_USER_ID, id);
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_ORGANIZATION_NAME, organizationName);

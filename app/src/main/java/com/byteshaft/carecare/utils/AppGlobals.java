@@ -8,15 +8,19 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.support.v7.app.AlertDialog;
 
+import com.crashlytics.android.Crashlytics;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+
+import io.fabric.sdk.android.Fabric;
 
 public class AppGlobals extends Application {
 
     private static final String IS_FIRST_TIME_LAUNCH = "IsFirstTimeLaunch";
 
     private static Context sContext;
-
+    private FirebaseAnalytics mFirebaseAnalytics;
     public static final String SERVER_IP = "http://178.62.126.92:8000";
     public static final String SERVER_IP_FOR_IMAGE = "http://178.62.126.92:8000/";
     public static final String BASE_URL = String.format("%s/api/", SERVER_IP);
@@ -56,6 +60,8 @@ public class AppGlobals extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 //        FirebaseApp.initializeApp(getApplicationContext());
         sImageLoader = ImageLoader.getInstance();
         sImageLoader.init(ImageLoaderConfiguration.createDefault(getApplicationContext()));

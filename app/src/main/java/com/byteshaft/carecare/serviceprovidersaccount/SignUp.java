@@ -40,6 +40,9 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -110,12 +113,16 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
             etEmail.setText(AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_EMAIL));
             etEmail.setEnabled(false);
             etEmail.setCursorVisible(false);
+            etUsername.setEnabled(false);
+            etUsername.setCursorVisible(false);
             etContactPerson.setText(AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_CONTACT_PERSON));
             etContactNumber.setText(AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_CONTACT_NUMBER));
             etAddress.setText(AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_ADDRESS));
             etPassword.setVisibility(View.GONE);
             etVerifyPassword.setVisibility(View.GONE);
             mButtonLogin.setVisibility(View.GONE);
+            address = AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_ADDRESS);
+            addressCoordinates = AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_LOCATION);
             if (AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_SERVER_IMAGE) != null) {
                 String url = AppGlobals.SERVER_IP + AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_SERVER_IMAGE);
                 Picasso.with(AppGlobals.getContext())
@@ -133,8 +140,13 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.register_button:
-                if (validateEditText()) {
-                    registerUser(organizationName, email, username, contactPerson, addressCoordinates, contactNumber, address, password, imageUrl);
+                if (AppGlobals.isLogin()) {
+                    updateProfile(etOrganizationName.getText().toString(), etContactPerson.getText().toString(),
+                            addressCoordinates, etContactNumber.getText().toString(), address, imageUrl);
+                } else {
+                    if (validateEditText()) {
+                        registerUser(organizationName, email, username, contactPerson, addressCoordinates, contactNumber, address, password, imageUrl);
+                    }
                 }
                 break;
             case R.id.sign_up_text_view:
@@ -165,6 +177,65 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
         }
     }
 
+    private void updateProfile(String name, String contactPerson, String coordinates,
+                               String contactNumber, String address,
+                               String imageUrl) {
+        HttpRequest request = new HttpRequest(getContext());
+        request.setOnReadyStateChangeListener(new HttpRequest.OnReadyStateChangeListener() {
+            @Override
+            public void onReadyStateChange(HttpRequest request, int i) {
+                switch (i) {
+                    case HttpRequest.STATE_DONE:
+                        Helpers.dismissProgressDialog();
+                        switch (request.getStatus()) {
+                            case HttpURLConnection.HTTP_OK:
+                                Helpers.showSnackBar(getView(), "Profile Updated");
+                                JSONObject jsonObject = null;
+                                try {
+                                    jsonObject = new JSONObject(request.getResponseText());
+                                    String address = jsonObject.getString(AppGlobals.KEY_ADDRESS);
+                                    String contactNumber = jsonObject.getString(AppGlobals.KEY_CONTACT_NUMBER);
+                                    String contactPerson = jsonObject.getString(AppGlobals.KEY_CONTACT_PERSON);
+                                    String organizationName = jsonObject.getString(AppGlobals.KEY_ORGANIZATION_NAME);
+                                    String profilePhoto = jsonObject.getString(AppGlobals.KEY_SERVER_IMAGE);
+                                    String addressCoordinates = jsonObject.getString(AppGlobals.KEY_LOCATION);
+
+                                    AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_CONTACT_NUMBER, contactNumber);
+                                    AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_CONTACT_PERSON, contactPerson);
+                                    AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_ADDRESS, address);
+                                    AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_LOCATION, addressCoordinates);
+                                    AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_ORGANIZATION_NAME, organizationName);
+                                    AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_SERVER_IMAGE, profilePhoto);
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                        }
+                }
+            }
+        });
+        request.open("PUT", String.format("%sme", AppGlobals.BASE_URL));
+        request.setRequestHeader("Authorization", "Token " +
+                AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_TOKEN));
+        request.send(getProfileData(name, contactPerson, coordinates, contactNumber, address, imageUrl));
+    }
+
+    private FormData getProfileData(String name, String contactPerson, String coordinates,
+                                    String contactNumber, String address,
+                                    String imageUrl) {
+
+        FormData formData = new FormData();
+        formData.append(FormData.TYPE_CONTENT_TEXT, "name", name);
+        formData.append(FormData.TYPE_CONTENT_TEXT, "contact_person", contactPerson);
+        formData.append(FormData.TYPE_CONTENT_TEXT, "contact_number", contactNumber);
+        formData.append(FormData.TYPE_CONTENT_TEXT, "address", address);
+        formData.append(FormData.TYPE_CONTENT_TEXT, "address_coordinates", coordinates);
+        if (imageUrl != null && !imageUrl.trim().isEmpty()) {
+            formData.append(FormData.TYPE_CONTENT_FILE, "profile_photo", imageUrl);
+        }
+        return formData;
+    }
 
     private void selectImage() {
         final CharSequence[] items = {getString(R.string.take_photo), getString(R.string.choose_library), getString(R.string.cancel_photo)};
@@ -399,6 +470,7 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
 
                 addressCoordinates = latitude + "," + longitude;
                 Log.wtf("Address:  ", addressCoordinates);
+                address = (String) place.getName();
                 etAddress.setText(place.getName());
             }
             if (requestCode == REQUEST_CAMERA) {
