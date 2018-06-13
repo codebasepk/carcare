@@ -169,7 +169,6 @@ public class CodeConfrimation extends Fragment implements View.OnClickListener {
                                     String address = jsonObject.getString(AppGlobals.KEY_ADDRESS);
                                     String contactNumber = jsonObject.getString(AppGlobals.KEY_CONTACT_NUMBER);
                                     String contactPerson = jsonObject.getString(AppGlobals.KEY_CONTACT_PERSON);
-
                                     String email = jsonObject.getString(AppGlobals.KEY_EMAIL);
                                     String id = jsonObject.getString(AppGlobals.KEY_USER_ID);
                                     String organizationName = jsonObject.getString(AppGlobals.KEY_ORGANIZATION_NAME);

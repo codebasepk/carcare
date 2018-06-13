@@ -40,6 +40,9 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -110,6 +113,8 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
             etEmail.setText(AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_EMAIL));
             etEmail.setEnabled(false);
             etEmail.setCursorVisible(false);
+            etUsername.setEnabled(false);
+            etUsername.setCursorVisible(false);
             etContactPerson.setText(AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_CONTACT_PERSON));
             etContactNumber.setText(AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_CONTACT_NUMBER));
             etAddress.setText(AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_ADDRESS));
@@ -181,10 +186,31 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
             public void onReadyStateChange(HttpRequest request, int i) {
                 switch (i) {
                     case HttpRequest.STATE_DONE:
-                        Log.wtf("Done", request.getResponseText());
                         Helpers.dismissProgressDialog();
                         switch (request.getStatus()) {
-                            case HttpURLConnection.HTTP_CREATED:
+                            case HttpURLConnection.HTTP_OK:
+                                Helpers.showSnackBar(getView(), "Profile Updated");
+                                JSONObject jsonObject = null;
+                                try {
+                                    jsonObject = new JSONObject(request.getResponseText());
+                                    String address = jsonObject.getString(AppGlobals.KEY_ADDRESS);
+                                    String contactNumber = jsonObject.getString(AppGlobals.KEY_CONTACT_NUMBER);
+                                    String contactPerson = jsonObject.getString(AppGlobals.KEY_CONTACT_PERSON);
+                                    String organizationName = jsonObject.getString(AppGlobals.KEY_ORGANIZATION_NAME);
+                                    String profilePhoto = jsonObject.getString(AppGlobals.KEY_SERVER_IMAGE);
+                                    String addressCoordinates = jsonObject.getString(AppGlobals.KEY_LOCATION);
+
+                                    AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_CONTACT_NUMBER, contactNumber);
+                                    AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_CONTACT_PERSON, contactPerson);
+                                    AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_ADDRESS, address);
+                                    AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_LOCATION, addressCoordinates);
+                                    AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_ORGANIZATION_NAME, organizationName);
+                                    AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_SERVER_IMAGE, profilePhoto);
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
                         }
                 }
             }
@@ -444,6 +470,7 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
 
                 addressCoordinates = latitude + "," + longitude;
                 Log.wtf("Address:  ", addressCoordinates);
+                address = (String) place.getName();
                 etAddress.setText(place.getName());
             }
             if (requestCode == REQUEST_CAMERA) {
