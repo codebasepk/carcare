@@ -177,10 +177,12 @@ public class CodeConfrimation extends Fragment implements View.OnClickListener {
                                     String token = jsonObject.getString(AppGlobals.KEY_TOKEN);
                                     String userName = jsonObject.getString(AppGlobals.KEY_USER_NAME);
                                     String userType = jsonObject.getString(AppGlobals.KEY_USER_TYPE);
+                                    String addressCoordinates = jsonObject.getString(AppGlobals.KEY_LOCATION);
 
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_CONTACT_NUMBER, contactNumber);
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_CONTACT_PERSON, contactPerson);
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_ADDRESS, address);
+                                    AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_LOCATION, addressCoordinates);
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_EMAIL, email);
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_USER_ID, id);
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_ORGANIZATION_NAME, organizationName);

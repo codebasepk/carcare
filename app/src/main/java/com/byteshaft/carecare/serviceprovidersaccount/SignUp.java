@@ -116,6 +116,8 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
             etPassword.setVisibility(View.GONE);
             etVerifyPassword.setVisibility(View.GONE);
             mButtonLogin.setVisibility(View.GONE);
+            address = AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_ADDRESS);
+            addressCoordinates = AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_LOCATION);
             if (AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_SERVER_IMAGE) != null) {
                 String url = AppGlobals.SERVER_IP + AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_SERVER_IMAGE);
                 Picasso.with(AppGlobals.getContext())
@@ -133,8 +135,13 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.register_button:
-                if (validateEditText()) {
-                    registerUser(organizationName, email, username, contactPerson, addressCoordinates, contactNumber, address, password, imageUrl);
+                if (AppGlobals.isLogin()) {
+                    updateProfile(etOrganizationName.getText().toString(), etContactPerson.getText().toString(),
+                            addressCoordinates, etContactNumber.getText().toString(), address, imageUrl);
+                } else {
+                    if (validateEditText()) {
+                        registerUser(organizationName, email, username, contactPerson, addressCoordinates, contactNumber, address, password, imageUrl);
+                    }
                 }
                 break;
             case R.id.sign_up_text_view:
@@ -165,6 +172,44 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
         }
     }
 
+    private void updateProfile(String name, String contactPerson, String coordinates,
+                               String contactNumber, String address,
+                               String imageUrl) {
+        HttpRequest request = new HttpRequest(getContext());
+        request.setOnReadyStateChangeListener(new HttpRequest.OnReadyStateChangeListener() {
+            @Override
+            public void onReadyStateChange(HttpRequest request, int i) {
+                switch (i) {
+                    case HttpRequest.STATE_DONE:
+                        Log.wtf("Done", request.getResponseText());
+                        Helpers.dismissProgressDialog();
+                        switch (request.getStatus()) {
+                            case HttpURLConnection.HTTP_CREATED:
+                        }
+                }
+            }
+        });
+        request.open("PUT", String.format("%sme", AppGlobals.BASE_URL));
+        request.setRequestHeader("Authorization", "Token " +
+                AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_TOKEN));
+        request.send(getProfileData(name, contactPerson, coordinates, contactNumber, address, imageUrl));
+    }
+
+    private FormData getProfileData(String name, String contactPerson, String coordinates,
+                                    String contactNumber, String address,
+                                    String imageUrl) {
+
+        FormData formData = new FormData();
+        formData.append(FormData.TYPE_CONTENT_TEXT, "name", name);
+        formData.append(FormData.TYPE_CONTENT_TEXT, "contact_person", contactPerson);
+        formData.append(FormData.TYPE_CONTENT_TEXT, "contact_number", contactNumber);
+        formData.append(FormData.TYPE_CONTENT_TEXT, "address", address);
+        formData.append(FormData.TYPE_CONTENT_TEXT, "address_coordinates", coordinates);
+        if (imageUrl != null && !imageUrl.trim().isEmpty()) {
+            formData.append(FormData.TYPE_CONTENT_FILE, "profile_photo", imageUrl);
+        }
+        return formData;
+    }
 
     private void selectImage() {
         final CharSequence[] items = {getString(R.string.take_photo), getString(R.string.choose_library), getString(R.string.cancel_photo)};
