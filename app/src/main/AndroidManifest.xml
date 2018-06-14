@@ -47,18 +47,23 @@
         <activity android:name=".provider.MechanicActivity" />
         <activity android:name=".provider.AddMechanicService" />
 
-        <service
-            android:name=".fcm.FireBaseService">
+        <service android:name=".fcm.FireBaseService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <service
-            android:name=".fcm.Service">
+        <service android:name=".fcm.Service">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="55e5028755e7c078a8db73ffd5393c3b0060fe2b" />
+
+        <activity android:name=".provider.CarWashActivity" />
+        <activity android:name=".provider.AddCarWashService"></activity>
     </application>
 
 </manifest>

@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_color"
-    tools:context=".provider.CarPartsActivity">
+    tools:context=".provider.CarWashActivity">
 
     <ListView
-        android:id="@+id/car_parts_list"
+        android:id="@+id/car_wash_list"
         android:layout_margin="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

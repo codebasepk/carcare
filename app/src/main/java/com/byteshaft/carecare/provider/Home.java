@@ -55,7 +55,7 @@ public class Home extends Fragment implements View.OnClickListener {
                 startActivity(new Intent(getActivity(), MechanicActivity.class));
                 break;
             case R.id.car_wash_image_button:
-                Toast.makeText(getContext(), "this is ok", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getActivity(), CarWashActivity.class));
                 break;
             case R.id.car_parts_image_button:
                 startActivity(new Intent(getActivity(), CarPartsActivity.class));

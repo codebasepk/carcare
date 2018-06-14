@@ -16,7 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.byteshaft.carecare.R;
-import com.byteshaft.carecare.gettersetter.AutoMechanicService;
+import com.byteshaft.carecare.gettersetter.CarWashService;
 import com.byteshaft.carecare.utils.AppGlobals;
 import com.byteshaft.carecare.utils.Helpers;
 import com.byteshaft.requests.HttpRequest;
@@ -29,23 +29,23 @@ import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MechanicActivity extends AppCompatActivity {
+public class CarWashActivity extends AppCompatActivity {
 
     private ListView listView;
-    private List<AutoMechanicService> arrayList;
+    private List<CarWashService> arrayList;
     private ServiceAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mechanic);
-        setTitle("Auto Mechanic");
-        listView = findViewById(R.id.mechanic_list);
+        setContentView(R.layout.activity_car_wash);
+        setTitle("Car Wash");
+        listView = findViewById(R.id.car_wash_list);
         arrayList = new ArrayList<>();
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                AutoMechanicService service = arrayList.get(i);
+                CarWashService service = arrayList.get(i);
 
             }
         });
@@ -53,7 +53,7 @@ public class MechanicActivity extends AppCompatActivity {
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                AutoMechanicService service = arrayList.get(i);
+                CarWashService service = arrayList.get(i);
                 deleteDialog(service.getId());
                 return true;
             }
@@ -64,49 +64,7 @@ public class MechanicActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         arrayList.clear();
-        getAllMechanicServices();
-    }
-
-    private void getAllMechanicServices() {
-        HttpRequest request = new HttpRequest(getApplicationContext());
-        request.setOnReadyStateChangeListener(new HttpRequest.OnReadyStateChangeListener() {
-            @Override
-            public void onReadyStateChange(HttpRequest request, int readyState) {
-                switch (readyState) {
-                    case HttpRequest.STATE_DONE:
-                        Log.wtf("On DOne ", request.getResponseText());
-                        Helpers.dismissProgressDialog();
-                        switch (request.getStatus()) {
-                            case HttpURLConnection.HTTP_OK:
-                                try {
-
-                                    JSONObject object = new JSONObject(request.getResponseText());
-                                    JSONArray jsonArray = object.getJSONArray("results");
-                                    for (int i = 0; i < jsonArray.length(); i++) {
-                                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                        AutoMechanicService mechanicServices = new AutoMechanicService();
-                                        JSONObject serviceObject = jsonObject.getJSONObject("service");
-                                        mechanicServices.setId(jsonObject.getInt("id"));
-                                        mechanicServices.setName(serviceObject.getString("name"));
-                                        mechanicServices.setPrice(jsonObject.getString("price"));
-                                        arrayList.add(mechanicServices);
-                                    }
-
-                                    adapter = new ServiceAdapter(getApplicationContext(), arrayList);
-                                    listView.setAdapter(adapter);
-                                    adapter.notifyDataSetChanged();
-
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                        }
-                }
-            }
-        });
-        request.open("GET", String.format("%smechanic/services", AppGlobals.BASE_URL));
-        request.setRequestHeader("Authorization", "Token " +
-                AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_TOKEN));
-        request.send();
+        getAllCarWashServices();
     }
 
     private void deleteDialog(int partId) {
@@ -134,18 +92,17 @@ public class MechanicActivity extends AppCompatActivity {
                             case HttpURLConnection.HTTP_NO_CONTENT:
                                 Helpers.showSnackBar(listView, "Item Deleted");
                                 arrayList.clear();
-                                getAllMechanicServices();
+                                getAllCarWashServices();
                         }
                 }
             }
         });
-        request.open("DELETE", String.format("%smechanic/services/%s", AppGlobals.BASE_URL, id));
+        request.open("DELETE", String.format("%sservice-station/services/%s", AppGlobals.BASE_URL, id));
         request.setRequestHeader("Authorization", "Token " +
                 AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_TOKEN));
         request.send();
 
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -163,19 +120,60 @@ public class MechanicActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_add) {
-            startActivity(new Intent(MechanicActivity.this, AddMechanicService.class));
+            startActivity(new Intent(CarWashActivity.this, AddCarWashService.class));
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    private void getAllCarWashServices() {
+        HttpRequest request = new HttpRequest(getApplicationContext());
+        request.setOnReadyStateChangeListener(new HttpRequest.OnReadyStateChangeListener() {
+            @Override
+            public void onReadyStateChange(HttpRequest request, int readyState) {
+                switch (readyState) {
+                    case HttpRequest.STATE_DONE:
+                        Log.wtf("On DOne ", request.getResponseText());
+                        Helpers.dismissProgressDialog();
+                        switch (request.getStatus()) {
+                            case HttpURLConnection.HTTP_OK:
+                                try {
+                                    JSONObject object = new JSONObject(request.getResponseText());
+                                    JSONArray jsonArray = object.getJSONArray("results");
+                                    for (int i = 0; i < jsonArray.length(); i++) {
+                                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                        CarWashService carWashService = new CarWashService();
+                                        JSONObject serviceObject = jsonObject.getJSONObject("service");
+                                        carWashService.setId(jsonObject.getInt("id"));
+                                        carWashService.setName(serviceObject.getString("name"));
+                                        carWashService.setPrice(jsonObject.getString("price"));
+                                        arrayList.add(carWashService);
+                                    }
+
+                                    adapter = new ServiceAdapter(getApplicationContext(), arrayList);
+                                    listView.setAdapter(adapter);
+                                    adapter.notifyDataSetChanged();
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                        }
+                }
+            }
+        });
+        request.open("GET", String.format("%sservice-station/services", AppGlobals.BASE_URL));
+        request.setRequestHeader("Authorization", "Token " +
+                AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_TOKEN));
+        request.send();
+    }
+
     private class ServiceAdapter extends BaseAdapter {
         private ViewHolder viewHolder;
         private Context context;
-        private List<AutoMechanicService> listItems;
+        private List<CarWashService> listItems;
 
-        public ServiceAdapter(Context context, List<AutoMechanicService> wishlistItems) {
+        public ServiceAdapter(Context context, List<CarWashService> wishlistItems) {
             this.context = context;
             this.listItems = wishlistItems;
         }
@@ -192,7 +190,7 @@ public class MechanicActivity extends AppCompatActivity {
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
-            AutoMechanicService items = listItems.get(position);
+            CarWashService items = listItems.get(position);
             viewHolder.price.setText("Price: " + items.getPrice());
             viewHolder.name.setText("Service: " + items.getName());
 

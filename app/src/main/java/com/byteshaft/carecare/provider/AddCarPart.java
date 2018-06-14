@@ -158,12 +158,14 @@ public class AddCarPart extends AppCompatActivity implements AdapterView.OnItemS
     }
 
     private void addPart(String description, String make, String model, String price, String image, String year) {
+        Helpers.showProgressDialog(AddCarPart.this, "Please wait...");
         HttpRequest request = new HttpRequest(getApplicationContext());
         request.setOnReadyStateChangeListener(new HttpRequest.OnReadyStateChangeListener() {
             @Override
             public void onReadyStateChange(HttpRequest request, int readyState) {
                 switch (readyState) {
                     case HttpRequest.STATE_DONE:
+                        Helpers.dismissProgressDialog();
                         Log.wtf("Check --------->>>", request.getResponseText());
                         Helpers.dismissProgressDialog();
                         switch (request.getStatus()) {
