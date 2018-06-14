@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.byteshaft.carecare.MainActivity;
 import com.byteshaft.carecare.R;
 import com.byteshaft.carecare.WelcomeActivity;
+import com.byteshaft.carecare.serviceprovidersaccount.CodeConfrimation;
 import com.byteshaft.carecare.utils.AppGlobals;
 import com.byteshaft.carecare.utils.Helpers;
 import com.byteshaft.requests.HttpRequest;
@@ -89,10 +90,9 @@ public class UserLogin extends Fragment implements HttpRequest.OnReadyStateChang
                         AppGlobals.alertDialog(getActivity(), "Login Failed!", "Please enter correct password");
                         break;
                     case HttpURLConnection.HTTP_FORBIDDEN:
-//                        System.out.println("LOgin" +AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_USER_NAME));
-//                        Toast.makeText(getActivity(), "Please activate your account !", Toast.LENGTH_LONG).show();
-//                        Intent intent = new Intent(getApplicationContext(), CodeConfirmationActivity.class);
-//                        startActivity(intent);
+                        // TODO: 29/05/2018 User Not active
+                        UserAccount.getInstance().loadFragment(new CodeConfrimation());
+                        AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_EMAIL, mEmailString);
                         break;
                     case HttpURLConnection.HTTP_OK:
                         System.out.println(request.getResponseText() + "working ");

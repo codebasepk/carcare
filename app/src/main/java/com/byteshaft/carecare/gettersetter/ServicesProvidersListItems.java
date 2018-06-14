@@ -6,6 +6,16 @@ public class ServicesProvidersListItems {
     private String serviceProviderImage;
     private int serviceProviderId;
     private String providersContactNumber;
+    private String servicePrice;
+
+    public String getServicePrice() {
+        return servicePrice;
+
+    }
+    public void setServicePrice(String servicePrivce) {
+        this.servicePrice = servicePrivce;
+    }
+
 
     public String getServiceProviderName() {
         return serviceProviderName;

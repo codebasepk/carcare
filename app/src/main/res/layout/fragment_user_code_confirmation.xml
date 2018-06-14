@@ -24,7 +24,6 @@
                 android:background="@drawable/rounded_edittext"
                 android:drawableLeft="@mipmap/email"
                 android:drawablePadding="10dp"
-                android:enabled="false"
                 android:hint="Email"
                 android:inputType="textEmailAddress"
                 android:paddingLeft="10sp"

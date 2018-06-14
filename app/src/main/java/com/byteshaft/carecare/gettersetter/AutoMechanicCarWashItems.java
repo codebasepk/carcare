@@ -4,13 +4,13 @@ public class AutoMechanicCarWashItems {
 
     private String serviceName;
     private int serviceId;
-    private int servicePrice;
+    private String servicePrice;
 
-    public int getServicePrice() {
+    public String getServicePrice() {
         return servicePrice;
     }
 
-    public void setServicePrice(int servicePrice) {
+    public void setServicePrice(String servicePrice) {
         this.servicePrice = servicePrice;
     }
 

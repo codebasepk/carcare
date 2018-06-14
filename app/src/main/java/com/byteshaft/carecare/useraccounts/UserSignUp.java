@@ -37,6 +37,7 @@ import com.byteshaft.carecare.Adapters.VehicleMakeWithModel;
 import com.byteshaft.carecare.Adapters.VehicleModelAdapter;
 import com.byteshaft.carecare.Adapters.VehicleType;
 import com.byteshaft.carecare.R;
+import com.byteshaft.carecare.WelcomeActivity;
 import com.byteshaft.carecare.gettersetter.CarCompanyItems;
 import com.byteshaft.carecare.gettersetter.VehicleMakeItems;
 import com.byteshaft.carecare.gettersetter.VehicleMakeWithModelItems;
@@ -73,8 +74,13 @@ import static android.app.Activity.RESULT_OK;
 public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChangeListener,
         HttpRequest.OnErrorListener, View.OnClickListener, AdapterView.OnItemSelectedListener {
 
+    private static final int STORAGE_CAMERA_PERMISSION = 1;
+    private static final int SELECT_FILE = 2;
+    private static final int LOCATION_PERMISSION = 4;
+    private static final int REQUEST_CAMERA = 3;
+    private static String imageUrl = "";
+    public String mContactNumberString;
     private View mBaseView;
-
     private Button mSignUpButtonButton;
     private CircleImageView mUserImage;
     private EditText mFullNameEditText;
@@ -87,20 +93,15 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
     private EditText mVehicleYearEditText;
     private TextView mPickForCurrentLocation;
     private TextView mSignInTextView;
-
     private Spinner mVehicleModelSpinner;
     private Spinner mVehicleMakeSpinner;
     private Spinner mVehicleTypeSpinner;
-
     private VehicleModelAdapter vehicleModelAdapter;
     private ArrayList<VehicleMakeWithModelItems> arrayList;
-
     private VehicleMakeWithModel vehicleMakeAdapter;
     private ArrayList<CarCompanyItems> vehicleMakeArrayList;
-
     private VehicleType vehicleTypeAdapter;
     private ArrayList<VehicleTypeItems> vehicleTypeArrayList;
-
     private int mVehicleMakeSpinnerId;
     private String mVehicleModelSpinnerString;
     private String mVehicleTypeSpinnerString;
@@ -109,22 +110,13 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
     private String mAddressEditTextString;
     private String mFullNameString;
     private String mEmailAddressString;
-    public String mContactNumberString;
     private String mVerifyPasswordString;
     private String mPasswordString;
     private String mLocationString;
-
-
     private HttpRequest request;
     private int locationCounter = 0;
-    private static final int STORAGE_CAMERA_PERMISSION = 1;
-    private static final int SELECT_FILE = 2;
-    private static final int LOCATION_PERMISSION = 4;
-    private static final int REQUEST_CAMERA = 3;
-
     private File destination;
     private Uri selectedImageUri;
-    private static String imageUrl = "";
     private Bitmap profilePic;
 
     private FusedLocationProviderClient client;
@@ -233,9 +225,16 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
                 break;
             case R.id.sign_up_button:
                 if (validateEditText()) {
-                    registerUser(mUserNameEditTextString, mFullNameString, mEmailAddressString, mContactNumberString,
-                            mAddressEditTextString, mLocationString, String.valueOf(mVehicleMakeSpinnerId), mVehicleModelSpinnerString,
-                            mVehicleTypeSpinnerString, mVehicleYearString, mPasswordString, imageUrl);
+                    if (imageUrl.isEmpty()) {
+                        registerUser(mUserNameEditTextString, mFullNameString, mEmailAddressString, mContactNumberString,
+                                mAddressEditTextString, mLocationString, String.valueOf(mVehicleMakeSpinnerId), mVehicleModelSpinnerString,
+                                mVehicleTypeSpinnerString, mVehicleYearString, mPasswordString);
+                    } else {
+                        registerUserWithImage(mUserNameEditTextString, mFullNameString, mEmailAddressString, mContactNumberString,
+                                mAddressEditTextString, mLocationString, String.valueOf(mVehicleMakeSpinnerId), mVehicleModelSpinnerString,
+                                mVehicleTypeSpinnerString, mVehicleYearString, mPasswordString, imageUrl);
+                    }
+
                 }
                 break;
         }
@@ -400,20 +399,20 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
         getStateRequest.send();
     }
 
-    private void registerUser(String username, String name, String email, String contactNumber,
+    private void registerUserWithImage(String username, String name, String email, String contactNumber,
                               String address, String addressCoordinates, String vehiclMake, String vehicleModel,
                               String vehicleType, String vehicleYear, String password, String profilePhoto) {
         request = new HttpRequest(getActivity());
         request.setOnReadyStateChangeListener(this);
         request.setOnErrorListener(this);
         request.open("POST", String.format("%sregister-customer", AppGlobals.BASE_URL));
-        request.send(getRegisterData(username, name, email, contactNumber, address, addressCoordinates,
+        request.send(getRegisterDataWithImage(username, name, email, contactNumber, address, addressCoordinates,
                 vehiclMake, vehicleModel, vehicleType, vehicleYear, password, profilePhoto));
         Helpers.showProgressDialog(getActivity(), "Registering User");
     }
 
 
-    private FormData getRegisterData(String username, String name, String email, String contactNumber,
+    private FormData getRegisterDataWithImage(String username, String name, String email, String contactNumber,
                                      String address, String addressCoordinates, String vehiclMake,
                                      String vehicleModel,
                                      String vehicleType, String vehicleYear, String password,
@@ -433,8 +432,43 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
         if (imageUrl != null && !imageUrl.trim().isEmpty()) {
             formData.append(FormData.TYPE_CONTENT_FILE, "profile_photo", profilePhoto);
         }
-
         return formData;
+
+    }
+
+    private void registerUser(String username, String name, String email, String contactNumber,
+                                       String address, String addressCoordinates, String vehiclMake, String vehicleModel,
+                                       String vehicleType, String vehicleYear, String password) {
+        request = new HttpRequest(getActivity());
+        request.setOnReadyStateChangeListener(this);
+        request.setOnErrorListener(this);
+        request.open("POST", String.format("%sregister-customer", AppGlobals.BASE_URL));
+        request.send(getRegisterData(username, name, email, contactNumber, address, addressCoordinates,
+                vehiclMake, vehicleModel, vehicleType, vehicleYear, password));
+        Helpers.showProgressDialog(getActivity(), "Registering User");
+    }
+
+    private String getRegisterData(String username, String name, String email, String contactNumber,
+                                              String address, String addressCoordinates, String vehiclMake,
+                                              String vehicleModel,
+                                              String vehicleType, String vehicleYear, String password) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("username", username);
+            jsonObject.put("name", name);
+            jsonObject.put("email", email);
+            jsonObject.put("contact_number", contactNumber);
+            jsonObject.put("address", address);
+            jsonObject.put("address_coordinates", addressCoordinates);
+            jsonObject.put("vehicle_make", vehiclMake);
+            jsonObject.put("vehicle_model", vehicleModel);
+            jsonObject.put("vehicle_type", vehicleType);
+            jsonObject.put("vehicle_year", vehicleYear);
+            jsonObject.put("password", password);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonObject.toString();
 
     }
 
@@ -516,6 +550,7 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_LOCATION, location);
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_SERVER_IMAGE, profilePhoto);
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_ADDRESS, address);
+                            WelcomeActivity.getInstance().finish();
                             UserAccount.getInstance().loadFragment(new CodeConfirmation());
                         } catch (JSONException e) {
                             e.printStackTrace();

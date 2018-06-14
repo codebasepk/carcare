@@ -47,6 +47,7 @@ public class ListOfServicesProviders extends Fragment implements HttpRequest.OnR
         Bundle bundle = getArguments();
         if(bundle != null) {
             mServiceId = bundle.getInt("service_id");
+            Log.e("Bundle", "00000000000000000000000" + mServiceId);
         }
         getServiceProvidersList("30.16199250000002,71.52062890625002", mServiceId);
         return mBaseView;
@@ -71,6 +72,7 @@ public class ListOfServicesProviders extends Fragment implements HttpRequest.OnR
                                 ServicesProvidersListItems servicesProvidersListItems = new ServicesProvidersListItems();
                                 servicesProvidersListItems.setServiceProviderId(jsonObject.getInt("id"));
                                 servicesProvidersListItems.setServiceProviderName(jsonObject.getString("name"));
+                                servicesProvidersListItems.setServicePrice(jsonObject.getString("service_price"));
                                 servicesProvidersListItems.setProvidersContactNumber(jsonObject.getString("contact_number"));
                                 servicesProvidersListItems.setServiceProviderImage(jsonObject.getString("profile_photo"));
                                 arrayList.add(servicesProvidersListItems);
