@@ -47,7 +47,7 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/button_background"
                 android:gravity="center"
-                android:text="next"
+                android:text="Search"
                 android:textAllCaps="true"
                 android:textColor="@color/button_text_color"
                 android:textStyle="bold" />

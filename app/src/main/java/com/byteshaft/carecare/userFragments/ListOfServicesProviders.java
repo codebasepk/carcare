@@ -35,6 +35,7 @@ public class ListOfServicesProviders extends Fragment implements HttpRequest.OnR
     private ServiceProvidersListAdapter adapter;
     private HttpRequest request;
     private int mServiceId;
+    private String mLocationString;
 
     @Nullable
     @Override
@@ -47,9 +48,11 @@ public class ListOfServicesProviders extends Fragment implements HttpRequest.OnR
         Bundle bundle = getArguments();
         if(bundle != null) {
             mServiceId = bundle.getInt("service_id");
+            mLocationString = bundle.getString("location");
             Log.e("Bundle", "00000000000000000000000" + mServiceId);
+            Log.e("Bundle", "00000000000000000000000" + mLocationString);
         }
-        getServiceProvidersList("30.16199250000002,71.52062890625002", mServiceId);
+        getServiceProvidersList(mLocationString, mServiceId);
         return mBaseView;
     }
 
