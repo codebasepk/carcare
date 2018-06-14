@@ -145,7 +145,11 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
                             addressCoordinates, etContactNumber.getText().toString(), address, imageUrl);
                 } else {
                     if (validateEditText()) {
-                        registerUser(organizationName, email, username, contactPerson, addressCoordinates, contactNumber, address, password, imageUrl);
+                        if (imageUrl.isEmpty()) {
+                            registerUser(organizationName, email, username, contactPerson, addressCoordinates, contactPerson, address, password);
+                        } else {
+                            registerUserWithImage(organizationName, email, username, contactPerson, addressCoordinates, contactNumber, address, password, imageUrl);
+                        }
                     }
                 }
                 break;
@@ -330,20 +334,51 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
         return valid;
     }
 
+
     private void registerUser(String name, String email, String userName, String contactPerson, String coordinates,
-                              String contactNumber, String address, String password,
-                              String imageUrl) {
+                              String contactNumber, String address, String password) {
+        Helpers.showProgressDialog(getActivity(), "Please wait...");
         HttpRequest request = new HttpRequest(getActivity());
         request.setOnReadyStateChangeListener(this);
         request.setOnErrorListener(this);
         request.open("POST", String.format("%sregister-provider", AppGlobals.BASE_URL));
-        request.send(getRegisterData(name, email, userName, contactPerson, coordinates, contactNumber, address, password, imageUrl));
+        request.send(getRegisterData(name, email, userName, contactPerson, coordinates, contactNumber, address, password));
         Helpers.showProgressDialog(getActivity(), "Registering...");
     }
 
-    private FormData getRegisterData(String name, String email, String userName, String contactPerson, String coordinates,
-                                     String contactNumber, String address, String password,
-                                     String imageUrl) {
+    private String getRegisterData(String name, String email, String userName, String contactPerson, String coordinates,
+                                   String contactNumber, String address, String password) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("username", userName);
+            jsonObject.put("name", name);
+            jsonObject.put("email", email);
+            jsonObject.put("contact_person", contactPerson);
+            jsonObject.put("contact_number", contactNumber);
+            jsonObject.put("address", address);
+            jsonObject.put("address_coordinates", coordinates);
+            jsonObject.put("password", password);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonObject.toString();
+    }
+
+    private void registerUserWithImage(String name, String email, String userName, String contactPerson, String coordinates,
+                                       String contactNumber, String address, String password,
+                                       String imageUrl) {
+        Helpers.showProgressDialog(getActivity(), "Please wait...");
+        HttpRequest request = new HttpRequest(getActivity());
+        request.setOnReadyStateChangeListener(this);
+        request.setOnErrorListener(this);
+        request.open("POST", String.format("%sregister-provider", AppGlobals.BASE_URL));
+        request.send(getRegisterDataWithImage(name, email, userName, contactPerson, coordinates, contactNumber, address, password, imageUrl));
+        Helpers.showProgressDialog(getActivity(), "Registering...");
+    }
+
+    private FormData getRegisterDataWithImage(String name, String email, String userName, String contactPerson, String coordinates,
+                                              String contactNumber, String address, String password,
+                                              String imageUrl) {
 
         FormData formData = new FormData();
         formData.append(FormData.TYPE_CONTENT_TEXT, "name", name);
