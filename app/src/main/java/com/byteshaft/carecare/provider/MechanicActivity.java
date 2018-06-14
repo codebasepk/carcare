@@ -42,7 +42,6 @@ public class MechanicActivity extends AppCompatActivity {
         setTitle("Auto Mechanic");
         listView = findViewById(R.id.mechanic_list);
         arrayList = new ArrayList<>();
-        getAllMechanicServices();
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -61,6 +60,12 @@ public class MechanicActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        arrayList.clear();
+        getAllMechanicServices();
+    }
 
     private void getAllMechanicServices() {
         HttpRequest request = new HttpRequest(getApplicationContext());
