@@ -188,10 +188,10 @@ public class CodeConfrimation extends Fragment implements View.OnClickListener {
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_TOKEN, token);
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_USER_NAME, userName);
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_USER_TYPE, userType);
+                                    AppGlobals.loginState(true);
                                     startActivity(new Intent(getContext(), ServiceProviderActivity.class));
                                     ServiceProviderAccount.getInstance().finish();
                                     WelcomeActivity.getInstance().finish();
-                                    AppGlobals.loginState(true);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }

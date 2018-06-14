@@ -8,10 +8,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:background="#d3d3d3"
         app:cardCornerRadius="5dp">
 
         <RelativeLayout
+            android:layout_margin="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
