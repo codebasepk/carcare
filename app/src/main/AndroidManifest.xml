@@ -62,7 +62,8 @@
             android:name="io.fabric.ApiKey"
             android:value="55e5028755e7c078a8db73ffd5393c3b0060fe2b" />
 
-        <activity android:name=".provider.CarWashActivity"></activity>
+        <activity android:name=".provider.CarWashActivity" />
+        <activity android:name=".provider.AddCarWashService"></activity>
     </application>
 
 </manifest>
