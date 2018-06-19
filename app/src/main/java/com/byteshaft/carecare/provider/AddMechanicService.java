@@ -71,7 +71,6 @@ public class AddMechanicService extends AppCompatActivity implements AdapterView
         return valid;
     }
 
-
     private void addService(String price, int service) {
         Helpers.showProgressDialog(AddMechanicService.this, "Pleas wait...");
         HttpRequest request = new HttpRequest(getApplicationContext());
@@ -85,6 +84,8 @@ public class AddMechanicService extends AppCompatActivity implements AdapterView
                             case HttpURLConnection.HTTP_CREATED:
                                 Helpers.showSnackBar(addButton, "Item Added");
                                 finish();
+                            case HttpURLConnection.HTTP_BAD_REQUEST:
+                                Helpers.alertDialog(AddMechanicService.this, null, getResources().getString(R.string.service_already_added), null);
                         }
                 }
             }
