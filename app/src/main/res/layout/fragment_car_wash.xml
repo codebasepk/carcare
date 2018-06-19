@@ -31,7 +31,7 @@
                 android:layout_below="@+id/radio_group"
                 android:background="@drawable/button_background"
                 android:layout_centerHorizontal="true"
-                android:text="next"
+                android:text="Search"
                 android:textAllCaps="true"
                 android:textColor="@color/button_text_color"
                 android:textStyle="bold" />
