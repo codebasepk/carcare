@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -68,11 +69,14 @@ public class AddCarWashService extends AppCompatActivity implements AdapterView.
             public void onReadyStateChange(HttpRequest request, int readyState) {
                 switch (readyState) {
                     case HttpRequest.STATE_DONE:
+                        Log.wtf("ok", request.getResponseText());
                         Helpers.dismissProgressDialog();
                         switch (request.getStatus()) {
                             case HttpURLConnection.HTTP_CREATED:
                                 Helpers.showSnackBar(addButton, "Item Added");
                                 finish();
+                            case HttpURLConnection.HTTP_BAD_REQUEST:
+                                Helpers.alertDialog(AddCarWashService.this, null, getResources().getString(R.string.service_already_added), null);
                         }
                 }
             }
