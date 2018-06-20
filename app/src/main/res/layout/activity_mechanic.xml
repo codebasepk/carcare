@@ -7,12 +7,29 @@
     android:background="@color/background_color"
     tools:context=".provider.MechanicActivity">
 
-    <ListView
-        android:layout_margin="10dp"
-        android:id="@+id/mechanic_list"
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_wishlist"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:dividerHeight="6dp" />
+        android:layout_height="match_parent"
+        android:layout_margin="10dp">
+
+        <ListView
+            android:id="@+id/mechanic_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@android:color/transparent"
+            android:dividerHeight="6dp" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <TextView
+        android:id="@+id/tv_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="The List is Empty\nPress the + button to add"
+        android:textColor="@android:color/white"
+        android:textSize="20sp" />
 
 </RelativeLayout>
