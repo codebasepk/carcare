@@ -3,6 +3,7 @@ package com.byteshaft.carecare.provider;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -35,6 +36,11 @@ public class MechanicActivity extends AppCompatActivity {
     private List<AutoMechanicService> arrayList;
     private ServiceAdapter adapter;
 
+
+    private TextView emptyList;
+    private boolean swipeRefresh = false;
+    private SwipeRefreshLayout swipeRefreshLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +48,14 @@ public class MechanicActivity extends AppCompatActivity {
         setTitle("Auto Mechanic");
         listView = findViewById(R.id.mechanic_list);
         arrayList = new ArrayList<>();
+        emptyList = findViewById(R.id.tv_empty);
+        swipeRefreshLayout = findViewById(R.id.swipe_refresh_wishlist);
+
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            arrayList.clear();
+            swipeRefresh = true;
+            getAllMechanicServices();
+        });
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -74,6 +88,8 @@ public class MechanicActivity extends AppCompatActivity {
             public void onReadyStateChange(HttpRequest request, int readyState) {
                 switch (readyState) {
                     case HttpRequest.STATE_DONE:
+                        swipeRefresh = false;
+                        swipeRefreshLayout.setRefreshing(false);
                         Log.wtf("On DOne ", request.getResponseText());
                         Helpers.dismissProgressDialog();
                         switch (request.getStatus()) {
@@ -91,7 +107,11 @@ public class MechanicActivity extends AppCompatActivity {
                                         mechanicServices.setPrice(jsonObject.getString("price"));
                                         arrayList.add(mechanicServices);
                                     }
-
+                                    if (arrayList.size() == 0) {
+                                        emptyList.setVisibility(View.VISIBLE);
+                                    } else {
+                                        emptyList.setVisibility(View.GONE);
+                                    }
                                     adapter = new ServiceAdapter(getApplicationContext(), arrayList);
                                     listView.setAdapter(adapter);
                                     adapter.notifyDataSetChanged();
