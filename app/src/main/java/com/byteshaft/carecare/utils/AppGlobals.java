@@ -9,6 +9,7 @@ import android.graphics.Typeface;
 import android.support.v7.app.AlertDialog;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -62,7 +63,7 @@ public class AppGlobals extends Application {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-//        FirebaseApp.initializeApp(getApplicationContext());
+        FirebaseApp.initializeApp(getApplicationContext());
         sImageLoader = ImageLoader.getInstance();
         sImageLoader.init(ImageLoaderConfiguration.createDefault(getApplicationContext()));
         sContext = getApplicationContext();

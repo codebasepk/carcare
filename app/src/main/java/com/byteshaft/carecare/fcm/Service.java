@@ -24,7 +24,8 @@ public class Service extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
         Log.i("DATA" + "good", remoteMessage.getData().toString());
-        sendNotification(remoteMessage.getData().get("text"), "Promotions");
+        remoteMessage.getNotification();
+
     }
 
     private void sendNotification(String messageBody, String appName) {
