@@ -59,8 +59,6 @@ public class AddMechanicService extends AppCompatActivity implements AdapterView
     public boolean validate() {
         boolean valid = true;
         price = etServicePrice.getText().toString();
-
-
         if (price.trim().isEmpty()) {
             etServicePrice.setError("Required");
             valid = false;
