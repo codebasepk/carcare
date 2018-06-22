@@ -184,6 +184,7 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
     private void updateProfile(String name, String contactPerson, String coordinates,
                                String contactNumber, String address,
                                String imageUrl) {
+        Helpers.showProgressDialog(getActivity(), "Updating...");
         HttpRequest request = new HttpRequest(getContext());
         request.setOnReadyStateChangeListener(new HttpRequest.OnReadyStateChangeListener() {
             @Override
@@ -214,7 +215,6 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
-
                         }
                 }
             }
