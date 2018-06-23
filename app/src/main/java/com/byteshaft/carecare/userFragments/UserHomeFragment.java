@@ -62,6 +62,7 @@ public class UserHomeFragment extends Fragment implements View.OnClickListener {
                 MainActivity.getInstance().loadFragment(new BuyFuelFragment());
                 break;
             case R.id.car_towing_image_button:
+                MainActivity.getInstance().loadFragment(new TowingFragment());
                 break;
             case R.id.car_promos_image_button:
                 break;

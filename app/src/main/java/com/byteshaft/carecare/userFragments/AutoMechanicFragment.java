@@ -17,11 +17,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
+import android.widget.ListView;
 
+import com.byteshaft.carecare.Adapters.AutoMechanicCarWashAdapter;
 import com.byteshaft.carecare.R;
 import com.byteshaft.carecare.gettersetter.AutoMechanicCarWashItems;
+import com.byteshaft.carecare.gettersetter.AutoMechanicCarWashSubItem;
 import com.byteshaft.carecare.utils.AppGlobals;
 import com.byteshaft.carecare.utils.Helpers;
 import com.byteshaft.requests.HttpRequest;
@@ -43,15 +44,15 @@ public class AutoMechanicFragment extends Fragment implements HttpRequest.OnRead
         HttpRequest.OnErrorListener, View.OnClickListener {
 
     private View mBaseView;
-    private RadioGroup radioGroup;
+    private ListView listView;
     private EditText mDetailsEditText;
     private Button mNextButton;
     private HttpRequest request;
 
     private ArrayList<AutoMechanicCarWashItems> arrayList;
+    private AutoMechanicCarWashAdapter adapter;
     private int serviceId;
-    private RadioGroup.LayoutParams layoutParams;
-    private AutoMechanicCarWashItems items;
+
 
     private String mLocationString;
 
@@ -65,14 +66,12 @@ public class AutoMechanicFragment extends Fragment implements HttpRequest.OnRead
         public void onLocationResult(LocationResult locationResult) {
             super.onLocationResult(locationResult);
             Log.i("TAG", "onLocationResult");
-            locationCounter++;
-            if (locationCounter > 1) {
+
                 stopLocationUpdate();
                 mLocationString = locationResult.getLastLocation().getLatitude()
                         + "," + locationResult.getLastLocation().getLongitude();
                 System.out.println("Lat: " + mLocationString);
 
-            }
 
         }
 
@@ -89,20 +88,10 @@ public class AutoMechanicFragment extends Fragment implements HttpRequest.OnRead
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBaseView = inflater.inflate(R.layout.fragment_auto_mechanic, container, false);
         client = LocationServices.getFusedLocationProviderClient(getActivity().getApplicationContext());
-        radioGroup = mBaseView.findViewById(R.id.radio_group);
+        listView = mBaseView.findViewById(R.id.services_list_view);
         mDetailsEditText = mBaseView.findViewById(R.id.details_edit_text);
         mNextButton = mBaseView.findViewById(R.id.button_next);
         mNextButton.setOnClickListener(this);
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                items = arrayList.get(checkedId);
-                serviceId = items.getServiceId();
-                Log.e("onCheckedChanged", "" + serviceId);
-
-            }
-        });
-        arrayList = new ArrayList<>();
         getAutoMechanicsServicesList();
 
         locationCounter = 0;
@@ -158,22 +147,29 @@ public class AutoMechanicFragment extends Fragment implements HttpRequest.OnRead
                 Helpers.dismissProgressDialog();
                 switch (request.getStatus()) {
                     case HttpURLConnection.HTTP_OK:
+                        arrayList = new ArrayList<>();
+                        adapter = new AutoMechanicCarWashAdapter(getActivity(), arrayList);
+                        listView.setAdapter(adapter);
                         try {
-                            JSONObject mainJsonObject = new JSONObject(request.getResponseText());
-                            JSONArray jsonArray = mainJsonObject.getJSONArray("results");
+                            JSONArray jsonArray = new JSONArray(request.getResponseText());
                             for (int i = 0; i < jsonArray.length(); i++) {
-                                System.out.println("Test " + jsonArray.getJSONObject(i));
                                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                items = new AutoMechanicCarWashItems();
-                                items.setServiceId(jsonObject.getInt("id"));
-                                items.setServiceName(jsonObject.getString("name"));
-                                RadioButton radioButton = new RadioButton(getActivity());
-                                radioButton.setText(items.getServiceName());
-                                radioButton.setId(i);
-                                layoutParams = new RadioGroup.LayoutParams(RadioGroup.LayoutParams.
-                                        WRAP_CONTENT, RadioGroup.LayoutParams.WRAP_CONTENT);
-                                radioGroup.addView(radioButton, layoutParams);
+                                AutoMechanicCarWashItems items = new AutoMechanicCarWashItems();
+                                items.setCategoryName(jsonObject.getString("name"));
+                                JSONArray serviceSubItemsJsonArray = jsonObject.getJSONArray("sub_services");
+                                ArrayList<AutoMechanicCarWashSubItem> array = new ArrayList<>();
+                                for (int j = 0; j < serviceSubItemsJsonArray.length(); j++) {
+                                    JSONObject serviceSubItemsJsonObject = serviceSubItemsJsonArray.getJSONObject(j);
+                                    System.out.println("Test " +serviceSubItemsJsonObject);
+                                    AutoMechanicCarWashSubItem autoMechanicCarWashSubItemsList = new AutoMechanicCarWashSubItem();
+                                    autoMechanicCarWashSubItemsList.setServiceId(serviceSubItemsJsonObject.getInt("id"));
+                                    autoMechanicCarWashSubItemsList.setServiceName(serviceSubItemsJsonObject.getString("name"));
+                                    Log.i("TAG", " adding " + serviceSubItemsJsonObject.getString("name"));
+                                    array.add(autoMechanicCarWashSubItemsList);
+                                }
+                                items.setSubItemsArrayList(array);
                                 arrayList.add(items);
+                                adapter.notifyDataSetChanged();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -195,9 +191,14 @@ public class AutoMechanicFragment extends Fragment implements HttpRequest.OnRead
     @Override
     public void onClick(View v) {
         Bundle bundle = new Bundle();
-        bundle.putInt("service_id", serviceId);
-        bundle.putString("location", mLocationString);
-        Log.e("onClick", "" + serviceId);
+        bundle.putSerializable("service_id", adapter.serviceRequestData());
+        if (mLocationString == null || mLocationString.equals("")) {
+            String userLocation = AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_LOCATION);
+            bundle.putString("location", userLocation);
+        } else {
+            bundle.putString("location", mLocationString);
+        }
+        Log.e("onClick", "" + adapter.serviceRequestData().size());
         Log.e("onClick", "" + mLocationString);
         ListOfServicesProviders listOfServicesProviders = new ListOfServicesProviders();
         listOfServicesProviders.setArguments(bundle);
@@ -254,6 +255,7 @@ public class AutoMechanicFragment extends Fragment implements HttpRequest.OnRead
         LocationRequest request = new LocationRequest();
         request.setInterval(2000); // two minute interval
         request.setFastestInterval(1000);
+        request.setNumUpdates(4);
         request.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         client.requestLocationUpdates(request, locationCallback, null);
     }
