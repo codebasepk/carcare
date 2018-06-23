@@ -16,10 +16,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.byteshaft.carecare.Adapters.AutoMechanicCarWashAdapter;
 import com.byteshaft.carecare.R;
 import com.byteshaft.carecare.gettersetter.AutoMechanicCarWashItems;
 import com.byteshaft.carecare.utils.AppGlobals;
@@ -43,14 +47,14 @@ public class AutoMechanicFragment extends Fragment implements HttpRequest.OnRead
         HttpRequest.OnErrorListener, View.OnClickListener {
 
     private View mBaseView;
-    private RadioGroup radioGroup;
+    private ListView listView;
     private EditText mDetailsEditText;
     private Button mNextButton;
     private HttpRequest request;
 
     private ArrayList<AutoMechanicCarWashItems> arrayList;
+    private AutoMechanicCarWashAdapter adapter;
     private int serviceId;
-    private RadioGroup.LayoutParams layoutParams;
     private AutoMechanicCarWashItems items;
 
     private String mLocationString;
@@ -89,20 +93,10 @@ public class AutoMechanicFragment extends Fragment implements HttpRequest.OnRead
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBaseView = inflater.inflate(R.layout.fragment_auto_mechanic, container, false);
         client = LocationServices.getFusedLocationProviderClient(getActivity().getApplicationContext());
-        radioGroup = mBaseView.findViewById(R.id.radio_group);
+        listView = mBaseView.findViewById(R.id.services_list_view);
         mDetailsEditText = mBaseView.findViewById(R.id.details_edit_text);
         mNextButton = mBaseView.findViewById(R.id.button_next);
         mNextButton.setOnClickListener(this);
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                items = arrayList.get(checkedId);
-                serviceId = items.getServiceId();
-                Log.e("onCheckedChanged", "" + serviceId);
-
-            }
-        });
-        arrayList = new ArrayList<>();
         getAutoMechanicsServicesList();
 
         locationCounter = 0;
@@ -158,22 +152,24 @@ public class AutoMechanicFragment extends Fragment implements HttpRequest.OnRead
                 Helpers.dismissProgressDialog();
                 switch (request.getStatus()) {
                     case HttpURLConnection.HTTP_OK:
+                        arrayList = new ArrayList<>();
+                        adapter = new AutoMechanicCarWashAdapter(getActivity(), arrayList);
+                        listView.setAdapter(adapter);
                         try {
-                            JSONObject mainJsonObject = new JSONObject(request.getResponseText());
-                            JSONArray jsonArray = mainJsonObject.getJSONArray("results");
+                            JSONArray jsonArray = new JSONArray(request.getResponseText());
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 System.out.println("Test " + jsonArray.getJSONObject(i));
                                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                                 items = new AutoMechanicCarWashItems();
-                                items.setServiceId(jsonObject.getInt("id"));
-                                items.setServiceName(jsonObject.getString("name"));
-                                RadioButton radioButton = new RadioButton(getActivity());
-                                radioButton.setText(items.getServiceName());
-                                radioButton.setId(i);
-                                layoutParams = new RadioGroup.LayoutParams(RadioGroup.LayoutParams.
-                                        WRAP_CONTENT, RadioGroup.LayoutParams.WRAP_CONTENT);
-                                radioGroup.addView(radioButton, layoutParams);
+                                items.setCategoryName(jsonObject.getString("name"));
+                                JSONArray serviceSubItemsJsonArray = jsonObject.getJSONArray("sub_services");
+                                for (int j = 0; j < serviceSubItemsJsonArray.length(); j++) {
+                                    System.out.println("serviceSubItemsJsonArray " + serviceSubItemsJsonArray.getJSONObject(j));
+                                    items.setServiceId(jsonObject.getInt("id"));
+                                    items.setServiceName(jsonObject.getString("name"));
+                                }
                                 arrayList.add(items);
+                                adapter.notifyDataSetChanged();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -195,9 +191,14 @@ public class AutoMechanicFragment extends Fragment implements HttpRequest.OnRead
     @Override
     public void onClick(View v) {
         Bundle bundle = new Bundle();
-        bundle.putInt("service_id", serviceId);
-        bundle.putString("location", mLocationString);
-        Log.e("onClick", "" + serviceId);
+        bundle.putSerializable("service_id", adapter.serviceRequestData());
+        if (mLocationString.equals(" ")) {
+            String userLocation = AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_LOCATION);
+            bundle.putString("location", userLocation);
+        } else {
+            bundle.putString("location", mLocationString);
+        }
+        Log.e("onClick", "" + adapter.serviceRequestData().size());
         Log.e("onClick", "" + mLocationString);
         ListOfServicesProviders listOfServicesProviders = new ListOfServicesProviders();
         listOfServicesProviders.setArguments(bundle);

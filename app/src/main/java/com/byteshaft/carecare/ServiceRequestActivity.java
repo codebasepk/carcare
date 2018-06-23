@@ -66,7 +66,7 @@ public class ServiceRequestActivity extends Activity implements View.OnClickList
     private int mVehicleModelSpinnerId;
     private String addressCoordinates;
 
-    int PLACE_PICKER_REQUEST = 121;
+    private int PLACE_PICKER_REQUEST = 121;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,13 +75,16 @@ public class ServiceRequestActivity extends Activity implements View.OnClickList
         mContactNumber = findViewById(R.id.contact_number_edit_text);
         mCarNumberEditText = findViewById(R.id.car_number_edit_text);
         mCurrentLocationEditText = findViewById(R.id.pick_location_edit_text);
+
         mDateEditText = findViewById(R.id.date_edit_text);
         mTimeEditText = findViewById(R.id.time_edit_text);
         mRequestButton = findViewById(R.id.request_button);
         radioGroup = findViewById(R.id.radio_group);
+
         mVehicleModelSpinner = findViewById(R.id.vehicle_model_Spinner);
         mVehicleMakeSpinner = findViewById(R.id.vehicle_make_spinner);
         mDateEditText = findViewById(R.id.date_edit_text);
+
         mRequestButton.setOnClickListener(this);
         radioGroup.setOnCheckedChangeListener(this);
         mVehicleModelSpinner.setOnItemSelectedListener(this);
@@ -89,26 +92,20 @@ public class ServiceRequestActivity extends Activity implements View.OnClickList
         mDateEditText.setOnClickListener(this);
         mTimeEditText.setOnClickListener(this);
         mCurrentLocationEditText.setOnClickListener(this);
+
         arrayList = new ArrayList<>();
         vehicleMakeArrayList = new ArrayList<>();
         getVehicleMake();
         getVehicleModel(mVehicleMakeSpinnerId);
-
         mContactNumber.setText(AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_CONTACT_NUMBER));
 
         mCalendar = Calendar.getInstance();
-        date = new DatePickerDialog.OnDateSetListener() {
-
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                // TODO Auto-generated method stub
-                mCalendar.set(Calendar.YEAR, year);
-                mCalendar.set(Calendar.MONTH, monthOfYear);
-                mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateLabel();
-            }
-
+        date = (view, year, monthOfYear, dayOfMonth) -> {
+            // TODO Auto-generated method stub
+            mCalendar.set(Calendar.YEAR, year);
+            mCalendar.set(Calendar.MONTH, monthOfYear);
+            mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            updateLabel();
         };
     }
 
@@ -153,18 +150,14 @@ public class ServiceRequestActivity extends Activity implements View.OnClickList
         int hour = mCurrentTime.get(Calendar.HOUR_OF_DAY);
         int minute = mCurrentTime.get(Calendar.MINUTE);
         TimePickerDialog mTimePicker;
-        mTimePicker = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
-
-            @Override
-            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                String AMPM;
-                if (selectedHour < 12) {
-                    AMPM = " AM";
-                } else {
-                    AMPM = " PM";
-                }
-                mTimeEditText.setText(selectedHour + ":" + selectedMinute);
+        mTimePicker = new TimePickerDialog(this, (timePicker, selectedHour, selectedMinute) -> {
+            String AMPM;
+            if (selectedHour < 12) {
+                AMPM = " AM";
+            } else {
+                AMPM = " PM";
             }
+            mTimeEditText.setText(selectedHour + ":" + selectedMinute);
         }, hour, minute, false);
         mTimePicker.setTitle(getString(R.string.select_time));
         mTimePicker.show();

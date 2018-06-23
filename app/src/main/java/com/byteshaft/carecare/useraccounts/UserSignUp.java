@@ -167,16 +167,19 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
         mVehicleModelSpinner = mBaseView.findViewById(R.id.vehicle_model_Spinner);
         mVehicleMakeSpinner = mBaseView.findViewById(R.id.vehicle_make_spinner);
         mVehicleTypeSpinner = mBaseView.findViewById(R.id.vehicle_type_spinner);
+
         vehicleTypeArrayList = new ArrayList<>();
         arrayList = new ArrayList<>();
         vehicleMakeArrayList = new ArrayList<>();
         mPickForCurrentLocation.setOnClickListener(this);
+
         mSignInTextView.setOnClickListener(this);
         mSignUpButtonButton.setOnClickListener(this);
         mVehicleModelSpinner.setOnItemSelectedListener(this);
         mVehicleTypeSpinner.setOnItemSelectedListener(this);
         mVehicleMakeSpinner.setOnItemSelectedListener(this);
         mUserImage.setOnClickListener(this);
+
         getVehicleType();
         getVehicleMake();
         getVehicleModel(mVehicleMakeSpinnerId);
@@ -288,12 +291,9 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(intent, REQUEST_CAMERA);
             } else if (items[item].equals(getString(R.string.choose_library))) {
-                Intent intent = new Intent(
-                        Intent.ACTION_PICK,
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 intent.setType("image/*");
-                startActivityForResult(
-                        Intent.createChooser(intent, getString(R.string.select_file)),
+                startActivityForResult(Intent.createChooser(intent, getString(R.string.select_file)),
                         SELECT_FILE);
             } else if (items[item].equals(getString(R.string.cancel))) {
                 dialog.dismiss();
@@ -767,8 +767,8 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
         }
         Log.i("TAG", " create location request");
         LocationRequest request = new LocationRequest();
-        request.setInterval(2000); // two minute interval
-        request.setFastestInterval(1000);
+        request.setInterval(1000); // two minute interval
+        request.setFastestInterval(500);
         request.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         client.requestLocationUpdates(request, locationCallback, null);
     }

@@ -8,10 +8,13 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.support.v7.app.AlertDialog;
 
+import com.byteshaft.carecare.gettersetter.AutoMechanicCarWashItems;
 import com.crashlytics.android.Crashlytics;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+
+import java.util.HashMap;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -55,6 +58,8 @@ public class AppGlobals extends Application {
     public static ImageLoader sImageLoader;
     public static final String KEY_FCM_TOKEN = "fcm_token";
     public static final String KEY_MIN_PRICE = "price";
+
+    public static HashMap<Integer, AutoMechanicCarWashItems> autoMechanicCarWashItemsHashMap;
 
 
     @Override
