@@ -1,8 +1,8 @@
 <resources>
 
-    <string name="google_map_api_key">AIzaSyD0HVPobAL6Xrx6BHmUqQDCy4VArZRc94g</string>
+    <string name="google_map_api_key">AIzaSyA02kSuoBxRpYGkyp92OSuXGELvX3Qg8PU</string>
 
-    <string name="app_name">CarCare</string>
+    <string name="app_name">Car Care</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -68,4 +68,5 @@
     <string name="parts_list">Getting Parts List..</string>
     <string name="delete">Do you want to delete this Item?</string>
     <string name="select_time">Select Time</string>
+    <string name="service_already_added">Service already exist</string>
 </resources>

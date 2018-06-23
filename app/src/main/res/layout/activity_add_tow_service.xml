@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_color"
-    tools:context=".provider.AddMechanicService">
+    tools:context=".provider.AddTowService">
 
 
     <LinearLayout
@@ -17,7 +17,7 @@
         android:orientation="vertical">
 
         <Spinner
-            android:id="@+id/mechanic_service_spinner"
+            android:id="@+id/tow_service_spinner"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
@@ -41,9 +41,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-
             android:background="@drawable/button_background"
             android:text="Add"
             android:textColor="@color/text_color" />
     </LinearLayout>
+
 </RelativeLayout>

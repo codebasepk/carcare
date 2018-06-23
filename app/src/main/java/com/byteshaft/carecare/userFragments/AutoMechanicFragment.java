@@ -16,16 +16,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 
 import com.byteshaft.carecare.Adapters.AutoMechanicCarWashAdapter;
 import com.byteshaft.carecare.R;
 import com.byteshaft.carecare.gettersetter.AutoMechanicCarWashItems;
+import com.byteshaft.carecare.gettersetter.AutoMechanicCarWashSubItem;
 import com.byteshaft.carecare.utils.AppGlobals;
 import com.byteshaft.carecare.utils.Helpers;
 import com.byteshaft.requests.HttpRequest;
@@ -55,7 +52,7 @@ public class AutoMechanicFragment extends Fragment implements HttpRequest.OnRead
     private ArrayList<AutoMechanicCarWashItems> arrayList;
     private AutoMechanicCarWashAdapter adapter;
     private int serviceId;
-    private AutoMechanicCarWashItems items;
+
 
     private String mLocationString;
 
@@ -69,14 +66,12 @@ public class AutoMechanicFragment extends Fragment implements HttpRequest.OnRead
         public void onLocationResult(LocationResult locationResult) {
             super.onLocationResult(locationResult);
             Log.i("TAG", "onLocationResult");
-            locationCounter++;
-            if (locationCounter > 1) {
+
                 stopLocationUpdate();
                 mLocationString = locationResult.getLastLocation().getLatitude()
                         + "," + locationResult.getLastLocation().getLongitude();
                 System.out.println("Lat: " + mLocationString);
 
-            }
 
         }
 
@@ -158,16 +153,21 @@ public class AutoMechanicFragment extends Fragment implements HttpRequest.OnRead
                         try {
                             JSONArray jsonArray = new JSONArray(request.getResponseText());
                             for (int i = 0; i < jsonArray.length(); i++) {
-                                System.out.println("Test " + jsonArray.getJSONObject(i));
                                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                items = new AutoMechanicCarWashItems();
+                                AutoMechanicCarWashItems items = new AutoMechanicCarWashItems();
                                 items.setCategoryName(jsonObject.getString("name"));
                                 JSONArray serviceSubItemsJsonArray = jsonObject.getJSONArray("sub_services");
+                                ArrayList<AutoMechanicCarWashSubItem> array = new ArrayList<>();
                                 for (int j = 0; j < serviceSubItemsJsonArray.length(); j++) {
-                                    System.out.println("serviceSubItemsJsonArray " + serviceSubItemsJsonArray.getJSONObject(j));
-                                    items.setServiceId(jsonObject.getInt("id"));
-                                    items.setServiceName(jsonObject.getString("name"));
+                                    JSONObject serviceSubItemsJsonObject = serviceSubItemsJsonArray.getJSONObject(j);
+                                    System.out.println("Test " +serviceSubItemsJsonObject);
+                                    AutoMechanicCarWashSubItem autoMechanicCarWashSubItemsList = new AutoMechanicCarWashSubItem();
+                                    autoMechanicCarWashSubItemsList.setServiceId(serviceSubItemsJsonObject.getInt("id"));
+                                    autoMechanicCarWashSubItemsList.setServiceName(serviceSubItemsJsonObject.getString("name"));
+                                    Log.i("TAG", " adding " + serviceSubItemsJsonObject.getString("name"));
+                                    array.add(autoMechanicCarWashSubItemsList);
                                 }
+                                items.setSubItemsArrayList(array);
                                 arrayList.add(items);
                                 adapter.notifyDataSetChanged();
                             }
@@ -192,7 +192,7 @@ public class AutoMechanicFragment extends Fragment implements HttpRequest.OnRead
     public void onClick(View v) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("service_id", adapter.serviceRequestData());
-        if (mLocationString.equals(" ")) {
+        if (mLocationString == null || mLocationString.equals("")) {
             String userLocation = AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_LOCATION);
             bundle.putString("location", userLocation);
         } else {
@@ -255,6 +255,7 @@ public class AutoMechanicFragment extends Fragment implements HttpRequest.OnRead
         LocationRequest request = new LocationRequest();
         request.setInterval(2000); // two minute interval
         request.setFastestInterval(1000);
+        request.setNumUpdates(4);
         request.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         client.requestLocationUpdates(request, locationCallback, null);
     }

@@ -3,9 +3,9 @@ package com.byteshaft.carecare.provider;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,6 +35,10 @@ public class CarWashActivity extends AppCompatActivity {
     private List<CarWashService> arrayList;
     private ServiceAdapter adapter;
 
+    private TextView emptyList;
+    private boolean swipeRefresh = false;
+    private SwipeRefreshLayout swipeRefreshLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +46,14 @@ public class CarWashActivity extends AppCompatActivity {
         setTitle("Car Wash");
         listView = findViewById(R.id.car_wash_list);
         arrayList = new ArrayList<>();
+        emptyList = findViewById(R.id.tv_empty);
+        swipeRefreshLayout = findViewById(R.id.swipe_refresh_wishlist);
+
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            arrayList.clear();
+            swipeRefresh = true;
+            getAllCarWashServices();
+        });
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -134,7 +146,8 @@ public class CarWashActivity extends AppCompatActivity {
             public void onReadyStateChange(HttpRequest request, int readyState) {
                 switch (readyState) {
                     case HttpRequest.STATE_DONE:
-                        Log.wtf("On DOne ", request.getResponseText());
+                        swipeRefresh = false;
+                        swipeRefreshLayout.setRefreshing(false);
                         Helpers.dismissProgressDialog();
                         switch (request.getStatus()) {
                             case HttpURLConnection.HTTP_OK:
@@ -151,6 +164,11 @@ public class CarWashActivity extends AppCompatActivity {
                                         arrayList.add(carWashService);
                                     }
 
+                                    if (arrayList.size() == 0) {
+                                        emptyList.setVisibility(View.VISIBLE);
+                                    } else {
+                                        emptyList.setVisibility(View.GONE);
+                                    }
                                     adapter = new ServiceAdapter(getApplicationContext(), arrayList);
                                     listView.setAdapter(adapter);
                                     adapter.notifyDataSetChanged();

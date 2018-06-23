@@ -166,12 +166,11 @@ public class AddCarPart extends AppCompatActivity implements AdapterView.OnItemS
                 switch (readyState) {
                     case HttpRequest.STATE_DONE:
                         Helpers.dismissProgressDialog();
-                        Log.wtf("Check --------->>>", request.getResponseText());
                         Helpers.dismissProgressDialog();
                         switch (request.getStatus()) {
                             case HttpURLConnection.HTTP_CREATED:
                                 finish();
-                                Toast.makeText(AddCarPart.this, "Part Added", Toast.LENGTH_SHORT).show();
+                                Helpers.showSnackBar(pickYear, "Item Added");
                         }
                 }
             }

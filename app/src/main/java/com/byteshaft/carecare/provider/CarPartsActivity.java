@@ -3,6 +3,7 @@ package com.byteshaft.carecare.provider;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -37,6 +38,10 @@ public class CarPartsActivity extends AppCompatActivity {
     private ListView listView;
     private List<CarParts> carPartsList;
     private PartsAdapter adapter;
+    private TextView emptyList;
+    private boolean swipeRefresh = false;
+    private SwipeRefreshLayout swipeRefreshLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +50,14 @@ public class CarPartsActivity extends AppCompatActivity {
         setTitle("Car Parts");
         listView = findViewById(R.id.car_parts_list);
         carPartsList = new ArrayList<>();
+        emptyList = findViewById(R.id.tv_empty);
+        swipeRefreshLayout = findViewById(R.id.swipe_refresh_wishlist);
+
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            carPartsList.clear();
+            swipeRefresh = true;
+            getPartsList();
+        });
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -101,12 +114,15 @@ public class CarPartsActivity extends AppCompatActivity {
     }
 
     private void getPartsList() {
+        Helpers.showProgressDialog(CarPartsActivity.this, "Just a moment..");
         HttpRequest request = new HttpRequest(getApplicationContext());
         request.setOnReadyStateChangeListener(new HttpRequest.OnReadyStateChangeListener() {
             @Override
             public void onReadyStateChange(HttpRequest request, int readyState) {
                 switch (readyState) {
                     case HttpRequest.STATE_DONE:
+                        swipeRefresh = false;
+                        swipeRefreshLayout.setRefreshing(false);
                         Helpers.dismissProgressDialog();
                         switch (request.getStatus()) {
                             case HttpURLConnection.HTTP_OK:
@@ -126,7 +142,11 @@ public class CarPartsActivity extends AppCompatActivity {
                                         carParts.setModelName(model.getString("name"));
                                         carPartsList.add(carParts);
                                     }
-
+                                    if (carPartsList.size() == 0) {
+                                        emptyList.setVisibility(View.VISIBLE);
+                                    } else {
+                                        emptyList.setVisibility(View.GONE);
+                                    }
                                     adapter = new PartsAdapter(getApplicationContext(), carPartsList);
                                     listView.setAdapter(adapter);
                                     adapter.notifyDataSetChanged();

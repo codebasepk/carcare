@@ -64,7 +64,7 @@ public class Home extends Fragment implements View.OnClickListener {
                 Toast.makeText(getContext(), "this is ok", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.car_towing_image_button:
-                Toast.makeText(getContext(), "this is ok", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getActivity(), TowService.class));
                 break;
             case R.id.car_promos_image_button:
                 Toast.makeText(getContext(), "this is ok", Toast.LENGTH_SHORT).show();
