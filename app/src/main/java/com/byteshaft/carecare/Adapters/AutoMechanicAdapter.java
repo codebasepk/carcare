@@ -4,34 +4,29 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.byteshaft.carecare.R;
-import com.byteshaft.carecare.gettersetter.AutoMechanicCarWashItems;
-import com.byteshaft.carecare.gettersetter.AutoMechanicCarWashSubItem;
+import com.byteshaft.carecare.gettersetter.AutoMechanicItems;
+import com.byteshaft.carecare.gettersetter.AutoMechanicSubItem;
 
 import java.util.ArrayList;
-import java.util.Random;
 
-public class AutoMechanicCarWashAdapter extends ArrayAdapter<String> {
+public class AutoMechanicAdapter extends ArrayAdapter<String> {
 
     private ViewHolder viewHolder;
-    private ArrayList<AutoMechanicCarWashItems> arrayList;
+    private ArrayList<AutoMechanicItems> arrayList;
     private Activity activity;
 
     private ArrayList<Integer> servicesArrayList;
 
 
-    public AutoMechanicCarWashAdapter(Activity activity, ArrayList<AutoMechanicCarWashItems> arrayList) {
+    public AutoMechanicAdapter(Activity activity, ArrayList<AutoMechanicItems> arrayList) {
         super(activity, R.layout.delegate_auto_mechanic);
         this.activity = activity;
         this.arrayList = arrayList;
@@ -50,13 +45,13 @@ public class AutoMechanicCarWashAdapter extends ArrayAdapter<String> {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        final AutoMechanicCarWashItems autoMechanicCarWashItems = arrayList.get(position);
-        ArrayList<AutoMechanicCarWashSubItem> subItemArrayList = autoMechanicCarWashItems.getSubItemsArrayList();
+        final AutoMechanicItems autoMechanicItems = arrayList.get(position);
+        ArrayList<AutoMechanicSubItem> subItemArrayList = autoMechanicItems.getSubItemsArrayList();
         Log.e("AutoMechanicCarWash", " 9999999999999999999999999" +  subItemArrayList.size());
         if (subItemArrayList != null && subItemArrayList.size() > 0) {
             viewHolder.linearLayout.removeAllViews();
             for (int i = 0; i < subItemArrayList.size() ; i++) {
-                AutoMechanicCarWashSubItem subItem = subItemArrayList.get(i);
+                AutoMechanicSubItem subItem = subItemArrayList.get(i);
                 View childView = activity.getLayoutInflater().inflate(R.layout.raw_checkbox,
                         viewHolder.linearLayout, false);
                 CheckBox serviceNameCheckBox = childView.findViewById(R.id.check_box);
@@ -78,7 +73,7 @@ public class AutoMechanicCarWashAdapter extends ArrayAdapter<String> {
             viewHolder.linearLayout.removeAllViews();
         }
 
-        viewHolder.categoryName.setText(autoMechanicCarWashItems.getCategoryName());
+        viewHolder.categoryName.setText(autoMechanicItems.getCategoryName());
 
         return convertView;
     }
