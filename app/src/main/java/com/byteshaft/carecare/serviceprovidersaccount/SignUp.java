@@ -16,6 +16,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -24,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,28 +50,37 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
 
-public class SignUp extends Fragment implements View.OnClickListener, HttpRequest.OnReadyStateChangeListener, HttpRequest.OnErrorListener {
+public class SignUp extends Fragment implements View.OnClickListener, HttpRequest.OnReadyStateChangeListener,
+        HttpRequest.OnErrorListener, RadioGroup.OnCheckedChangeListener {
 
     private View mBaseView;
+    public static final int MULTIPLE_PERMISSIONS = 10;
     int PLACE_PICKER_REQUEST = 121;
-    private EditText etOrganizationName, etUsername, etEmail, etContactNumber, etContactPerson, etPassword, etVerifyPassword;
+    int FILE_PICK_CODE = 2001;
+    private EditText etOrganizationName, etUsername, etEmail, etContactNumber, etContactPerson, etPassword, etVerifyPassword, etProviderDescription;
 
-    private TextView etAddress;
+    private TextView etAddress, certificate;
 
-    private String organizationName, username, email, contactNumber, contactPerson, password, address, verifyPassword, addressCoordinates;
+    private String organizationName, username, email, contactNumber, contactPerson, password, address, verifyPassword, addressCoordinates, providerDescription;
 
     private CircleImageView organizationImage;
     private File destination;
     private Uri selectedImageUri;
+    private Uri certificateUri;
     private Bitmap profilePic;
     private String url;
+    private RadioGroup radioGroup;
 
     private static String imageUrl = "";
+    private String certificateFilePath = "";
+    private String providerType = "Company";
 
     private static final int REQUEST_CAMERA = 3;
     private static final int STORAGE_CAMERA_PERMISSION = 1;
@@ -79,13 +90,17 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
     private TextView mButtonLogin;
 
 
+    String[] PERMISSIONS;
+
     @Nullable
     @Override
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBaseView = inflater.inflate(R.layout.fragment_service_provider_sign_up, container, false);
         ((AppCompatActivity) getActivity()).getSupportActionBar()
                 .setTitle("Registration");
+        radioGroup = mBaseView.findViewById(R.id.provider_type);
         etOrganizationName = mBaseView.findViewById(R.id.organization_edit_text);
         organizationImage = mBaseView.findViewById(R.id.organization_image);
         etUsername = mBaseView.findViewById(R.id.username_edit_text);
@@ -94,15 +109,20 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
         etContactPerson = mBaseView.findViewById(R.id.contact_person_edit_text);
         etPassword = mBaseView.findViewById(R.id.password_edit_text);
         etAddress = mBaseView.findViewById(R.id.address_edit_text);
+        etProviderDescription = mBaseView.findViewById(R.id.provider_description);
         etVerifyPassword = mBaseView.findViewById(R.id.verify_password_edit_text);
         mButtonCreateAccoutn = mBaseView.findViewById(R.id.register_button);
         mButtonLogin = mBaseView.findViewById(R.id.sign_up_text_view);
+        certificate = mBaseView.findViewById(R.id.tv_certificate);
 
         etAddress = mBaseView.findViewById(R.id.address_edit_text);
         mButtonCreateAccoutn.setOnClickListener(this);
         mButtonLogin.setOnClickListener(this);
         etAddress.setOnClickListener(this);
         organizationImage.setOnClickListener(this);
+        radioGroup.setOnCheckedChangeListener(this);
+        certificate.setOnClickListener(this);
+
         if (AppGlobals.isLogin()) {
             ((AppCompatActivity) getActivity()).getSupportActionBar()
                     .setTitle("Profile");
@@ -136,6 +156,27 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
         return mBaseView;
     }
 
+    String[] permissions = new String[]{
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,};
+
+
+    private boolean storagePermissons() {
+        int result;
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        for (String p : permissions) {
+            result = ContextCompat.checkSelfPermission(AppGlobals.getContext(), p);
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(p);
+            }
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(getActivity(), listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), MULTIPLE_PERMISSIONS);
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -146,9 +187,10 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
                 } else {
                     if (validateEditText()) {
                         if (imageUrl.isEmpty()) {
-                            registerUser(organizationName, email, username, contactPerson, addressCoordinates, contactPerson, address, password);
+                            registerUser(organizationName, email, username, contactPerson, addressCoordinates, contactPerson, address, password, providerDescription, providerType);
                         } else {
-                            registerUserWithImage(organizationName, email, username, contactPerson, addressCoordinates, contactNumber, address, password, imageUrl);
+                            registerUserWithImage(organizationName, email, username, contactPerson, addressCoordinates, contactNumber, address, password, imageUrl, certificateFilePath,
+                                    providerDescription, providerType);
                         }
                     }
                 }
@@ -166,6 +208,14 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
 
                 } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
                     e.printStackTrace();
+                }
+                break;
+            case R.id.tv_certificate:
+                if (storagePermissons()) {
+                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("*/*");
+                    startActivityForResult(intent, FILE_PICK_CODE);
                 }
         }
     }
@@ -267,6 +317,7 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
 
     private boolean validateEditText() {
         boolean valid = true;
+        providerDescription = etProviderDescription.getText().toString();
         organizationName = etOrganizationName.getText().toString();
         username = etUsername.getText().toString();
         email = etEmail.getText().toString();
@@ -275,6 +326,26 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
         password = etPassword.getText().toString();
         verifyPassword = etVerifyPassword.getText().toString();
         address = etAddress.getText().toString();
+
+        if (providerType.contains("Freelancer") && certificateFilePath.isEmpty()) {
+            valid = false;
+            Toast.makeText(getContext(), "Please attache Certificate", Toast.LENGTH_SHORT).show();
+        } else {
+            valid = true;
+        }
+
+        if (imageUrl.isEmpty()) {
+            valid = false;
+            Toast.makeText(getContext(), "Please select an Image", Toast.LENGTH_SHORT).show();
+        } else {
+            valid = true;
+        }
+        if (providerDescription.trim().isEmpty()) {
+            etProviderDescription.setError("required");
+            valid = false;
+        } else {
+            etProviderDescription.setError(null);
+        }
 
         if (organizationName.trim().isEmpty()) {
             etOrganizationName.setError("required");
@@ -336,18 +407,21 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
 
 
     private void registerUser(String name, String email, String userName, String contactPerson, String coordinates,
-                              String contactNumber, String address, String password) {
+                              String contactNumber, String address, String password,
+                              String description, String type) {
         Helpers.showProgressDialog(getActivity(), "Please wait...");
         HttpRequest request = new HttpRequest(getActivity());
         request.setOnReadyStateChangeListener(this);
         request.setOnErrorListener(this);
         request.open("POST", String.format("%sregister-provider", AppGlobals.BASE_URL));
-        request.send(getRegisterData(name, email, userName, contactPerson, coordinates, contactNumber, address, password));
+        request.send(getRegisterData(name, email, userName, contactPerson, coordinates,
+                contactNumber, address, password, description, type));
         Helpers.showProgressDialog(getActivity(), "Registering...");
     }
 
     private String getRegisterData(String name, String email, String userName, String contactPerson, String coordinates,
-                                   String contactNumber, String address, String password) {
+                                   String contactNumber, String address, String password,
+                                   String description, String type) {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("username", userName);
@@ -356,6 +430,8 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
             jsonObject.put("contact_person", contactPerson);
             jsonObject.put("contact_number", contactNumber);
             jsonObject.put("address", address);
+            jsonObject.put("provider_description", description);
+            jsonObject.put("provider_type", type);
             jsonObject.put("address_coordinates", coordinates);
             jsonObject.put("password", password);
         } catch (JSONException e) {
@@ -366,19 +442,21 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
 
     private void registerUserWithImage(String name, String email, String userName, String contactPerson, String coordinates,
                                        String contactNumber, String address, String password,
-                                       String imageUrl) {
+                                       String imageUrl, String file,
+                                       String description, String type) {
         Helpers.showProgressDialog(getActivity(), "Please wait...");
         HttpRequest request = new HttpRequest(getActivity());
         request.setOnReadyStateChangeListener(this);
         request.setOnErrorListener(this);
         request.open("POST", String.format("%sregister-provider", AppGlobals.BASE_URL));
-        request.send(getRegisterDataWithImage(name, email, userName, contactPerson, coordinates, contactNumber, address, password, imageUrl));
+        request.send(getRegisterDataWithImage(name, email, userName, contactPerson, coordinates, contactNumber, address, password, imageUrl, file, description, type));
         Helpers.showProgressDialog(getActivity(), "Registering...");
     }
 
     private FormData getRegisterDataWithImage(String name, String email, String userName, String contactPerson, String coordinates,
                                               String contactNumber, String address, String password,
-                                              String imageUrl) {
+                                              String imageUrl, String file,
+                                              String description, String type) {
 
         FormData formData = new FormData();
         formData.append(FormData.TYPE_CONTENT_TEXT, "name", name);
@@ -389,6 +467,13 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
         formData.append(FormData.TYPE_CONTENT_TEXT, "address", address);
         formData.append(FormData.TYPE_CONTENT_TEXT, "address_coordinates", coordinates);
         formData.append(FormData.TYPE_CONTENT_TEXT, "password", password);
+
+        formData.append(FormData.TYPE_CONTENT_TEXT, "provider_type", type);
+        formData.append(FormData.TYPE_CONTENT_TEXT, "provider_description", description);
+
+        if (certificateFilePath != null && !certificateFilePath.trim().isEmpty()) {
+            formData.append(FormData.TYPE_CONTENT_FILE, "freelancer_certificate", file);
+        }
         if (imageUrl != null && !imageUrl.trim().isEmpty()) {
             formData.append(FormData.TYPE_CONTENT_FILE, "profile_photo", imageUrl);
         }
@@ -438,6 +523,18 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
+            case MULTIPLE_PERMISSIONS: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permissions granted.
+                } else {
+                    String perStr = "";
+                    for (String per : permissions) {
+                        perStr += "\n" + per;
+                    }
+                    // permissions list of don't granted permission
+                }
+                return;
+            }
 //            case LOCATION_PERMISSION:
 //                if (grantResults.length > 0
 //                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -541,7 +638,57 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
                 Bitmap orientedBitmap = RotateUtil.rotateBitmap(selectedImagePath, profilePic);
                 organizationImage.setImageBitmap(orientedBitmap);
                 imageUrl = String.valueOf(selectedImagePath);
+            } else if (requestCode == FILE_PICK_CODE) {
+                certificateUri = data.getData();
+                certificateFilePath = getPath(certificateUri);
+                Log.wtf("ok", certificateFilePath);
             }
         }
+    }
+
+    public String getPath(Uri uri) {
+
+        String path = null;
+        String[] projection = {MediaStore.Files.FileColumns.DATA};
+        Cursor cursor = getContext().getContentResolver().query(uri, projection, null, null, null);
+
+        if (cursor == null) {
+            path = uri.getPath();
+        } else {
+            cursor.moveToFirst();
+            int column_index = cursor.getColumnIndexOrThrow(projection[0]);
+            path = cursor.getString(column_index);
+            cursor.close();
+        }
+
+        return ((path == null || path.isEmpty()) ? (uri.getPath()) : path);
+    }
+
+    @Override
+    public void onCheckedChanged(RadioGroup radioGroup, int i) {
+
+        switch (radioGroup.getCheckedRadioButtonId()) {
+            case R.id.radio_button_company:
+                certificate.setVisibility(View.GONE);
+                providerType = "Company";
+                certificateFilePath = "";
+                break;
+            case R.id.radio_button_contractor:
+                certificate.setVisibility(View.GONE);
+                providerType = "Contractor";
+                certificateFilePath = "";
+                break;
+            case R.id.radio_button_seller:
+                certificate.setVisibility(View.GONE);
+                providerType = "Seller";
+                certificateFilePath = "";
+                break;
+            case R.id.radio_button_freelancer:
+                providerType = "Freelancer";
+                certificate.setVisibility(View.VISIBLE);
+                break;
+        }
+
+        Log.wtf("now", providerType);
     }
 }
