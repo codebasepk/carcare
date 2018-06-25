@@ -1,40 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
-    <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <RelativeLayout
         android:layout_margin="5dp"
-        android:minHeight="100dp"
-        android:minWidth="500dp"
-        app:cardCornerRadius="5dp">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <RelativeLayout
-            android:layout_margin="5dp"
+        <ListView
+            android:id="@+id/car_wash_list_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:divider="@null"
+            android:scrollbars="none"/>
 
-            <RadioGroup
-                android:id="@+id/radio_group"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/button_next"
-                android:layout_width="150dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="30dp"
-                android:gravity="center"
-                android:layout_below="@+id/radio_group"
-                android:background="@drawable/button_background"
-                android:layout_centerHorizontal="true"
-                android:text="Search"
-                android:textAllCaps="true"
-                android:textColor="@color/button_text_color"
-                android:textStyle="bold" />
-        </RelativeLayout>
-    </android.support.v7.widget.CardView>
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/button_search"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/button_background"
+            android:text="Search"
+            android:layout_centerHorizontal="true"
+            android:textAllCaps="true"
+            android:textColor="@color/button_text_color"
+            android:textStyle="bold" />
+    </RelativeLayout>
 </RelativeLayout>

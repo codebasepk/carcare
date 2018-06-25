@@ -2,20 +2,20 @@ package com.byteshaft.carecare.gettersetter;
 
 import java.util.ArrayList;
 
-public class AutoMechanicCarWashItems {
+public class AutoMechanicItems {
 
     private String serviceName;
     private String categoryName;
     private int serviceId;
     private int categoryId;
     private String servicePrice;
-    private ArrayList<AutoMechanicCarWashSubItem> subItemsArrayList;
+    private ArrayList<AutoMechanicSubItem> subItemsArrayList;
 
-    public ArrayList<AutoMechanicCarWashSubItem> getSubItemsArrayList() {
+    public ArrayList<AutoMechanicSubItem> getSubItemsArrayList() {
         return subItemsArrayList;
     }
 
-    public void setSubItemsArrayList(ArrayList<AutoMechanicCarWashSubItem> subItemsArrayList) {
+    public void setSubItemsArrayList(ArrayList<AutoMechanicSubItem> subItemsArrayList) {
         this.subItemsArrayList = subItemsArrayList;
     }
 

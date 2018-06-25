@@ -18,11 +18,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
-import com.byteshaft.carecare.Adapters.AutoMechanicCarWashAdapter;
+import com.byteshaft.carecare.Adapters.AutoMechanicAdapter;
 import com.byteshaft.carecare.R;
-import com.byteshaft.carecare.gettersetter.AutoMechanicCarWashItems;
-import com.byteshaft.carecare.gettersetter.AutoMechanicCarWashSubItem;
+import com.byteshaft.carecare.gettersetter.AutoMechanicItems;
+import com.byteshaft.carecare.gettersetter.AutoMechanicSubItem;
 import com.byteshaft.carecare.utils.AppGlobals;
 import com.byteshaft.carecare.utils.Helpers;
 import com.byteshaft.requests.HttpRequest;
@@ -49,8 +50,8 @@ public class AutoMechanicFragment extends Fragment implements HttpRequest.OnRead
     private Button mNextButton;
     private HttpRequest request;
 
-    private ArrayList<AutoMechanicCarWashItems> arrayList;
-    private AutoMechanicCarWashAdapter adapter;
+    private ArrayList<AutoMechanicItems> arrayList;
+    private AutoMechanicAdapter adapter;
     private int serviceId;
 
 
@@ -89,8 +90,7 @@ public class AutoMechanicFragment extends Fragment implements HttpRequest.OnRead
         mBaseView = inflater.inflate(R.layout.fragment_auto_mechanic, container, false);
         client = LocationServices.getFusedLocationProviderClient(getActivity().getApplicationContext());
         listView = mBaseView.findViewById(R.id.services_list_view);
-        mDetailsEditText = mBaseView.findViewById(R.id.details_edit_text);
-        mNextButton = mBaseView.findViewById(R.id.button_next);
+        mNextButton = mBaseView.findViewById(R.id.search_button);
         mNextButton.setOnClickListener(this);
         getAutoMechanicsServicesList();
 
@@ -148,24 +148,24 @@ public class AutoMechanicFragment extends Fragment implements HttpRequest.OnRead
                 switch (request.getStatus()) {
                     case HttpURLConnection.HTTP_OK:
                         arrayList = new ArrayList<>();
-                        adapter = new AutoMechanicCarWashAdapter(getActivity(), arrayList);
+                        adapter = new AutoMechanicAdapter(getActivity(), arrayList);
                         listView.setAdapter(adapter);
                         try {
                             JSONArray jsonArray = new JSONArray(request.getResponseText());
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                AutoMechanicCarWashItems items = new AutoMechanicCarWashItems();
+                                AutoMechanicItems items = new AutoMechanicItems();
                                 items.setCategoryName(jsonObject.getString("name"));
                                 JSONArray serviceSubItemsJsonArray = jsonObject.getJSONArray("sub_services");
-                                ArrayList<AutoMechanicCarWashSubItem> array = new ArrayList<>();
+                                ArrayList<AutoMechanicSubItem> array = new ArrayList<>();
                                 for (int j = 0; j < serviceSubItemsJsonArray.length(); j++) {
                                     JSONObject serviceSubItemsJsonObject = serviceSubItemsJsonArray.getJSONObject(j);
                                     System.out.println("Test " +serviceSubItemsJsonObject);
-                                    AutoMechanicCarWashSubItem autoMechanicCarWashSubItemsList = new AutoMechanicCarWashSubItem();
-                                    autoMechanicCarWashSubItemsList.setServiceId(serviceSubItemsJsonObject.getInt("id"));
-                                    autoMechanicCarWashSubItemsList.setServiceName(serviceSubItemsJsonObject.getString("name"));
+                                    AutoMechanicSubItem autoMechanicSubItemsList = new AutoMechanicSubItem();
+                                    autoMechanicSubItemsList.setServiceId(serviceSubItemsJsonObject.getInt("id"));
+                                    autoMechanicSubItemsList.setServiceName(serviceSubItemsJsonObject.getString("name"));
                                     Log.i("TAG", " adding " + serviceSubItemsJsonObject.getString("name"));
-                                    array.add(autoMechanicCarWashSubItemsList);
+                                    array.add(autoMechanicSubItemsList);
                                 }
                                 items.setSubItemsArrayList(array);
                                 arrayList.add(items);

@@ -8,7 +8,7 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.support.v7.app.AlertDialog;
 
-import com.byteshaft.carecare.gettersetter.AutoMechanicCarWashItems;
+import com.byteshaft.carecare.gettersetter.AutoMechanicItems;
 import com.crashlytics.android.Crashlytics;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -60,7 +60,7 @@ public class AppGlobals extends Application {
     public static final String KEY_FCM_TOKEN = "fcm_token";
     public static final String KEY_MIN_PRICE = "price";
 
-    public static HashMap<Integer, AutoMechanicCarWashItems> autoMechanicCarWashItemsHashMap;
+    public static HashMap<Integer, AutoMechanicItems> autoMechanicCarWashItemsHashMap;
 
 
     @Override

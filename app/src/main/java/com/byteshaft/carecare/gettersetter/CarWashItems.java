@@ -1,8 +1,7 @@
 package com.byteshaft.carecare.gettersetter;
 
-import java.util.ArrayList;
 
-public class AutoMechanicCarWashSubItem {
+public class CarWashItems {
 
     private String serviceName;
     private int serviceId;
