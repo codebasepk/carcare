@@ -67,7 +67,7 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
     int FILE_PICK_CODE = 2001;
     private EditText etOrganizationName, etUsername, etEmail, etContactNumber, etContactPerson, etPassword, etVerifyPassword, etProviderDescription;
 
-    private TextView etAddress, certificate;
+    private TextView etAddress, certificate, tvSelectType;
 
     private String organizationName, username, email, contactNumber, contactPerson, password, address, verifyPassword, addressCoordinates, providerDescription;
 
@@ -89,6 +89,7 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
 
     private Button mButtonCreateAccoutn;
     private TextView mButtonLogin;
+    ArrayList<String> options;
 
     @Nullable
     @Override
@@ -96,8 +97,25 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBaseView = inflater.inflate(R.layout.fragment_service_provider_sign_up, container, false);
-        ((AppCompatActivity) getActivity()).getSupportActionBar()
-                .setTitle("Registration");
+//        ((AppCompatActivity) getActivity()).getSupportActionBar()
+//                .setTitle("Registration");
+//        options = new ArrayList<>();
+//        options.add("Mechanical");
+//        options.add("Electrical");
+//        options.add("Flat Tyre");
+//        options.add("Emergency Repair");
+//        MultiSelectSpinner multiSelectSpinner =  mBaseView.findViewById(R.id.multiselect_spinner);
+//        ArrayAdapter<String> adapter = new ArrayAdapter <String>(getActivity(),
+//                android.R.layout.simple_list_item_multiple_choice, options);
+//        multiSelectSpinner.setListAdapter(adapter);
+//        multiSelectSpinner.setMinSelectedItems(2);
+//        multiSelectSpinner.setTitle("Expertise");
+//        multiSelectSpinner.setListener(new BaseMultiSelectSpinner.MultiSpinnerListener() {
+//            @Override
+//            public void onItemsSelected(boolean[] selected) {
+//            }
+//        });
+
         radioGroup = mBaseView.findViewById(R.id.provider_type);
         etOrganizationName = mBaseView.findViewById(R.id.organization_edit_text);
         organizationImage = mBaseView.findViewById(R.id.organization_image);
@@ -112,6 +130,7 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
         mButtonCreateAccoutn = mBaseView.findViewById(R.id.register_button);
         mButtonLogin = mBaseView.findViewById(R.id.sign_up_text_view);
         certificate = mBaseView.findViewById(R.id.tv_certificate);
+        tvSelectType = mBaseView.findViewById(R.id.select_type);
 
         etAddress = mBaseView.findViewById(R.id.address_edit_text);
         mButtonCreateAccoutn.setOnClickListener(this);
@@ -124,6 +143,8 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
         if (AppGlobals.isLogin()) {
             ((AppCompatActivity) getActivity()).getSupportActionBar()
                     .setTitle("Profile");
+            radioGroup.setVisibility(View.GONE);
+            tvSelectType.setVisibility(View.GONE);
             mButtonCreateAccoutn.setText("Update");
             etOrganizationName.setText(AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_ORGANIZATION_NAME));
             etOrganizationName.setSelection(etOrganizationName.getText().toString().length());
@@ -133,6 +154,7 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
             etEmail.setCursorVisible(false);
             etUsername.setEnabled(false);
             etUsername.setCursorVisible(false);
+            etProviderDescription.setText(AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_PROVIDER_DESCRIPTION));
             etContactPerson.setText(AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_CONTACT_PERSON));
             etContactNumber.setText(AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_CONTACT_NUMBER));
             etAddress.setText(AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_ADDRESS));
@@ -181,7 +203,7 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
             case R.id.register_button:
                 if (AppGlobals.isLogin()) {
                     updateProfile(etOrganizationName.getText().toString(), etContactPerson.getText().toString(),
-                            addressCoordinates, etContactNumber.getText().toString(), address, imageUrl);
+                            addressCoordinates, etContactNumber.getText().toString(), address, imageUrl,etProviderDescription.getText().toString());
                 } else {
                     if (validateEditText()) {
                         if (imageUrl.isEmpty()) {
@@ -231,7 +253,7 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
 
     private void updateProfile(String name, String contactPerson, String coordinates,
                                String contactNumber, String address,
-                               String imageUrl) {
+                               String imageUrl, String description) {
         Helpers.showProgressDialog(getActivity(), "Updating...");
         HttpRequest request = new HttpRequest(getContext());
         request.setOnReadyStateChangeListener(new HttpRequest.OnReadyStateChangeListener() {
@@ -239,6 +261,7 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
             public void onReadyStateChange(HttpRequest request, int i) {
                 switch (i) {
                     case HttpRequest.STATE_DONE:
+                        Log.wtf("now ---------  ", request.getResponseText());
                         Helpers.dismissProgressDialog();
                         switch (request.getStatus()) {
                             case HttpURLConnection.HTTP_OK:
@@ -252,6 +275,7 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
                                     String organizationName = jsonObject.getString(AppGlobals.KEY_ORGANIZATION_NAME);
                                     String profilePhoto = jsonObject.getString(AppGlobals.KEY_SERVER_IMAGE);
                                     String addressCoordinates = jsonObject.getString(AppGlobals.KEY_LOCATION);
+                                    String providerDescription = jsonObject.getString(AppGlobals.KEY_PROVIDER_DESCRIPTION);
 
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_CONTACT_NUMBER, contactNumber);
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_CONTACT_PERSON, contactPerson);
@@ -259,6 +283,7 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_LOCATION, addressCoordinates);
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_ORGANIZATION_NAME, organizationName);
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_SERVER_IMAGE, profilePhoto);
+                                    AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_PROVIDER_DESCRIPTION, providerDescription);
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -270,12 +295,12 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
         request.open("PUT", String.format("%sme", AppGlobals.BASE_URL));
         request.setRequestHeader("Authorization", "Token " +
                 AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_TOKEN));
-        request.send(getProfileData(name, contactPerson, coordinates, contactNumber, address, imageUrl));
+        request.send(getProfileData(name, contactPerson, coordinates, contactNumber, address, imageUrl, description));
     }
 
     private FormData getProfileData(String name, String contactPerson, String coordinates,
                                     String contactNumber, String address,
-                                    String imageUrl) {
+                                    String imageUrl, String description) {
 
         FormData formData = new FormData();
         formData.append(FormData.TYPE_CONTENT_TEXT, "name", name);
@@ -283,6 +308,7 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
         formData.append(FormData.TYPE_CONTENT_TEXT, "contact_number", contactNumber);
         formData.append(FormData.TYPE_CONTENT_TEXT, "address", address);
         formData.append(FormData.TYPE_CONTENT_TEXT, "address_coordinates", coordinates);
+        formData.append(FormData.TYPE_CONTENT_TEXT, "provider_description", description);
         if (imageUrl != null && !imageUrl.trim().isEmpty()) {
             formData.append(FormData.TYPE_CONTENT_FILE, "profile_photo", imageUrl);
         }

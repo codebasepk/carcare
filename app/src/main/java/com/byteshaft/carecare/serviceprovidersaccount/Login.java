@@ -139,6 +139,8 @@ public class Login extends Fragment implements View.OnClickListener, HttpRequest
                             String id = jsonObject.getString(AppGlobals.KEY_USER_ID);
                             String organizationName = jsonObject.getString(AppGlobals.KEY_ORGANIZATION_NAME);
                             String addressCoordinates = jsonObject.getString(AppGlobals.KEY_LOCATION);
+                            String providerDescription = jsonObject.getString(AppGlobals.KEY_PROVIDER_DESCRIPTION);
+
                             if (jsonObject.getString(AppGlobals.KEY_SERVER_IMAGE) != null) {
                                 String profilePhoto = jsonObject.getString(AppGlobals.KEY_SERVER_IMAGE);
                                 AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_SERVER_IMAGE, profilePhoto);
@@ -155,7 +157,7 @@ public class Login extends Fragment implements View.OnClickListener, HttpRequest
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_EMAIL, email);
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_USER_ID, id);
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_ORGANIZATION_NAME, organizationName);
-
+                            AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_PROVIDER_DESCRIPTION, providerDescription);
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_TOKEN, token);
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_USER_NAME, userName);
                             AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_USER_TYPE, userType);
