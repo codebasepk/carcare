@@ -90,9 +90,6 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
     private Button mButtonCreateAccoutn;
     private TextView mButtonLogin;
 
-
-    String[] PERMISSIONS;
-
     @Nullable
     @Override
 
@@ -642,6 +639,8 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
             } else if (requestCode == FILE_PICK_CODE) {
                 certificateFilePath = RealPathUtil.getPath(getContext(), data.getData());
                 Log.wtf("ok", certificateFilePath);
+                File file = new File(certificateFilePath);
+                certificate.setText(file.getName());
             }
         }
     }
