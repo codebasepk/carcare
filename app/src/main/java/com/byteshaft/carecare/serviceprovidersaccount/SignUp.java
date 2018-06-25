@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.byteshaft.carecare.R;
 import com.byteshaft.carecare.utils.AppGlobals;
 import com.byteshaft.carecare.utils.Helpers;
+import com.byteshaft.carecare.utils.RealPathUtil;
 import com.byteshaft.carecare.utils.RotateUtil;
 import com.byteshaft.requests.FormData;
 import com.byteshaft.requests.HttpRequest;
@@ -639,29 +640,10 @@ public class SignUp extends Fragment implements View.OnClickListener, HttpReques
                 organizationImage.setImageBitmap(orientedBitmap);
                 imageUrl = String.valueOf(selectedImagePath);
             } else if (requestCode == FILE_PICK_CODE) {
-                certificateUri = data.getData();
-                certificateFilePath = getPath(certificateUri);
+                certificateFilePath = RealPathUtil.getPath(getContext(), data.getData());
                 Log.wtf("ok", certificateFilePath);
             }
         }
-    }
-
-    public String getPath(Uri uri) {
-
-        String path = null;
-        String[] projection = {MediaStore.Files.FileColumns.DATA};
-        Cursor cursor = getContext().getContentResolver().query(uri, projection, null, null, null);
-
-        if (cursor == null) {
-            path = uri.getPath();
-        } else {
-            cursor.moveToFirst();
-            int column_index = cursor.getColumnIndexOrThrow(projection[0]);
-            path = cursor.getString(column_index);
-            cursor.close();
-        }
-
-        return ((path == null || path.isEmpty()) ? (uri.getPath()) : path);
     }
 
     @Override
