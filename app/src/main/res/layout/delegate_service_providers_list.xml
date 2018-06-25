@@ -8,109 +8,54 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:minHeight="125dp"
+        android:minHeight="200dp"
         android:minWidth="500dp"
         app:cardCornerRadius="5dp">
 
+        <android.support.v7.widget.CardView
+            android:id="@+id/card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            app:cardCornerRadius="5dp">
+
+            <ImageView
+                android:id="@+id/provider_image"
+                android:layout_width="match_parent"
+                android:layout_height="130dp"
+                android:background="#000" />
+        </android.support.v7.widget.CardView>
+
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="left">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/provider_image"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="5dp"
-                android:src="@mipmap/ic_launcher"
-                app:civ_border_color="@color/colorPrimaryDark"
-                app:civ_border_width="1dp" />
-
-            <View
-                android:id="@+id/product_view"
-                android:layout_width="1dp"
-                android:layout_height="80dp"
-                android:layout_margin="10dp"
-                android:layout_toRightOf="@+id/provider_image"
-                android:background="#000" />
-
-            <RelativeLayout
-                android:id="@+id/layout_service_provider_name"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/service_provider_name"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
+                android:layout_marginLeft="10dp"
+                android:drawableLeft="@mipmap/provider"
+                android:drawablePadding="10dp"
+                android:text="Husnain Kareem"
+                android:textColor="#000"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/pick_for_current_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:layout_toRightOf="@+id/product_view">
-
-                <TextView
-                    android:id="@+id/service_provider_name_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Name:   "
-                    android:textColor="#000"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/service_provider_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/service_provider_name_title"
-                    android:text="Gama denter"
-                    android:textColor="#000" />
-            </RelativeLayout>
-
-
-            <RelativeLayout
-                android:id="@+id/layout_service_provider_number"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/layout_service_provider_name"
-                android:layout_marginTop="2dp"
-                android:layout_toRightOf="@+id/product_view">
-
-                <TextView
-                    android:id="@+id/service_provider_number_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Contact Number:   "
-                    android:textColor="#000"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/provider_number"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/service_provider_number_title"
-                    android:text="0000000000"
-                    android:textColor="#000" />
-            </RelativeLayout>
-            <RelativeLayout
-                android:id="@+id/layout_service_provider_price"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/layout_service_provider_number"
-                android:layout_marginTop="2dp"
-                android:layout_toRightOf="@+id/product_view">
-
-                <TextView
-                    android:id="@+id/service_service_price_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Service Price:   "
-                    android:textColor="#000"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/service_price"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/service_service_price_title"
-                    android:text="100"
-                    android:textColor="#000" />
-            </RelativeLayout>
+                android:drawableLeft="@mipmap/clock"
+                android:drawablePadding="10dp"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="8 AM TO 9 PM"
+                android:textColor="@color/button_text_color"
+                android:textSize="15sp" />
         </RelativeLayout>
-
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -118,27 +63,33 @@
             android:layout_gravity="bottom"
             android:gravity="right">
 
+
             <TextView
                 android:id="@+id/request_button"
-                android:layout_width="65dp"
+                android:layout_width="75dp"
                 android:layout_height="30dp"
-                android:gravity="center"
+                android:layout_marginBottom="10dp"
                 android:layout_marginRight="5dp"
-                android:layout_marginBottom="5dp"
-                android:text="Request"
+                android:layout_marginTop="10dp"
                 android:background="#a4c639"
+                android:gravity="center"
+                android:text="Request"
+                android:textAllCaps="true"
                 android:textColor="#FFF"
                 android:textSize="14sp" />
+
             <TextView
                 android:id="@+id/call_button"
-                android:layout_width="65dp"
+                android:layout_width="75dp"
                 android:layout_height="30dp"
-                android:layout_toLeftOf="@+id/request_button"
+                android:layout_marginBottom="10dp"
                 android:layout_marginRight="10dp"
-                android:gravity="center"
-                android:layout_marginBottom="5dp"
-                android:text="Call"
+                android:layout_marginTop="10dp"
+                android:layout_toLeftOf="@+id/request_button"
                 android:background="#a4c639"
+                android:gravity="center"
+                android:text="Call"
+                android:textAllCaps="true"
                 android:textColor="#FFF"
                 android:textSize="14sp" />
         </RelativeLayout>

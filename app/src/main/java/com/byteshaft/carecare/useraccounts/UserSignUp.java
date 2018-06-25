@@ -1,14 +1,12 @@
 package com.byteshaft.carecare.useraccounts;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -69,7 +67,6 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
 
     private static final int STORAGE_CAMERA_PERMISSION = 1;
     private static final int SELECT_FILE = 2;
-    private static final int LOCATION_PERMISSION = 4;
     private static final int REQUEST_CAMERA = 3;
     int PLACE_PICKER_REQUEST = 121;
     private static String imageUrl = "";
@@ -108,7 +105,6 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
     private String address;
     private String addressCoordinates;
     private HttpRequest request;
-    private int locationCounter = 0;
     private File destination;
     private Uri selectedImageUri;
     private Bitmap profilePic;
@@ -135,16 +131,19 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
         mVehicleModelSpinner = mBaseView.findViewById(R.id.vehicle_model_Spinner);
         mVehicleMakeSpinner = mBaseView.findViewById(R.id.vehicle_make_spinner);
         mVehicleTypeSpinner = mBaseView.findViewById(R.id.vehicle_type_spinner);
+
         vehicleTypeArrayList = new ArrayList<>();
         arrayList = new ArrayList<>();
         vehicleMakeArrayList = new ArrayList<>();
         mPickForCurrentLocation.setOnClickListener(this);
+
         mSignInTextView.setOnClickListener(this);
         mSignUpButtonButton.setOnClickListener(this);
         mVehicleModelSpinner.setOnItemSelectedListener(this);
         mVehicleTypeSpinner.setOnItemSelectedListener(this);
         mVehicleMakeSpinner.setOnItemSelectedListener(this);
         mUserImage.setOnClickListener(this);
+
         getVehicleType();
         getVehicleMake();
         getVehicleModel(mVehicleMakeSpinnerId);
@@ -208,24 +207,6 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
         }
     }
 
-    public boolean locationEnabled() {
-        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        boolean gps_enabled = false;
-        boolean network_enabled = false;
-
-        try {
-            gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        } catch (Exception ex) {
-        }
-
-        try {
-            network_enabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        } catch (Exception ex) {
-        }
-
-        return gps_enabled || network_enabled;
-    }
-
     private void selectImage() {
         final CharSequence[] items = {getString(R.string.take_photo), getString(R.string.choose_library), getString(R.string.cancel_photo)};
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -235,12 +216,9 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(intent, REQUEST_CAMERA);
             } else if (items[item].equals(getString(R.string.choose_library))) {
-                Intent intent = new Intent(
-                        Intent.ACTION_PICK,
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 intent.setType("image/*");
-                startActivityForResult(
-                        Intent.createChooser(intent, getString(R.string.select_file)),
+                startActivityForResult(Intent.createChooser(intent, getString(R.string.select_file)),
                         SELECT_FILE);
             } else if (items[item].equals(getString(R.string.cancel))) {
                 dialog.dismiss();
@@ -677,4 +655,5 @@ public class UserSignUp extends Fragment implements HttpRequest.OnReadyStateChan
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
 }

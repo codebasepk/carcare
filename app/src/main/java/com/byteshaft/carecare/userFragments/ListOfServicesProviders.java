@@ -34,7 +34,7 @@ public class ListOfServicesProviders extends Fragment implements HttpRequest.OnR
     private ArrayList<ServicesProvidersListItems> arrayList;
     private ServiceProvidersListAdapter adapter;
     private HttpRequest request;
-    private int mServiceId;
+    private ArrayList<Integer> mServicesIdArrayList;
     private String mLocationString;
 
     @Nullable
@@ -43,16 +43,17 @@ public class ListOfServicesProviders extends Fragment implements HttpRequest.OnR
         mBaseView = inflater.inflate(R.layout.fragment_service_providers, container, false);
         mServiceProvidersListView = mBaseView.findViewById(R.id.service_providers_list_view);
         arrayList = new ArrayList<>();
+        mServicesIdArrayList = new ArrayList<>();
         adapter = new ServiceProvidersListAdapter(getActivity(), arrayList);
         mServiceProvidersListView.setAdapter(adapter);
         Bundle bundle = getArguments();
         if(bundle != null) {
-            mServiceId = bundle.getInt("service_id");
+            mServicesIdArrayList = (ArrayList<Integer>)getArguments().getSerializable("service_id");
             mLocationString = bundle.getString("location");
-            Log.e("Bundle", "00000000000000000000000" + mServiceId);
+            Log.e("Bundle", "00000000000000000000000" + mServicesIdArrayList);
             Log.e("Bundle", "00000000000000000000000" + mLocationString);
         }
-        getServiceProvidersList(mLocationString, mServiceId);
+        getServiceProvidersList(mLocationString, mServicesIdArrayList);
         return mBaseView;
     }
 
@@ -75,8 +76,6 @@ public class ListOfServicesProviders extends Fragment implements HttpRequest.OnR
                                 ServicesProvidersListItems servicesProvidersListItems = new ServicesProvidersListItems();
                                 servicesProvidersListItems.setServiceProviderId(jsonObject.getInt("id"));
                                 servicesProvidersListItems.setServiceProviderName(jsonObject.getString("name"));
-                                servicesProvidersListItems.setServicePrice(jsonObject.getString("service_price"));
-                                servicesProvidersListItems.setProvidersContactNumber(jsonObject.getString("contact_number"));
                                 servicesProvidersListItems.setServiceProviderImage(jsonObject.getString("profile_photo"));
                                 arrayList.add(servicesProvidersListItems);
                                 adapter.notifyDataSetChanged();
@@ -103,7 +102,7 @@ public class ListOfServicesProviders extends Fragment implements HttpRequest.OnR
 
     }
 
-    private void getServiceProvidersList(String baseLocation, int service) {
+    private void getServiceProvidersList(String baseLocation, ArrayList<Integer> service) {
         request = new HttpRequest(getActivity());
         request.setOnReadyStateChangeListener(this);
         request.setOnErrorListener(this);

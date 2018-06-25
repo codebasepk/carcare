@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.byteshaft.carecare.R;
@@ -51,8 +52,6 @@ public class ServiceProvidersListAdapter extends ArrayAdapter<String> {
             viewHolder = new ViewHolder();
             viewHolder.servicesProvidersImage = convertView.findViewById(R.id.provider_image);
             viewHolder.servicesProvidersNameTextView = convertView.findViewById(R.id.service_provider_name);
-            viewHolder.providerContactTextView = convertView.findViewById(R.id.provider_number);
-            viewHolder.priceTextView = convertView.findViewById(R.id.service_price);
             viewHolder.callTextView = convertView.findViewById(R.id.call_button);
             viewHolder.requestTextView = convertView.findViewById(R.id.request_button);
             convertView.setTag(viewHolder);
@@ -62,8 +61,6 @@ public class ServiceProvidersListAdapter extends ArrayAdapter<String> {
 
         servicesProvidersListItems = arrayList.get(position);
         viewHolder.servicesProvidersNameTextView.setText(servicesProvidersListItems.getServiceProviderName());
-        viewHolder.priceTextView.setText(servicesProvidersListItems.getServicePrice());
-        viewHolder.providerContactTextView.setText(servicesProvidersListItems.getProvidersContactNumber());
         Picasso.with(AppGlobals.getContext()).load(servicesProvidersListItems.getServiceProviderImage()
         ).into(viewHolder.servicesProvidersImage);
         viewHolder.requestTextView.setOnClickListener(new View.OnClickListener() {
@@ -120,12 +117,10 @@ public class ServiceProvidersListAdapter extends ArrayAdapter<String> {
 
 
     class ViewHolder {
-        CircleImageView servicesProvidersImage;
+        ImageView servicesProvidersImage;
         TextView servicesProvidersNameTextView;
-        TextView providerContactTextView;
         TextView callTextView;
         TextView requestTextView;
-        TextView priceTextView;
 
     }
 }
