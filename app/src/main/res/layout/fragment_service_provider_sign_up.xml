@@ -137,6 +137,7 @@
                 android:textSize="15sp" />
 
             <TextView
+                android:id="@+id/select_type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -146,11 +147,11 @@
                 android:textSize="15sp" />
 
             <RadioGroup
-                android:padding="4dp"
                 android:id="@+id/provider_type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/rounded_edittext">
+                android:background="@drawable/rounded_edittext"
+                android:padding="4dp">
 
                 <RadioButton
                     android:id="@+id/radio_button_company"
@@ -185,10 +186,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:padding="10dp"
-                android:visibility="gone"
                 android:text="Attach Certificate"
                 android:textColor="@color/text_color"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                android:visibility="gone" />
 
             <EditText
                 android:id="@+id/provider_description"
@@ -202,6 +203,13 @@
                 android:lines="3"
                 android:padding="10dp" />
 
+            <!--<io.apptik.widget.multiselectspinner.MultiSelectSpinner-->
+                <!--android:id="@+id/multiselect_spinner"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:padding="4dp"-->
+                <!--android:background="@drawable/rounded_edittext"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="10dp" />-->
 
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/register_button"
@@ -211,6 +219,7 @@
                 android:background="@drawable/button_background"
                 android:text="CREATE NEW ACCOUNT"
                 android:textColor="@color/text_color" />
+
 
             <TextView
                 android:id="@+id/sign_up_text_view"
