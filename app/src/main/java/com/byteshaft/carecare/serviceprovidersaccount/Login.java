@@ -29,7 +29,6 @@ import java.net.HttpURLConnection;
 public class Login extends Fragment implements View.OnClickListener, HttpRequest.OnReadyStateChangeListener, HttpRequest.OnErrorListener {
 
     private View mBaseView;
-
     private Button mLoginButton;
     private TextView mSignUpTextView;
     private TextView mForgotPasswordTextView;
