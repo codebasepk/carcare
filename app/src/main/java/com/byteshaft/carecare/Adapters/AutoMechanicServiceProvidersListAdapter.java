@@ -17,19 +17,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.byteshaft.carecare.R;
-import com.byteshaft.carecare.ServiceRequestActivity;
-import com.byteshaft.carecare.WelcomeActivity;
-import com.byteshaft.carecare.gettersetter.PartsListItems;
+import com.byteshaft.carecare.AutoMechanicsServiceRequestActivity;
 import com.byteshaft.carecare.gettersetter.ServicesProvidersListItems;
-import com.byteshaft.carecare.useraccounts.UserAccount;
 import com.byteshaft.carecare.utils.AppGlobals;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
-public class ServiceProvidersListAdapter extends ArrayAdapter<String> {
+public class AutoMechanicServiceProvidersListAdapter extends ArrayAdapter<String> {
 
     private ViewHolder viewHolder;
     private ArrayList<ServicesProvidersListItems> arrayList;
@@ -38,7 +33,7 @@ public class ServiceProvidersListAdapter extends ArrayAdapter<String> {
     private String mContactNumber;
 
 
-    public ServiceProvidersListAdapter(Activity activity, ArrayList<ServicesProvidersListItems> arrayList) {
+    public AutoMechanicServiceProvidersListAdapter(Activity activity, ArrayList<ServicesProvidersListItems> arrayList) {
         super(activity, R.layout.delegate_service_providers_list);
         this.activity = activity;
         this.arrayList = arrayList;
@@ -67,7 +62,7 @@ public class ServiceProvidersListAdapter extends ArrayAdapter<String> {
             @Override
             public void onClick(View v) {
                 System.out.println("CLICK");
-                activity.startActivity(new Intent(activity, ServiceRequestActivity.class));
+                activity.startActivity(new Intent(activity, AutoMechanicsServiceRequestActivity.class));
             }
         });
         viewHolder.callTextView.setOnClickListener(v -> {

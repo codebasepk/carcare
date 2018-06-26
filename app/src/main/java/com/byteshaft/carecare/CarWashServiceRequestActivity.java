@@ -9,18 +9,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.widget.TimePicker;
 
-import com.byteshaft.carecare.Adapters.CarAdapter;
 import com.byteshaft.carecare.Adapters.VehicleMakeWithModel;
 import com.byteshaft.carecare.Adapters.VehicleModelAdapter;
 import com.byteshaft.carecare.gettersetter.CarCompanyItems;
-import com.byteshaft.carecare.gettersetter.CarItems;
 import com.byteshaft.carecare.gettersetter.VehicleMakeWithModelItems;
 import com.byteshaft.carecare.utils.AppGlobals;
 import com.byteshaft.requests.HttpRequest;
@@ -40,7 +36,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class ServiceRequestActivity extends Activity implements View.OnClickListener,
+public class CarWashServiceRequestActivity extends Activity implements View.OnClickListener,
         RadioGroup.OnCheckedChangeListener, AdapterView.OnItemSelectedListener {
 
     private Button mRequestButton;
@@ -157,7 +153,7 @@ public class ServiceRequestActivity extends Activity implements View.OnClickList
             } else {
                 AMPM = " PM";
             }
-            mTimeEditText.setText(selectedHour + ":" + selectedMinute);
+            mTimeEditText.setText(selectedHour + ":" + selectedMinute + AMPM);
         }, hour, minute, false);
         mTimePicker.setTitle(getString(R.string.select_time));
         mTimePicker.show();

@@ -18,14 +18,15 @@ import com.byteshaft.carecare.gettersetter.AutoMechanicSubItem;
 import com.byteshaft.carecare.gettersetter.CarWashItems;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CarWashAdapter extends ArrayAdapter<String> {
 
     private ViewHolder viewHolder;
     private ArrayList<CarWashItems> arrayList;
     private Activity activity;
-
     private ArrayList<Integer> servicesArrayList;
+    private HashMap<Integer, Boolean> positionHasMap;
 
 
     public CarWashAdapter(Activity activity, ArrayList<CarWashItems> arrayList) {
@@ -33,6 +34,7 @@ public class CarWashAdapter extends ArrayAdapter<String> {
         this.activity = activity;
         this.arrayList = arrayList;
         servicesArrayList = new ArrayList<>();
+        positionHasMap = new HashMap<>();
     }
 
     @NonNull
@@ -52,16 +54,28 @@ public class CarWashAdapter extends ArrayAdapter<String> {
         viewHolder.carWashPrice.setText(carWashItems.getServicePrice());
 
         viewHolder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            int seerviceId = carWashItems.getServiceId();
-            if (isChecked) {
-                servicesArrayList.add(seerviceId);
+            int serviceId = carWashItems.getServiceId();
+            if (positionHasMap.get(position)) {
+                viewHolder.checkBox.setChecked(true);
             } else {
-                if (servicesArrayList.contains(seerviceId)) {
-                    servicesArrayList.remove(seerviceId);
+                viewHolder.checkBox.setChecked(false);
+            }
+            if (isChecked) {
+                servicesArrayList.add(serviceId);
+                positionHasMap.put(position, true);
+            } else {
+                if (servicesArrayList.contains(serviceId)) {
+                    servicesArrayList.remove((Integer) serviceId);
+                    positionHasMap.put(position, false);
                 }
             }
 
         });
+        if (positionHasMap.get(position)) {
+            viewHolder.checkBox.setChecked(true);
+        } else {
+            viewHolder.checkBox.setChecked(false);
+        }
         return convertView;
     }
 
@@ -73,7 +87,6 @@ public class CarWashAdapter extends ArrayAdapter<String> {
     public ArrayList<Integer> serviceRequestData() {
         return servicesArrayList;
     }
-
     class ViewHolder {
         CheckBox checkBox;
         TextView carWashPrice;

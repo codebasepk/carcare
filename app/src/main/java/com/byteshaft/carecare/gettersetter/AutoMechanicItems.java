@@ -1,6 +1,7 @@
 package com.byteshaft.carecare.gettersetter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AutoMechanicItems {
 
@@ -10,6 +11,17 @@ public class AutoMechanicItems {
     private int categoryId;
     private String servicePrice;
     private ArrayList<AutoMechanicSubItem> subItemsArrayList;
+    private HashMap<Integer, Boolean> positionHashMap;
+
+    public HashMap<Integer, Boolean> getPositionHashMap() {
+        return positionHashMap;
+    }
+
+    public void setPositionHashMap(HashMap<Integer, Boolean> positionHashMap) {
+        this.positionHashMap = positionHashMap;
+    }
+
+
 
     public ArrayList<AutoMechanicSubItem> getSubItemsArrayList() {
         return subItemsArrayList;

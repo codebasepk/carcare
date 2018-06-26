@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -40,6 +41,7 @@ import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AutoMechanicFragment extends Fragment implements HttpRequest.OnReadyStateChangeListener,
         HttpRequest.OnErrorListener, View.OnClickListener {
@@ -53,6 +55,7 @@ public class AutoMechanicFragment extends Fragment implements HttpRequest.OnRead
     private ArrayList<AutoMechanicItems> arrayList;
     private AutoMechanicAdapter adapter;
     private int serviceId;
+    private HashMap<Integer, Boolean> postionHashMap;
 
 
     private String mLocationString;
@@ -123,6 +126,7 @@ public class AutoMechanicFragment extends Fragment implements HttpRequest.OnRead
             }
         }
 
+
         return mBaseView;
     }
 
@@ -158,6 +162,7 @@ public class AutoMechanicFragment extends Fragment implements HttpRequest.OnRead
                                 items.setCategoryName(jsonObject.getString("name"));
                                 JSONArray serviceSubItemsJsonArray = jsonObject.getJSONArray("sub_services");
                                 ArrayList<AutoMechanicSubItem> array = new ArrayList<>();
+                                postionHashMap = new HashMap<>();
                                 for (int j = 0; j < serviceSubItemsJsonArray.length(); j++) {
                                     JSONObject serviceSubItemsJsonObject = serviceSubItemsJsonArray.getJSONObject(j);
                                     System.out.println("Test " +serviceSubItemsJsonObject);
@@ -166,7 +171,9 @@ public class AutoMechanicFragment extends Fragment implements HttpRequest.OnRead
                                     autoMechanicSubItemsList.setServiceName(serviceSubItemsJsonObject.getString("name"));
                                     Log.i("TAG", " adding " + serviceSubItemsJsonObject.getString("name"));
                                     array.add(autoMechanicSubItemsList);
+                                    postionHashMap.put(j, false);
                                 }
+                                items.setPositionHashMap(postionHashMap);
                                 items.setSubItemsArrayList(array);
                                 arrayList.add(items);
                                 adapter.notifyDataSetChanged();
