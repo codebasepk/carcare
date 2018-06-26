@@ -95,9 +95,7 @@ public class MechanicActivity extends AppCompatActivity {
                         switch (request.getStatus()) {
                             case HttpURLConnection.HTTP_OK:
                                 try {
-
-                                    JSONObject object = new JSONObject(request.getResponseText());
-                                    JSONArray jsonArray = object.getJSONArray("results");
+                                    JSONArray jsonArray = new JSONArray(request.getResponseText());
                                     for (int i = 0; i < jsonArray.length(); i++) {
                                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                                         AutoMechanicService mechanicServices = new AutoMechanicService();
@@ -206,15 +204,14 @@ public class MechanicActivity extends AppCompatActivity {
                 convertView = getLayoutInflater()
                         .inflate(R.layout.delegate_mechanic_service, parent, false);
                 viewHolder = new ViewHolder();
-                viewHolder.price = convertView.findViewById(R.id.service_price);
+
                 viewHolder.name = convertView.findViewById(R.id.service_name);
                 convertView.setTag(viewHolder);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
             AutoMechanicService items = listItems.get(position);
-            viewHolder.price.setText("Price: " + items.getPrice());
-            viewHolder.name.setText("Service: " + items.getName());
+            viewHolder.name.setText(items.getName());
 
             return convertView;
         }
@@ -235,7 +232,6 @@ public class MechanicActivity extends AppCompatActivity {
         }
 
         private class ViewHolder {
-            private TextView price;
             private TextView name;
         }
     }

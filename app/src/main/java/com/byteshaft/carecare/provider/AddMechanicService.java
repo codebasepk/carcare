@@ -3,6 +3,8 @@ package com.byteshaft.carecare.provider;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.byteshaft.carecare.Adapters.AutoMechanicAdapter;
@@ -28,6 +30,7 @@ public class AddMechanicService extends AppCompatActivity implements
     private ListView listView;
     private ArrayList<AutoMechanicItems> arrayList;
     private AutoMechanicAdapter adapter;
+    private Button mAddButton;
     private HashMap<Integer, Boolean> postionHashMap;
 
     @Override
@@ -35,8 +38,18 @@ public class AddMechanicService extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_mechanic_service);
         setTitle("Auto Mechanic");
+        mAddButton = findViewById(R.id.add_button);
         listView = findViewById(R.id.services_list_view);
         getAutoMechanicsServicesList();
+        mAddButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                for (int i = 0; i < adapter.serviceRequestData().size(); i++) {
+                    Log.wtf("okokokok", String.valueOf(adapter.serviceRequestData().get(i)));
+                }
+                addService();
+            }
+        });
     }
 
 
@@ -101,11 +114,10 @@ public class AddMechanicService extends AppCompatActivity implements
         request.setOnErrorListener(this);
         request.open("GET", String.format("%smechanic-services", AppGlobals.BASE_URL));
         request.send();
-        Helpers.showProgressDialog(AddMechanicService.this, "Fetching Services...");
     }
 
 
-    private void addService(String description, int service) {
+    private void addService() {
         Helpers.showProgressDialog(AddMechanicService.this, "Pleas wait...");
         HttpRequest request = new HttpRequest(getApplicationContext());
         request.setOnReadyStateChangeListener(new HttpRequest.OnReadyStateChangeListener() {
@@ -128,14 +140,19 @@ public class AddMechanicService extends AppCompatActivity implements
         request.open("POST", String.format("%smechanic/services", AppGlobals.BASE_URL));
         request.setRequestHeader("Authorization", "Token " +
                 AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_TOKEN));
-        JSONObject object = new JSONObject();
-        try {
-            object.put("description", service);
-            object.put("", adapter.serviceRequestData());
 
-        } catch (JSONException e) {
-            e.printStackTrace();
+        JSONArray jsonArray = new JSONArray();
+        JSONObject jsonObject = new JSONObject();
+
+        for (int i = 0; i < adapter.serviceRequestData().size(); i++) {
+            try {
+                jsonObject.put("service", adapter.serviceRequestData().get(i));
+                jsonObject.put("price", "10");
+                jsonArray.put(jsonObject);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
-        request.send(object.toString());
+        request.send(jsonArray.toString());
     }
 }
