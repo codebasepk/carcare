@@ -31,12 +31,14 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity
             android:name=".ServiceProviderActivity"
             android:label="@string/title_activity_service_provider"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ServiceRequestActivity" />
+        <activity android:name=".AutoMechanicsServiceRequestActivity">
+        </activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

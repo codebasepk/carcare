@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.byteshaft.carecare.Adapters.ServiceProvidersListAdapter;
+import com.byteshaft.carecare.Adapters.AutoMechanicServiceProvidersListAdapter;
 import com.byteshaft.carecare.R;
 import com.byteshaft.carecare.gettersetter.ServicesProvidersListItems;
 import com.byteshaft.carecare.utils.AppGlobals;
@@ -32,7 +32,7 @@ public class ListOfCarTowingServicesProviders extends Fragment implements HttpRe
     private View mBaseView;
     private ListView mServiceProvidersListView;
     private ArrayList<ServicesProvidersListItems> arrayList;
-    private ServiceProvidersListAdapter adapter;
+    private AutoMechanicServiceProvidersListAdapter adapter;
     private HttpRequest request;
     private ArrayList<Integer> mServicesIdArrayList;
     private String mLocationString;
@@ -44,7 +44,7 @@ public class ListOfCarTowingServicesProviders extends Fragment implements HttpRe
         mServiceProvidersListView = mBaseView.findViewById(R.id.service_providers_list_view);
         arrayList = new ArrayList<>();
         mServicesIdArrayList = new ArrayList<>();
-        adapter = new ServiceProvidersListAdapter(getActivity(), arrayList);
+        adapter = new AutoMechanicServiceProvidersListAdapter(getActivity(), arrayList);
         mServiceProvidersListView.setAdapter(adapter);
         Bundle bundle = getArguments();
         if(bundle != null) {

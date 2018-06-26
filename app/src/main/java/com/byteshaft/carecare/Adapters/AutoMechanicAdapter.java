@@ -16,13 +16,13 @@ import com.byteshaft.carecare.gettersetter.AutoMechanicItems;
 import com.byteshaft.carecare.gettersetter.AutoMechanicSubItem;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AutoMechanicAdapter extends ArrayAdapter<String> {
 
     private ViewHolder viewHolder;
     private ArrayList<AutoMechanicItems> arrayList;
     private Activity activity;
-
     private ArrayList<Integer> servicesArrayList;
 
 
@@ -30,7 +30,7 @@ public class AutoMechanicAdapter extends ArrayAdapter<String> {
         super(activity, R.layout.delegate_auto_mechanic);
         this.activity = activity;
         this.arrayList = arrayList;
-        servicesArrayList = new ArrayList<>();
+        this.servicesArrayList = new ArrayList<>();
     }
 
     @NonNull
@@ -46,28 +46,36 @@ public class AutoMechanicAdapter extends ArrayAdapter<String> {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         final AutoMechanicItems autoMechanicItems = arrayList.get(position);
+        HashMap<Integer, Boolean> positionHasMap = autoMechanicItems.getPositionHashMap();
         ArrayList<AutoMechanicSubItem> subItemArrayList = autoMechanicItems.getSubItemsArrayList();
-        Log.e("AutoMechanicCarWash", " 9999999999999999999999999" +  subItemArrayList.size());
         if (subItemArrayList != null && subItemArrayList.size() > 0) {
             viewHolder.linearLayout.removeAllViews();
-            for (int i = 0; i < subItemArrayList.size() ; i++) {
+            for (int i = 0; i < subItemArrayList.size(); i++) {
                 AutoMechanicSubItem subItem = subItemArrayList.get(i);
                 View childView = activity.getLayoutInflater().inflate(R.layout.raw_checkbox,
                         viewHolder.linearLayout, false);
                 CheckBox serviceNameCheckBox = childView.findViewById(R.id.check_box);
                 serviceNameCheckBox.setText(subItem.getServiceName());
                 viewHolder.linearLayout.addView(childView);
+                int finalI = i;
                 serviceNameCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
                     int serviceId = subItem.getServiceId();
                     if (isChecked) {
                         servicesArrayList.add(serviceId);
+                        positionHasMap.put(finalI, true);
                     } else {
                         if (servicesArrayList.contains(serviceId)) {
-                            servicesArrayList.remove(serviceId);
+                            servicesArrayList.remove((Integer) serviceId);
+                            positionHasMap.put(finalI, false);
                         }
                     }
                 });
 
+                if (positionHasMap.get(i)) {
+                    serviceNameCheckBox.setChecked(true);
+                } else {
+                    serviceNameCheckBox.setChecked(false);
+                }
             }
         } else {
             viewHolder.linearLayout.removeAllViews();
