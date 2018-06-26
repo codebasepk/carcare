@@ -19,6 +19,7 @@ import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AddMechanicService extends AppCompatActivity implements
         HttpRequest.OnReadyStateChangeListener, HttpRequest.OnErrorListener {
@@ -27,6 +28,7 @@ public class AddMechanicService extends AppCompatActivity implements
     private ListView listView;
     private ArrayList<AutoMechanicItems> arrayList;
     private AutoMechanicAdapter adapter;
+    private HashMap<Integer, Boolean> postionHashMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +72,7 @@ public class AddMechanicService extends AppCompatActivity implements
                                 items.setCategoryName(jsonObject.getString("name"));
                                 JSONArray serviceSubItemsJsonArray = jsonObject.getJSONArray("sub_services");
                                 ArrayList<AutoMechanicSubItem> array = new ArrayList<>();
+                                postionHashMap = new HashMap<>();
                                 for (int j = 0; j < serviceSubItemsJsonArray.length(); j++) {
                                     JSONObject serviceSubItemsJsonObject = serviceSubItemsJsonArray.getJSONObject(j);
                                     System.out.println("Test " + serviceSubItemsJsonObject);
@@ -78,7 +81,9 @@ public class AddMechanicService extends AppCompatActivity implements
                                     autoMechanicSubItemsList.setServiceName(serviceSubItemsJsonObject.getString("name"));
                                     Log.i("TAG", " adding " + serviceSubItemsJsonObject.getString("name"));
                                     array.add(autoMechanicSubItemsList);
+                                    postionHashMap.put(j, false);
                                 }
+                                items.setPositionHashMap(postionHashMap);
                                 items.setSubItemsArrayList(array);
                                 arrayList.add(items);
                                 adapter.notifyDataSetChanged();
@@ -88,7 +93,6 @@ public class AddMechanicService extends AppCompatActivity implements
                         }
                 }
         }
-
     }
 
     private void getAutoMechanicsServicesList() {
@@ -98,5 +102,40 @@ public class AddMechanicService extends AppCompatActivity implements
         request.open("GET", String.format("%smechanic-services", AppGlobals.BASE_URL));
         request.send();
         Helpers.showProgressDialog(AddMechanicService.this, "Fetching Services...");
+    }
+
+
+    private void addService(String description, int service) {
+        Helpers.showProgressDialog(AddMechanicService.this, "Pleas wait...");
+        HttpRequest request = new HttpRequest(getApplicationContext());
+        request.setOnReadyStateChangeListener(new HttpRequest.OnReadyStateChangeListener() {
+            @Override
+            public void onReadyStateChange(HttpRequest request, int readyState) {
+                switch (readyState) {
+                    case HttpRequest.STATE_DONE:
+                        Log.wtf("ok", request.getResponseText());
+                        Helpers.dismissProgressDialog();
+                        switch (request.getStatus()) {
+                            case HttpURLConnection.HTTP_CREATED:
+                                Helpers.showSnackBar(listView, "Item Added");
+                                finish();
+                            case HttpURLConnection.HTTP_BAD_REQUEST:
+                                Helpers.alertDialog(AddMechanicService.this, null, getResources().getString(R.string.service_already_added), null);
+                        }
+                }
+            }
+        });
+        request.open("POST", String.format("%smechanic/services", AppGlobals.BASE_URL));
+        request.setRequestHeader("Authorization", "Token " +
+                AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_TOKEN));
+        JSONObject object = new JSONObject();
+        try {
+            object.put("description", service);
+            object.put("", adapter.serviceRequestData());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        request.send(object.toString());
     }
 }
