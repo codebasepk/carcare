@@ -177,6 +177,7 @@ public class CodeConfrimation extends Fragment implements View.OnClickListener {
                                     String userName = jsonObject.getString(AppGlobals.KEY_USER_NAME);
                                     String userType = jsonObject.getString(AppGlobals.KEY_USER_TYPE);
                                     String addressCoordinates = jsonObject.getString(AppGlobals.KEY_LOCATION);
+                                    String providerDescription = jsonObject.getString(AppGlobals.KEY_PROVIDER_DESCRIPTION);
 
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_CONTACT_NUMBER, contactNumber);
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_CONTACT_PERSON, contactPerson);
@@ -189,6 +190,8 @@ public class CodeConfrimation extends Fragment implements View.OnClickListener {
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_TOKEN, token);
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_USER_NAME, userName);
                                     AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_USER_TYPE, userType);
+                                    AppGlobals.saveDataToSharedPreferences(AppGlobals.KEY_PROVIDER_DESCRIPTION, providerDescription);
+
                                     AppGlobals.loginState(true);
                                     startActivity(new Intent(getContext(), ServiceProviderActivity.class));
                                     ServiceProviderAccount.getInstance().finish();

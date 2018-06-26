@@ -55,6 +55,7 @@ dependencies {
     implementation 'com.byteshaft.requests:requests:0.5.3'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.3'
     implementation 'com.android.support.constraint:constraint-layout:1.1.1'
+    implementation 'io.apptik.widget:multiselectspinner:1.0.12'
 }
 
 apply plugin: 'com.google.gms.google-services'
