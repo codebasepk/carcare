@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.byteshaft.carecare.provider.Home;
+import com.byteshaft.carecare.provider.MechanicalProfile;
 import com.byteshaft.carecare.serviceprovidersaccount.SignUp;
 import com.byteshaft.carecare.utils.AppGlobals;
 import com.squareup.picasso.Picasso;
@@ -116,7 +117,10 @@ public class ServiceProviderActivity extends AppCompatActivity
             logOutDialog();
         } else if (id == R.id.nav_profile_provider) {
             loadFragment(new SignUp());
+        } else if (id == R.id.nav_mechanical_profile) {
+            loadFragment(new MechanicalProfile());
         }
+
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
