@@ -17,14 +17,13 @@
             android:title="Logout" />
     </group>
 
-    <!--<item android:title="Others">-->
-    <!--<menu>-->
-    <!--&lt;!&ndash;<item&ndash;&gt;-->
-    <!--&lt;!&ndash;android:id="@+id/nav_share"&ndash;&gt;-->
-    <!--&lt;!&ndash;android:icon="@drawable/ic_menu_share"&ndash;&gt;-->
-    <!--&lt;!&ndash;android:title="Share" />&ndash;&gt;-->
+    <item android:title="Others">
+        <menu>
+            <item
+                android:id="@+id/nav_mechanical_profile"
+                android:title="Mechanical Profile" />
 
-    <!--</menu>-->
-    <!--</item>-->
+        </menu>
+    </item>
 
 </menu>
