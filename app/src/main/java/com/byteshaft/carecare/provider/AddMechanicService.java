@@ -132,7 +132,6 @@ public class AddMechanicService extends AppCompatActivity implements
                                 Helpers.showSnackBar(listView, "Item Added");
                                 finish();
                             case HttpURLConnection.HTTP_BAD_REQUEST:
-                                Helpers.alertDialog(AddMechanicService.this, null, getResources().getString(R.string.service_already_added), null);
                         }
                 }
             }
@@ -142,10 +141,12 @@ public class AddMechanicService extends AppCompatActivity implements
                 AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_TOKEN));
 
         JSONArray jsonArray = new JSONArray();
-        JSONObject jsonObject = new JSONObject();
+
 
         for (int i = 0; i < adapter.serviceRequestData().size(); i++) {
             try {
+                JSONObject jsonObject = new JSONObject();
+                Log.wtf("okokokok", String.valueOf(adapter.serviceRequestData().get(i)));
                 jsonObject.put("service", adapter.serviceRequestData().get(i));
                 jsonObject.put("price", "10");
                 jsonArray.put(jsonObject);
@@ -153,6 +154,7 @@ public class AddMechanicService extends AppCompatActivity implements
                 e.printStackTrace();
             }
         }
+        Log.wtf("Array--------->>>", jsonArray.toString());
         request.send(jsonArray.toString());
     }
 }
