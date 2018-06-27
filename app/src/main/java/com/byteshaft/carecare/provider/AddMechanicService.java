@@ -3,7 +3,6 @@ package com.byteshaft.carecare.provider;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -33,6 +32,7 @@ public class AddMechanicService extends AppCompatActivity implements
     private Button mAddButton;
     private HashMap<Integer, Boolean> postionHashMap;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,14 +41,11 @@ public class AddMechanicService extends AppCompatActivity implements
         mAddButton = findViewById(R.id.add_button);
         listView = findViewById(R.id.services_list_view);
         getAutoMechanicsServicesList();
-        mAddButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                for (int i = 0; i < adapter.serviceRequestData().size(); i++) {
-                    Log.wtf("okokokok", String.valueOf(adapter.serviceRequestData().get(i)));
-                }
-                addService();
+        mAddButton.setOnClickListener(view -> {
+            for (int i = 0; i < adapter.serviceRequestData().size(); i++) {
+                Log.wtf("ids", String.valueOf(adapter.serviceRequestData().get(i)));
             }
+            addService();
         });
     }
 
@@ -146,7 +143,6 @@ public class AddMechanicService extends AppCompatActivity implements
         for (int i = 0; i < adapter.serviceRequestData().size(); i++) {
             try {
                 JSONObject jsonObject = new JSONObject();
-                Log.wtf("okokokok", String.valueOf(adapter.serviceRequestData().get(i)));
                 jsonObject.put("service", adapter.serviceRequestData().get(i));
                 jsonObject.put("price", "10");
                 jsonArray.put(jsonObject);
@@ -154,7 +150,6 @@ public class AddMechanicService extends AppCompatActivity implements
                 e.printStackTrace();
             }
         }
-        Log.wtf("Array--------->>>", jsonArray.toString());
         request.send(jsonArray.toString());
     }
 }
