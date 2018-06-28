@@ -7,11 +7,50 @@ public class ServicesProvidersListItems {
     private int serviceProviderId;
     private String providersContactNumber;
     private String servicePrice;
+    private String serviceProviderExperience;
+    private String serviceProviderLocation;
+    private String serviceProviderStartTime;
+    private String serviceProviderEndTime;
+
+    public String getServiceProviderStartTime() {
+        return serviceProviderStartTime;
+    }
+
+    public void setServiceProviderStartTime(String serviceProviderStartTime) {
+        this.serviceProviderStartTime = serviceProviderStartTime;
+    }
+
+    public String getServiceProviderEndTime() {
+        return serviceProviderEndTime;
+    }
+
+    public void setServiceProviderEndTime(String serviceProviderEndTime) {
+        this.serviceProviderEndTime = serviceProviderEndTime;
+    }
+
+
+    public String getServiceProviderLocation() {
+        return serviceProviderLocation;
+    }
+
+    public void setServiceProviderLocation(String serviceProviderLocation) {
+        this.serviceProviderLocation = serviceProviderLocation;
+    }
+
+
+    public String getServiceProviderExperience() {
+        return serviceProviderExperience;
+    }
+
+    public void setServiceProviderExperience(String serviceProviderExperience) {
+        this.serviceProviderExperience = serviceProviderExperience;
+    }
 
     public String getServicePrice() {
         return servicePrice;
 
     }
+
     public void setServicePrice(String servicePrivce) {
         this.servicePrice = servicePrivce;
     }
@@ -40,7 +79,6 @@ public class ServicesProvidersListItems {
     public void setServiceProviderId(int serviceProviderId) {
         this.serviceProviderId = serviceProviderId;
     }
-
 
 
     public String getProvidersContactNumber() {

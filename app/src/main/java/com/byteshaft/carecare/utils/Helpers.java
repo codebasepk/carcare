@@ -20,6 +20,7 @@ import android.widget.ImageView;
 
 import com.byteshaft.carecare.R;
 import com.byteshaft.requests.HttpRequest;
+import com.google.android.gms.maps.model.LatLng;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
@@ -235,6 +236,24 @@ public class Helpers {
         Calendar c = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         return df.format(c.getTime());
+    }
+
+    public static String calculationByDistance(LatLng startP, LatLng endP) {
+        int Radius = 6371;// radius of earth in Km
+        double lat1 = startP.latitude;
+
+        double lat2 = endP.latitude;
+        double lon1 = startP.longitude;
+        double lon2 = endP.longitude;
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.cos(Math.toRadians(lat1))
+                * Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2)
+                * Math.sin(dLon / 2);
+        double c = 2 * Math.asin(Math.sqrt(a));
+        double valueResult = Radius * c;
+        return String.format("%.2f", valueResult);
     }
 
     public static String getTime24HourFormat() {

@@ -71,10 +71,10 @@ public class AutoMechanicFragment extends Fragment implements HttpRequest.OnRead
             super.onLocationResult(locationResult);
             Log.i("TAG", "onLocationResult");
 
-                stopLocationUpdate();
-                mLocationString = locationResult.getLastLocation().getLatitude()
-                        + "," + locationResult.getLastLocation().getLongitude();
-                System.out.println("Lat: " + mLocationString);
+            stopLocationUpdate();
+            mLocationString = locationResult.getLastLocation().getLatitude()
+                    + "," + locationResult.getLastLocation().getLongitude();
+            System.out.println("Lat: " + mLocationString);
 
 
         }
@@ -165,7 +165,7 @@ public class AutoMechanicFragment extends Fragment implements HttpRequest.OnRead
                                 postionHashMap = new HashMap<>();
                                 for (int j = 0; j < serviceSubItemsJsonArray.length(); j++) {
                                     JSONObject serviceSubItemsJsonObject = serviceSubItemsJsonArray.getJSONObject(j);
-                                    System.out.println("Test " +serviceSubItemsJsonObject);
+                                    System.out.println("Test " + serviceSubItemsJsonObject);
                                     AutoMechanicSubItem autoMechanicSubItemsList = new AutoMechanicSubItem();
                                     autoMechanicSubItemsList.setServiceId(serviceSubItemsJsonObject.getInt("id"));
                                     autoMechanicSubItemsList.setServiceName(serviceSubItemsJsonObject.getString("name"));

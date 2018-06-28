@@ -42,6 +42,7 @@ import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CarWashFragment extends Fragment implements HttpRequest.OnReadyStateChangeListener,
         HttpRequest.OnErrorListener, View.OnClickListener {
@@ -153,7 +154,8 @@ public class CarWashFragment extends Fragment implements HttpRequest.OnReadyStat
                 switch (request.getStatus()) {
                     case HttpURLConnection.HTTP_OK:
                         arrayList = new ArrayList<>();
-                        adapter = new CarWashAdapter(getActivity(), arrayList);
+                        HashMap<Integer, Boolean> positionHasMap = new HashMap<>();
+                        adapter = new CarWashAdapter(getActivity(), arrayList, positionHasMap);
                         listView.setAdapter(adapter);
                         try {
                             JSONObject mainJsonObject = new JSONObject(request.getResponseText());
@@ -165,6 +167,7 @@ public class CarWashFragment extends Fragment implements HttpRequest.OnReadyStat
                                 carWashItems.setServiceId(jsonObject.getInt("id"));
                                 carWashItems.setServiceName(jsonObject.getString("name"));
 //                                carWashItems.setServicePrice(jsonObject.getString("service_price"));
+                                positionHasMap.put(i, false);
                                 arrayList.add(carWashItems);
                                 adapter.notifyDataSetChanged();
                             }
