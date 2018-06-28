@@ -12,88 +12,143 @@
         android:minWidth="500dp"
         app:cardCornerRadius="5dp">
 
-        <android.support.v7.widget.CardView
-            android:id="@+id/card"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="2dp"
-            app:cardCornerRadius="5dp">
+            android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/provider_image"
+            <android.support.v7.widget.CardView
+                android:id="@+id/card"
                 android:layout_width="match_parent"
-                android:layout_height="130dp"
-                android:src="@mipmap/ic_launcher"
+                android:layout_height="wrap_content"
                 android:layout_margin="2dp"
-                android:background="#000"/>
-        </android.support.v7.widget.CardView>
+                app:cardCornerRadius="5dp">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:gravity="left">
+                <ImageView
+                    android:id="@+id/provider_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="130dp"
+                    android:background="@drawable/image_background"
+                    android:src="@mipmap/ic_launcher" />
+            </android.support.v7.widget.CardView>
 
-            <TextView
-                android:id="@+id/service_provider_name"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <RelativeLayout
+                    android:id="@+id/name_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="6"
+                    android:gravity="left">
+
+                    <TextView
+                        android:id="@+id/service_provider_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@mipmap/provider"
+                        android:drawablePadding="2dp"
+                        android:text="Husnain Kareem"
+                        android:textColor="#000"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/service_provider_start_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:drawableLeft="@mipmap/clock"
+                        android:drawablePadding="5dp"
+                        android:gravity="center"
+                        android:text="8 AM"
+                        android:textColor="@color/button_text_color"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/service_provider_end_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_toRightOf="@+id/service_provider_start_time"
+                        android:gravity="center"
+                        android:text="5 PM"
+                        android:textColor="@color/button_text_color"
+                        android:textSize="14sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/experience_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="4"
+                    android:gravity="right">
+
+                    <TextView
+                        android:id="@+id/service_provider_experience"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:drawableLeft="@mipmap/experience"
+                        android:drawablePadding="5dp"
+                        android:text="11 years"
+                        android:textColor="#000"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/service_provider_distance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:drawableLeft="@mipmap/distance"
+                        android:drawablePadding="5dp"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:text="200km"
+                        android:textColor="@color/button_text_color"
+                        android:textSize="14sp" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:drawableLeft="@mipmap/provider"
-                android:drawablePadding="10dp"
-                android:text="Husnain Kareem"
-                android:textColor="#000"
-                android:textSize="15sp" />
+                android:layout_marginRight="10dp">
 
-            <TextView
-                android:id="@+id/pick_for_current_location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:drawableLeft="@mipmap/clock"
-                android:drawablePadding="10dp"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="8 AM TO 9 PM"
-                android:textColor="@color/button_text_color"
-                android:textSize="15sp" />
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/request_button"
+                    android:layout_width="75dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/card_view_background"
+                    android:gravity="center"
+                    android:text="Request"
+                    android:textAllCaps="true"
+                    android:textColor="#FFF"
+                    android:textSize="14sp" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:gravity="right">
-
-
-            <TextView
-                android:id="@+id/request_button"
-                android:layout_width="75dp"
-                android:layout_height="30dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginTop="10dp"
-                android:background="#a4c639"
-                android:gravity="center"
-                android:text="Request"
-                android:textAllCaps="true"
-                android:textColor="#FFF"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/call_button"
-                android:layout_width="75dp"
-                android:layout_height="30dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_toLeftOf="@+id/request_button"
-                android:background="#a4c639"
-                android:gravity="center"
-                android:text="Call"
-                android:textAllCaps="true"
-                android:textColor="#FFF"
-                android:textSize="14sp" />
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/call_button"
+                    android:layout_width="75dp"
+                    android:layout_height="30dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/card_view_background"
+                    android:gravity="center"
+                    android:text="Call"
+                    android:textAllCaps="true"
+                    android:textColor="#FFF"
+                    android:textSize="14sp" />
+            </RelativeLayout>
+        </LinearLayout>
     </android.support.v7.widget.CardView>
 </RelativeLayout>

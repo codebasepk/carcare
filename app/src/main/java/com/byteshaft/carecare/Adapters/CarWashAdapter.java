@@ -29,12 +29,12 @@ public class CarWashAdapter extends ArrayAdapter<String> {
     private HashMap<Integer, Boolean> positionHasMap;
 
 
-    public CarWashAdapter(Activity activity, ArrayList<CarWashItems> arrayList) {
+    public CarWashAdapter(Activity activity, ArrayList<CarWashItems> arrayList, HashMap<Integer, Boolean> positionHasMap) {
         super(activity, R.layout.delegate_car_wash);
         this.activity = activity;
         this.arrayList = arrayList;
         servicesArrayList = new ArrayList<>();
-        positionHasMap = new HashMap<>();
+        this.positionHasMap = positionHasMap;
     }
 
     @NonNull
