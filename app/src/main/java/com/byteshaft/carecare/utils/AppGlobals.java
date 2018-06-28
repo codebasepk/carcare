@@ -61,6 +61,10 @@ public class AppGlobals extends Application {
     public static final String KEY_FCM_TOKEN = "fcm_token";
     public static final String KEY_MIN_PRICE = "price";
 
+    public static final String KEY_YEARS_OF_EXP = "experience";
+    public static final String KEY_START_TIME = "start_time";
+    public static final String KEY_END_TIME = "end_time";
+
     public static HashMap<Integer, AutoMechanicItems> autoMechanicCarWashItemsHashMap;
 
 

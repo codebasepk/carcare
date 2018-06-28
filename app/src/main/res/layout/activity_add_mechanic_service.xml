@@ -7,43 +7,27 @@
     android:background="@color/background_color"
     tools:context=".provider.AddMechanicService">
 
-
-    <LinearLayout
+    <ListView
+        android:id="@+id/services_list_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/add_button"
+        android:layout_margin="5dp"
+        android:divider="@null"
+        android:scrollbars="none" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/add_button"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_margin="16dp"
-        android:orientation="vertical">
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/button_background"
+        android:text="Add"
+        android:textAllCaps="true"
+        android:textColor="@color/text_color"
+        android:textStyle="bold" />
 
-        <Spinner
-            android:id="@+id/mechanic_service_spinner"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/rounded_edittext"
-            android:padding="5dp"
-            android:textColor="@color/button_text_color" />
-
-
-        <EditText
-            android:id="@+id/et_service_price"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/rounded_edittext"
-            android:hint="Service Price"
-            android:inputType="number"
-            android:padding="10dp" />
-
-        <Button
-            android:id="@+id/add_service"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-
-            android:background="@drawable/button_background"
-            android:text="Add"
-            android:textColor="@color/text_color" />
-    </LinearLayout>
 </RelativeLayout>

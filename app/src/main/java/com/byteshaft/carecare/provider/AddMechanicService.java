@@ -2,15 +2,14 @@ package com.byteshaft.carecare.provider;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.AdapterView;
+import android.util.Log;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.ListView;
 
-import com.byteshaft.carecare.Adapters.MechanicServiceAdapter;
+import com.byteshaft.carecare.Adapters.AutoMechanicAdapter;
 import com.byteshaft.carecare.R;
-import com.byteshaft.carecare.gettersetter.MechanicServices;
+import com.byteshaft.carecare.gettersetter.AutoMechanicItems;
+import com.byteshaft.carecare.gettersetter.AutoMechanicSubItem;
 import com.byteshaft.carecare.utils.AppGlobals;
 import com.byteshaft.carecare.utils.Helpers;
 import com.byteshaft.requests.HttpRequest;
@@ -21,17 +20,17 @@ import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 
-public class AddMechanicService extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class AddMechanicService extends AppCompatActivity implements
+        HttpRequest.OnReadyStateChangeListener, HttpRequest.OnErrorListener {
 
-    private EditText etServicePrice;
-    private Spinner serviceSpinner;
-    private Button addButton;
-
-    private String price;
-    private int serviceId;
-    private ArrayList<MechanicServices> mechanicServicesArrayList;
-    private MechanicServiceAdapter adapter;
+    private HttpRequest request;
+    private ListView listView;
+    private ArrayList<AutoMechanicItems> arrayList;
+    private AutoMechanicAdapter adapter;
+    private Button mAddButton;
+    private HashMap<Integer, Boolean> postionHashMap;
 
 
     @Override
@@ -39,37 +38,83 @@ public class AddMechanicService extends AppCompatActivity implements AdapterView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_mechanic_service);
         setTitle("Auto Mechanic");
-        etServicePrice = findViewById(R.id.et_service_price);
-        serviceSpinner = findViewById(R.id.mechanic_service_spinner);
-        addButton = findViewById(R.id.add_service);
-
-        serviceSpinner.setOnItemSelectedListener(this);
-        mechanicServicesArrayList = new ArrayList<>();
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (validate()) {
-                    addService(etServicePrice.getText().toString(), serviceId);
-                }
+        mAddButton = findViewById(R.id.add_button);
+        listView = findViewById(R.id.services_list_view);
+        getAutoMechanicsServicesList();
+        mAddButton.setOnClickListener(view -> {
+            for (int i = 0; i < adapter.serviceRequestData().size(); i++) {
+                Log.wtf("ids", String.valueOf(adapter.serviceRequestData().get(i)));
             }
+            addService();
         });
-        getServices();
     }
 
-    public boolean validate() {
-        boolean valid = true;
-        price = etServicePrice.getText().toString();
-        if (price.trim().isEmpty()) {
-            etServicePrice.setError("Required");
-            valid = false;
-        } else {
-            etServicePrice.setError(null);
+
+    @Override
+    public void onError(HttpRequest request, int readyState, short error, Exception exception) {
+        Helpers.dismissProgressDialog();
+        switch (readyState) {
+            case HttpRequest.ERROR_CONNECTION_TIMED_OUT:
+                Helpers.showSnackBar(listView, getString(R.string.connection_time_out));
+                break;
+            case HttpRequest.ERROR_NETWORK_UNREACHABLE:
+                Helpers.showSnackBar(listView, exception.getLocalizedMessage());
+                break;
         }
 
-        return valid;
     }
 
-    private void addService(String price, int service) {
+    @Override
+    public void onReadyStateChange(HttpRequest request, int readyState) {
+        switch (readyState) {
+            case HttpRequest.STATE_DONE:
+                Helpers.dismissProgressDialog();
+                switch (request.getStatus()) {
+                    case HttpURLConnection.HTTP_OK:
+                        arrayList = new ArrayList<>();
+                        adapter = new AutoMechanicAdapter(AddMechanicService.this, arrayList);
+                        listView.setAdapter(adapter);
+                        try {
+                            JSONArray jsonArray = new JSONArray(request.getResponseText());
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                AutoMechanicItems items = new AutoMechanicItems();
+                                items.setCategoryName(jsonObject.getString("name"));
+                                JSONArray serviceSubItemsJsonArray = jsonObject.getJSONArray("sub_services");
+                                ArrayList<AutoMechanicSubItem> array = new ArrayList<>();
+                                postionHashMap = new HashMap<>();
+                                for (int j = 0; j < serviceSubItemsJsonArray.length(); j++) {
+                                    JSONObject serviceSubItemsJsonObject = serviceSubItemsJsonArray.getJSONObject(j);
+                                    System.out.println("Test " + serviceSubItemsJsonObject);
+                                    AutoMechanicSubItem autoMechanicSubItemsList = new AutoMechanicSubItem();
+                                    autoMechanicSubItemsList.setServiceId(serviceSubItemsJsonObject.getInt("id"));
+                                    autoMechanicSubItemsList.setServiceName(serviceSubItemsJsonObject.getString("name"));
+                                    Log.i("TAG", " adding " + serviceSubItemsJsonObject.getString("name"));
+                                    array.add(autoMechanicSubItemsList);
+                                    postionHashMap.put(j, false);
+                                }
+                                items.setPositionHashMap(postionHashMap);
+                                items.setSubItemsArrayList(array);
+                                arrayList.add(items);
+                                adapter.notifyDataSetChanged();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                }
+        }
+    }
+
+    private void getAutoMechanicsServicesList() {
+        request = new HttpRequest(getApplicationContext());
+        request.setOnReadyStateChangeListener(this);
+        request.setOnErrorListener(this);
+        request.open("GET", String.format("%smechanic-services", AppGlobals.BASE_URL));
+        request.send();
+    }
+
+
+    private void addService() {
         Helpers.showProgressDialog(AddMechanicService.this, "Pleas wait...");
         HttpRequest request = new HttpRequest(getApplicationContext());
         request.setOnReadyStateChangeListener(new HttpRequest.OnReadyStateChangeListener() {
@@ -77,13 +122,13 @@ public class AddMechanicService extends AppCompatActivity implements AdapterView
             public void onReadyStateChange(HttpRequest request, int readyState) {
                 switch (readyState) {
                     case HttpRequest.STATE_DONE:
+                        Log.wtf("ok", request.getResponseText());
                         Helpers.dismissProgressDialog();
                         switch (request.getStatus()) {
                             case HttpURLConnection.HTTP_CREATED:
-                                Helpers.showSnackBar(addButton, "Item Added");
+                                Helpers.showSnackBar(listView, "Item Added");
                                 finish();
                             case HttpURLConnection.HTTP_BAD_REQUEST:
-                                Helpers.alertDialog(AddMechanicService.this, null, getResources().getString(R.string.service_already_added), null);
                         }
                 }
             }
@@ -91,56 +136,20 @@ public class AddMechanicService extends AppCompatActivity implements AdapterView
         request.open("POST", String.format("%smechanic/services", AppGlobals.BASE_URL));
         request.setRequestHeader("Authorization", "Token " +
                 AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_TOKEN));
-        JSONObject object = new JSONObject();
-        try {
-            object.put("price", price);
-            object.put("service", service);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        request.send(object.toString());
-    }
 
-    private void getServices() {
-        HttpRequest getStateRequest = new HttpRequest(getApplicationContext());
-        getStateRequest.setOnReadyStateChangeListener((request, readyState) -> {
-            switch (readyState) {
-                case HttpRequest.STATE_DONE:
-                    switch (request.getStatus()) {
-                        case HttpURLConnection.HTTP_OK:
-                            try {
-                                JSONObject jsonObject = new JSONObject(request.getResponseText());
-                                JSONArray jsonArray = jsonObject.getJSONArray("results");
-                                for (int i = 0; i < jsonArray.length(); i++) {
-                                    System.out.println("Test " + jsonArray.getJSONObject(i));
-                                    JSONObject vehicleMakeJsonObject = jsonArray.getJSONObject(i);
-                                    MechanicServices mechanicServices = new MechanicServices();
-                                    mechanicServices.setId(vehicleMakeJsonObject.getInt("id"));
-                                    mechanicServices.setName(vehicleMakeJsonObject.getString("name"));
-                                    mechanicServicesArrayList.add(mechanicServices);
-                                }
+        JSONArray jsonArray = new JSONArray();
 
-                                adapter = new MechanicServiceAdapter(AddMechanicService.this, mechanicServicesArrayList);
-                                serviceSpinner.setAdapter(adapter);
-                                serviceSpinner.setSelection(0);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                    }
+
+        for (int i = 0; i < adapter.serviceRequestData().size(); i++) {
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("service", adapter.serviceRequestData().get(i));
+                jsonObject.put("price", "10");
+                jsonArray.put(jsonObject);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        });
-        getStateRequest.open("GET", String.format("%smechanic-services", AppGlobals.BASE_URL));
-        getStateRequest.send();
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        MechanicServices services = mechanicServicesArrayList.get(i);
-        serviceId = services.getId();
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-
+        }
+        request.send(jsonArray.toString());
     }
 }
