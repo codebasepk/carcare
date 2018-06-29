@@ -27,7 +27,7 @@ import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
 public class ListOfServicesProviders extends Fragment implements HttpRequest.OnReadyStateChangeListener,
-        HttpRequest.OnErrorListener{
+        HttpRequest.OnErrorListener {
 
     private View mBaseView;
     private ListView mServiceProvidersListView;
@@ -35,7 +35,8 @@ public class ListOfServicesProviders extends Fragment implements HttpRequest.OnR
     private AutoMechanicServiceProvidersListAdapter adapter;
     private HttpRequest request;
     private ArrayList<Integer> mServicesIdArrayList;
-    private String mLocationString;
+    public static String mLocationString;
+    private String mServiceString;
 
     @Nullable
     @Override
@@ -47,11 +48,20 @@ public class ListOfServicesProviders extends Fragment implements HttpRequest.OnR
         adapter = new AutoMechanicServiceProvidersListAdapter(getActivity(), arrayList);
         mServiceProvidersListView.setAdapter(adapter);
         Bundle bundle = getArguments();
-        if(bundle != null) {
-            mServicesIdArrayList = (ArrayList<Integer>)getArguments().getSerializable("service_id");
+        if (bundle != null) {
+            mServicesIdArrayList = (ArrayList<Integer>) getArguments().getSerializable("service_id");
+            Log.e("mServicesIdArrayList", " " + mServicesIdArrayList);
             mLocationString = bundle.getString("location");
         }
-        getServiceProvidersList(mLocationString, mServicesIdArrayList);
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < mServicesIdArrayList.size(); i++) {
+            stringBuilder.append("&service=" + mServicesIdArrayList.get(i));
+            stringBuilder.append("&");
+        }
+        mServiceString = stringBuilder.toString();
+        mServiceString = mServiceString.substring(0, mServiceString.length() - 1);
+        Log.e("StringBuilder", " " + mServiceString);
+        getServiceProvidersList(mLocationString);
         return mBaseView;
     }
 
@@ -62,19 +72,25 @@ public class ListOfServicesProviders extends Fragment implements HttpRequest.OnR
                 Helpers.dismissProgressDialog();
                 switch (request.getStatus()) {
                     case HttpURLConnection.HTTP_BAD_REQUEST:
-                        Log.e("working " ,  " " + httpRequest.getResponseText());
+                        Log.e("working ", " " + httpRequest.getResponseText());
                         break;
                     case HttpURLConnection.HTTP_OK:
                         try {
                             JSONObject mainJsonObject = new JSONObject(httpRequest.getResponseText());
                             JSONArray jsonArray = mainJsonObject.getJSONArray("results");
-                            for (int i = 0; i < jsonArray.length() ; i++) {
-                                Log.e("working " ,  " " + jsonArray.getJSONObject(i));
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                Log.e("working ", " " + jsonArray.getJSONObject(i));
                                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                                 ServicesProvidersListItems servicesProvidersListItems = new ServicesProvidersListItems();
                                 servicesProvidersListItems.setServiceProviderId(jsonObject.getInt("id"));
                                 servicesProvidersListItems.setServiceProviderName(jsonObject.getString("name"));
+                                servicesProvidersListItems.setServiceProviderLocation(jsonObject.getString("address_coordinates"));
+                                Log.e("working ", " " + jsonObject.getString("address_coordinates"));
                                 servicesProvidersListItems.setServiceProviderImage(jsonObject.getString("profile_photo"));
+                                JSONObject profileJsonObject = jsonObject.getJSONObject("profile");
+                                servicesProvidersListItems.setServiceProviderExperience(profileJsonObject.getString("experience"));
+                                servicesProvidersListItems.setServiceProviderStartTime(profileJsonObject.getString("start_time"));
+                                servicesProvidersListItems.setServiceProviderEndTime(profileJsonObject.getString("end_time"));
                                 arrayList.add(servicesProvidersListItems);
                                 adapter.notifyDataSetChanged();
                             }
@@ -100,12 +116,16 @@ public class ListOfServicesProviders extends Fragment implements HttpRequest.OnR
 
     }
 
-    private void getServiceProvidersList(String baseLocation, ArrayList<Integer> service) {
+    private void getServiceProvidersList(String baseLocation) {
         request = new HttpRequest(getActivity());
         request.setOnReadyStateChangeListener(this);
         request.setOnErrorListener(this);
-        request.open("GET", String.format("%sfind-mechanic?base_location=%s&service=%s", AppGlobals.BASE_URL,
-                baseLocation, service));
+        request.open("GET", String.format("%sfind-mechanic?base_location=%s", AppGlobals.BASE_URL,
+                baseLocation + mServiceString));
+        System.out.println(String.format("%sfind-mechanic?base_location=%s", AppGlobals.BASE_URL,
+                baseLocation + mServiceString));
+        request.setRequestHeader("Authorization", "Token " +
+                AppGlobals.getStringFromSharedPreferences(AppGlobals.KEY_TOKEN));
         request.send();
         Helpers.showProgressDialog(getActivity(), getString(R.string.parts_list));
     }

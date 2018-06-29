@@ -69,7 +69,6 @@ public class AutoMechanicAdapter extends ArrayAdapter<String> {
                         }
                     }
                 });
-
                 if (positionHasMap.get(i)) {
                     serviceNameCheckBox.setChecked(true);
                 } else {
