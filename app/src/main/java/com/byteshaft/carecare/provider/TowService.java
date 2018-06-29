@@ -143,7 +143,7 @@ public class TowService extends AppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 convertView = getLayoutInflater()
-                        .inflate(R.layout.delegate_mechanic_service, parent, false);
+                        .inflate(R.layout.delegate_tow_service, parent, false);
                 viewHolder = new ViewHolder();
                 viewHolder.price = convertView.findViewById(R.id.service_price);
                 viewHolder.name = convertView.findViewById(R.id.service_name);
